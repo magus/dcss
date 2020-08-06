@@ -114,6 +114,105 @@ autofight_stop = 75
 autofight_caught = true
 
 ##
+## Travel
+#######################################
+travel_avoid_terrain = deep water
+# Set to -1 for instant-travel, set to 1 to see travel paths
+travel_delay = -1
+explore_delay = 1
+# Stop when autopickup items come into view
+explore_stop += greedy_items
+
+##
+## autoinscribe + autopickup
+#######################################
+show_god_gift = unident
+
+ai := autoinscribe
+
+ai += (bad|dangerous)_item.*potion:!q
+ai += (bad|dangerous)_item.*scroll:!r
+ai += potions? of berserk rage:!q
+ai += scrolls? of silence:!r
+
+ai += of faith:!P
+ai += manual of:!d
+
+# Prevent melee with all staves;
+# If we want to melee with one, it's safe to require removing the annotation.
+ai += magical staff:!a
+
+# Prevent auto quivering and cycling ammo
+ai += (large rock|throwing net|curare|of dispersal):=f
+
+# Convenient shortcuts
+ai += curing:@q1
+ai += potions? of heal wounds:@q2
+ai += potions? of haste:@q3
+ai += scrolls? of teleportation:@r4
+ai += identify:@r1
+ai += remove curse:@r2
+ai += chunks of flesh:@e1
+ai += ration:@e2
+
+# Automated inscription for sorting armor & weapons
+# e.g. `! mace` to find a shiny mace
+ai += (runed|glowing|shiny|embroid|dyed):!
+ai += (dagger|quick blade|short sword|rapier):short
+ai += (falchion|long sword|scimitar|demon blade|eudemon blade|double sword|great sword|triple sword):long
+ai += (hand axe|war axe|broad axe|battleaxe|executioner's axe):axe
+ai += (whip|club|mace|flail|morningstar|demon whip|sacred scourge|dire flail|eveningstar|great mace|giant club|giant spiked club):mace
+ai += (spear|trident|halberd|scythe|demon trident|trishula|glaive|bardiche):polearm
+ai += (staff|quarterstaff|lajatang):staff
+ai += (dart|throwing net|stone|boomerang|javelin|large rock):throwing
+ai += (hunting sling|fustibalus):sling
+ai += (shortbow|longbow):bow
+ai += (hand crossbow|arbalest|triple crossbow):crossbow
+
+
+# Rare items
+ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare
+ai += (storm dragon hide|storm dragon armour|pearl dragon|gold dragon|crystal plate):rare
+
+
+# Always automatically pickup
+ai += curare:=g
+
+: if you.race() == "Mummy" then
+autopickup = /?"+|0}$
+: else
+autopickup = /%?"!+|0}$
+: end
+# )       Weapons
+# (       Missiles
+# [       Armour
+# /       Wands
+# %       Food
+# ?       Scrolls
+# " or =  Jewellery
+# !       Potions
+# + or :  Books
+# |       Staves
+# 0       Orbs
+# }       Misc. items
+# $       Gold
+# Note that _whether_ items are picked up automatically or not, is
+# controlled by the in-game toggle Ctrl-A. Also note that picking
+# up takes a turn, but only one turn (regardless of the number of
+# items). If you teleport or blink onto a square with interesting
+# items, these will not be picked up.
+
+ae := autopickup_exceptions
+ae += <tins of tremorstones
+ae += <javelin
+ae += <throwing net
+: if you.race() == "Troll" then
+ae += <large rock
+: end
+ae += <mutation
+ae += <vulnerability|immolation
+
+##
 ## Display
 #######################################
 view_delay = 300
@@ -313,105 +412,6 @@ item += (a )?stones?$:lightgray
 item += useless:darkgrey
 # Only mark these types when forbidden; for other types it looks odd.
 item += forbidden.*(potion|scroll|food):red
-
-##
-## Travel
-#######################################
-travel_avoid_terrain = deep water
-# Set to -1 for instant-travel, set to 1 to see travel paths
-travel_delay = -1
-explore_delay = 1
-# Stop when autopickup items come into view
-explore_stop += greedy_items
-
-##
-## autoinscribe + autopickup
-#######################################
-show_god_gift = unident
-
-ai := autoinscribe
-
-ai += (bad|dangerous)_item.*potion:!q
-ai += (bad|dangerous)_item.*scroll:!r
-ai += potions? of berserk rage:!q
-ai += scrolls? of silence:!r
-
-ai += of faith:!P
-ai += manual of:!d
-
-# Prevent melee with all staves;
-# If we want to melee with one, it's safe to require removing the annotation.
-ai += magical staff:!a
-
-# Prevent auto quivering and cycling ammo
-ai += (large rock|throwing net|curare|of dispersal):=f
-
-# Convenient shortcuts
-ai += curing:@q1
-ai += potions? of heal wounds:@q2
-ai += potions? of haste:@q3
-ai += scrolls? of teleportation:@r4
-ai += identify:@r1
-ai += remove curse:@r2
-ai += chunks of flesh:@e1
-ai += ration:@e2
-
-# Automated inscription for sorting armor & weapons
-# e.g. `! mace` to find a shiny mace
-ai += (runed|glowing|shiny|embroid|dyed):!
-ai += (dagger|quick blade|short sword|rapier):short
-ai += (falchion|long sword|scimitar|demon blade|eudemon blade|double sword|great sword|triple sword):long
-ai += (hand axe|war axe|broad axe|battleaxe|executioner's axe):axe
-ai += (whip|club|mace|flail|morningstar|demon whip|sacred scourge|dire flail|eveningstar|great mace|giant club|giant spiked club):mace
-ai += (spear|trident|halberd|scythe|demon trident|trishula|glaive|bardiche):polearm
-ai += (staff|quarterstaff|lajatang):staff
-ai += (dart|throwing net|stone|boomerang|javelin|large rock):throwing
-ai += (hunting sling|fustibalus):sling
-ai += (shortbow|longbow):bow
-ai += (hand crossbow|arbalest|triple crossbow):crossbow
-
-
-# Rare items
-ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare
-ai += (storm dragon hide|storm dragon armour|pearl dragon|gold dragon|crystal plate):rare
-
-
-# Always automatically pickup
-ai += curare:=g
-
-: if you.race() == "Mummy" then
-autopickup = /?"+|0}$
-: else
-autopickup = /%?"!+|0}$
-: end
-# )       Weapons
-# (       Missiles
-# [       Armour
-# /       Wands
-# %       Food
-# ?       Scrolls
-# " or =  Jewellery
-# !       Potions
-# + or :  Books
-# |       Staves
-# 0       Orbs
-# }       Misc. items
-# $       Gold
-# Note that _whether_ items are picked up automatically or not, is
-# controlled by the in-game toggle Ctrl-A. Also note that picking
-# up takes a turn, but only one turn (regardless of the number of
-# items). If you teleport or blink onto a square with interesting
-# items, these will not be picked up.
-
-ae := autopickup_exceptions
-ae += <tins of tremorstones
-ae += <javelin
-ae += <throwing net
-: if you.race() == "Troll" then
-ae += <large rock
-: end
-ae += <mutation
-ae += <vulnerability|immolation
 
 ##
 ## Morgue
