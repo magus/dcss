@@ -1,0 +1,256 @@
+##
+## magusnn.rc
+################################################################################################
+## How to lookup a players RC file?
+## e.g. http://crawl.akrasiac.org/rcfiles/crawl-0.25/magusnn.rc
+## How to learn RC file options?
+## http://crawl.akrasiac.org/docs/options_guide.txt
+## RC resources & references
+## http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
+## https://github.com/gammafunk/dcss-rc#1-include-the-rc-or-lua-file-in-your-rc
+## https://github.com/HilariousDeathArtist/DCSSConfigFile/blob/master/HilariousDeathArtist.txt
+################################################################################################
+
+##
+## Utils
+################################################################################################
+{
+function rc_out(symbol, color, msg)
+  crawl.mpr(string.format("\n>> %s <%s>%s</%s>", symbol, color, msg, color))
+end
+function rc_msg(msg)
+  rc_out("🤖", "blue", msg)
+end
+function rc_scs(msg)
+  rc_out("✅", "green", msg)
+end
+function rc_err(msg)
+  rc_out("❌", "lightred", msg)
+end
+
+function colortest()
+  local colors = {"darkgrey","lightgrey","white","blue","lightblue","green","lightgreen","cyan","lightcyan","red","lightred","magenta","lightmagenta","yellow","brown"}
+  for i, color in ipairs(colors) do
+    crawl.mpr(string.format("\n>> 🤖 colortest <%s>%s</%s>", color, color, color))
+  end
+end
+}
+
+##
+## BEGIN
+################################################################################################
+: rc_msg("Initializing magusnn.rc...")
+
+##
+## Setup
+################################################################################################
+{
+-- Open skills menu at start of runs
+local need_skills_opened = true
+local function start_open_skills()
+  if you.turns() == 0 and need_skills_opened then
+    need_skills_opened = false
+    crawl.sendkeys("m")
+  end
+end
+
+-- Equipment autopickup (by Medar and various others)
+-- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
+local function pickup_equipment(it, name)
+  if it.is_useless then return end
+
+  local class = it.class(true)
+  if class == "armour" then
+    local good_slots = {cloak="Cloak", helmet="Helmet",
+                        gloves="Gloves", boots="Boots"}
+    st, _ = it.subtype()
+
+    -- Autopickup found aux armour if 1) we don't have any or 2) it's artefact,
+    -- or 3) if we don't have artefact or ego armour, and the found armour is
+    -- ego.
+    if good_slots[st] ~= nil then
+      if good_slots[st] == "Gloves" and you.has_claws() > 0 then return end
+
+      if it.artefact then return true end
+
+      local cur = items.equipped_at(good_slots[st])
+      if cur == nil then return true end
+
+      if cur.branded or cur.artefact then return end
+      if it.branded then return true end
+      -- Autopickup found body armour of the same kind we're wearing, according
+      -- to conditions (2) and (3) above used for aux slots.
+    elseif st == "body" then
+      local cur = items.equipped_at("armour")
+      if cur == nil then return end
+      if cur.name("qual") ~= it.name("qual") then return end
+
+      if it.artefact then return true end
+
+      if cur.branded or cur.artefact then return end
+      if it.branded then return true end
+    end
+  end
+  return
+end
+
+function ready()
+  rc_msg("Running ready function...")
+
+  add_autopickup_func(pickup_equipment)
+  start_open_skills()
+
+  -- DEBUG
+  rc_msg("DEBUG")
+  colortest()
+
+  --
+  -- END
+  ----------------------------------------------------------------------------------------------
+  rc_scs("Successfully initialized magusnn.rc!")
+end
+}
+
+: rc_msg("Defining global options...")
+
+##
+## Display
+#######################################
+view_delay = 300
+hp_colour = 100:green, 99:lightgray, 75:yellow, 50:lightred, 25:red
+mp_colour = 100:green, 99:lightgray, 75:yellow, 50:lightred, 25:red
+hp_warning = 50
+
+monster_list_colour =
+monster_list_colour += friendly:green,neutral:brown
+monster_list_colour += good_neutral:brown,strict_neutral:brown
+monster_list_colour += trivial:darkgrey,easy:lightgrey
+monster_list_colour += tough:yellow,nasty:lightred
+
+##
+## General
+#######################################
+default_manual_training = true
+stop = Your transformation is almost over.
+show_more = false
+autofight_stop = 75
+autofight_caught = true
+
+##
+## Interface
+#######################################
+# Unequip already equipped items by selecting in equip menus (i.e. w, W, P)
+equip_unequip = true
+# Cannot target self with risky magic
+allow_self_target = no
+# mini map size, [X] pixels per tile
+tile_map_pixels = 8
+
+##
+## Travel
+#######################################
+travel_avoid_terrain = deep water
+# Set to -1 for instant-travel, set to 1 to see travel paths
+travel_delay = -1
+explore_delay = 1
+# Stop when autopickup items come into view
+explore_stop += greedy_items
+
+##
+## autoinscribe + autopickup
+#######################################
+show_god_gift = unident
+
+ai := autoinscribe
+
+ai += (bad|dangerous)_item.*potion:!q
+ai += (bad|dangerous)_item.*scroll:!r
+ai += potions? of berserk rage:!q
+ai += scrolls? of silence:!r
+
+ai += of faith:!P
+ai += manual of:!d
+
+# Prevent melee with all staves;
+# If we want to melee with one, it's safe to require removing the annotation.
+ai += magical staff:!a
+
+# Prevent auto quivering and cycling ammo
+ai += (large rock|throwing net|curare|of dispersal):=f
+
+# Convenient shortcuts
+ai += curing:@q1
+ai += potions? of heal wounds:@q2
+ai += potions? of haste:@q3
+ai += scrolls? of teleportation:@r4
+ai += identify:@r1
+ai += remove curse:@r2
+ai += chunks of flesh:@e1
+ai += ration:@e2
+
+# Automated inscription for sorting armor & weapons
+# e.g. `shinymacebestonehand` to find a shiny one handed mace that's worth using endgame
+ai += (runed|glowing|shiny|embroid|dyed):$
+ai += (dagger|short sword|rapier):shortsword
+
+# Always automatically pickup
+ai += curare:=g
+
+: if you.race() == "Mummy" then
+autopickup = /?"+|0}$
+: else
+autopickup = /%?"!+|0}$
+: end
+# )       Weapons
+# (       Missiles
+# [       Armour
+# /       Wands
+# %       Food
+# ?       Scrolls
+# " or =  Jewellery
+# !       Potions
+# + or :  Books
+# |       Staves
+# 0       Orbs
+# }       Misc. items
+# $       Gold
+# Note that _whether_ items are picked up automatically or not, is
+# controlled by the in-game toggle Ctrl-A. Also note that picking
+# up takes a turn, but only one turn (regardless of the number of
+# items). If you teleport or blink onto a square with interesting
+# items, these will not be picked up.
+
+autopickup_exceptions = <tins of tremorstones
+autopickup_exceptions += <javelin
+autopickup_exceptions += <throwing net
+
+##
+## Morgue
+#######################################
+dump_item_origins = all
+dump_message_count = 100
+dump_order  = header,hiscore,stats,misc,mutations,skills,spells,inventory
+dump_order += overview,screenshot,monlist,messages,skill_gains,action_counts
+dump_order += vaults,notes,kills,xp_by_level,skill_gains,action_counts,screenshots,kills_by_place,turns_by_place
+
+note_hp_percent = 10
+note_all_skill_levels = true
+note_chat_messages = false
+user_note_prefix = >>
+
+note_items += experience,of resistance, Archmagi
+note_items += crystal plate armour,pearl dragon scales,gold dragon scales
+note_items += artefact
+note_messages += You feel monstrous
+note_messages += You pass through the gate
+note_messages += cast .* Abyss
+
+# Noteable monsters
+# Undead
+note_monsters += ancient lich,curse skull,curse toe,greater mummy
+# Depths
+note_monsters += caustic shrike
+# Special hall_of_zot spawns
+note_monsters += killer klown,electric golem,orb of fire
+
+: rc_msg("Finished defining global options.")
