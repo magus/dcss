@@ -94,11 +94,13 @@ local function pickup_equipment(it, name)
   return
 end
 
+-- Run once on setup
+add_autopickup_func(pickup_equipment)
+start_open_skills()
+
+-- Run every player turn
 function ready()
   -- rc_msg("Running ready function...")
-
-  add_autopickup_func(pickup_equipment)
-  start_open_skills()
 end
 }
 
