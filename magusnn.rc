@@ -277,7 +277,7 @@ menu += lightred:.*equipped.* cursed
 menu += red: (a|the) cursed
 menu += inventory:lightgreen:.*equipped.*
 # Colouring of autoinscribed god gifts
-menu += pickup:lightred:god gift
+menu += pickup:cyan:god gift
 # Highlight (partly) selected items
 menu += inventory:white:\w \+\s
 menu += inventory:white:\w \#\s
