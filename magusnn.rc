@@ -179,6 +179,7 @@ ai += (storm dragon hide|storm dragon armour|pearl dragon|gold dragon|crystal pl
 
 # Always automatically pickup
 ai += curare:=g
+ai += dragon scale:=g
 
 : if you.race() == "Mummy" then
 autopickup = /?"+|0}$
@@ -218,8 +219,8 @@ ae += <vulnerability|immolation
 ## Display
 #######################################
 view_delay = 300
-hp_colour = 100:green, 99:lightgray, 75:yellow, 50:lightred, 25:red
-mp_colour = 100:green, 99:lightgray, 75:yellow, 50:lightred, 25:red
+hp_colour = 100:lightgreen, 99:lightgray, 75:yellow, 50:lightred, 25:red
+mp_colour = 100:cyan, 99:lightgray, 75:yellow, 50:lightred, 25:red
 hp_warning = 50
 
 monster_list_colour =
