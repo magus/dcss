@@ -64,7 +64,7 @@ local function should_pickup_equip(cur, i2)
 
   -- items names are the same, pickup higher plus
   if cur.name("qual") == i2.name("qual") then
-    if cur.plus < i2.plus then
+    if i2.plus ~= nil and cur.plus < i2.plus then
       return true
     end
   end
