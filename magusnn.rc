@@ -80,10 +80,6 @@ end
 local function pickup_equipment(it, name)
   -- DEBUG
   -- rc_msg(string.format("pickup_equipment: %s", name))
-  -- rc_msg(string.format("it.class(true)=%s", it.class(true)))
-  if name == "ITEM_NAME" then
-    rc_msg(string.format("it.class(true)=%s", it.class(true)))
-  end
   
   if it.is_useless then return end
 
@@ -266,7 +262,8 @@ ae += >potions? of (degeneration)
 
 ae += <(tins of tremorstones)
 
-ae += <runes?
+# Pickup runes but not 'runed' anything
+ae += <rune(s)?[^d]
 
 ##
 ## Display
