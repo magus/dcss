@@ -54,13 +54,59 @@ local function start_open_skills()
   end
 end
 
+-- Compare item for same name but higher plus
+local function should_pickup_equip(cur, i2)
+  -- always pickup god gift equipment
+  if i2.god_gift then return true end
+
+  --  no item in the slot? autopickup anything!
+  if cur == nil then return true end
+
+  -- items names are the same, pickup higher plus
+  if cur.name("qual") == i2.name("qual") then
+    if cur.plus < i2.plus then
+      return true
+    end
+  end
+
+  if cur.branded or cur.artefact then return end
+  if i2.branded then return true end
+
+  return false
+end
+
 -- Equipment autopickup (by Medar and various others)
 -- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
 local function pickup_equipment(it, name)
+  -- DEBUG
+  -- rc_msg(string.format("pickup_equipment: %s", name))
+  -- rc_msg(string.format("it.class(true)=%s", it.class(true)))
+  if name == "ITEM_NAME" then
+    rc_msg(string.format("it.class(true)=%s", it.class(true)))
+  end
+  
   if it.is_useless then return end
 
+  -- always pickup artefacts
+  if it.artefact then return true end
+
   local class = it.class(true)
-  if class == "armour" then
+
+  if class == "weapon" then
+    -- get currently equipped item in slot
+    local cur = items.equipped_at("weapon")
+
+    -- when using unarmed combat, we want to skip the should_pickup_equip for weapons
+    if cur == nil then
+      -- always pickup god gift equipment
+      if it.god_gift then return true end
+
+      return false
+    end
+
+    if should_pickup_equip(cur, it) then return true end
+
+  elseif class == "armour" then
     local good_slots = {cloak="Cloak", helmet="Helmet",
                         gloves="Gloves", boots="Boots"}
     st, _ = it.subtype()
@@ -71,26 +117,21 @@ local function pickup_equipment(it, name)
     if good_slots[st] ~= nil then
       if good_slots[st] == "Gloves" and you.has_claws() > 0 then return end
 
-      if it.artefact then return true end
-
+      -- get currently equipped item in slot
       local cur = items.equipped_at(good_slots[st])
-      if cur == nil then return true end
 
-      if cur.branded or cur.artefact then return end
-      if it.branded then return true end
-      -- Autopickup found body armour of the same kind we're wearing, according
-      -- to conditions (2) and (3) above used for aux slots.
+      if should_pickup_equip(cur, it) then return true end
+      
+    -- Autopickup found body armour of the same kind we're wearing, according
+    -- to conditions (2) and (3) above used for aux slots.
     elseif st == "body" then
+      -- get currently equipped item in slot
       local cur = items.equipped_at("armour")
-      if cur == nil then return end
-      if cur.name("qual") ~= it.name("qual") then return end
-
-      if it.artefact then return true end
-
-      if cur.branded or cur.artefact then return end
-      if it.branded then return true end
+      
+      if should_pickup_equip(cur, it) then return true end
     end
   end
+
   return
 end
 
@@ -102,6 +143,7 @@ start_open_skills()
 function ready()
   -- rc_msg("Running ready function...")
 end
+
 }
 
 : rc_msg("Defining global options...")
@@ -158,8 +200,7 @@ ai += chunks of flesh:@e1
 ai += ration:@e2
 
 # Automated inscription for sorting armor & weapons
-# e.g. `! mace` to find a shiny mace
-ai += (runed|glowing|shiny|embroid|dyed):!
+# e.g. `mace` to find any mace
 ai += (dagger|quick blade|short sword|rapier):short
 ai += (falchion|long sword|scimitar|demon blade|eudemon blade|double sword|great sword|triple sword):long
 ai += (hand axe|war axe|broad axe|battleaxe|executioner's axe):axe
@@ -206,14 +247,26 @@ autopickup = /%?"!+|0}$
 # items, these will not be picked up.
 
 ae := autopickup_exceptions
-ae += <tins of tremorstones
+
+# Reset all autopickup exceptions
+ae = 
+
 ae += <javelin
 ae += <throwing net
 : if you.race() == "Troll" then
 ae += <large rock
 : end
-ae += <mutation
-ae += <vulnerability|immolation
+
+
+ae += <scrolls? of (vulnerability|immolation)
+ae += >scrolls? of (noise)
+
+ae += <potions? of (mutation|lignification)
+ae += >potions? of (degeneration)
+
+ae += <(tins of tremorstones)
+
+ae += <runes?
 
 ##
 ## Display
