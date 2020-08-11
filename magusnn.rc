@@ -320,10 +320,16 @@ ai := autoinscribe
 ai += (bad|dangerous)_item.*potion:!q
 ai += (bad|dangerous)_item.*scroll:!r
 ai += potions? of berserk rage:!q
-ai += scrolls? of silence:!r
+ai += scrolls? of (blinking|immolation|magic mapping|silence|vulnerability):!r
 
 ai += of faith:!P
 ai += manual of:!d
+
+# Inscribe distortion weapons if you are not worshipping Lugonu
+: if you.god() ~= "Lugonu" then
+ai += distortion:!w
+ai += (Sonja|Psyche):!w
+: end
 
 # Prevent melee with all staves;
 # If we want to melee with one, it's safe to require removing the annotation.
