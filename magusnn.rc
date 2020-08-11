@@ -1142,14 +1142,9 @@ note_monsters += silver star,pearl dragon
 
 : rc_msg("Finished defining global options.")
 
-####################
-# Message coloring #
-####################
-
-# Standard Colors
-# black, blue, brown, cyan, darkgrey, green, lightblue, lightcyan, lightgreen,
-# lightgrey, lightmagenta, lightred, magenta, red, yellow, white
-
+##
+## Message coloring
+#######################################
 # Variables for message highlighting
 $danger   := lightred
 $item_dmg := red
@@ -1165,8 +1160,9 @@ $takesaction := blue
 $godaction := magenta
 $mp := lightcyan
 
-#Channels
-#channel.plain =
+## Channels
+
+# channel.plain =
 channel.prompt = $interface
 channel.god = $godaction
 channel.pray = $godaction
@@ -1178,28 +1174,28 @@ channel.recovery = $verypositive
 channel.talk = $warning
 channel.talk_visual = $boring
 channel.timed_portal = $warning
-#channel.sound =
+# channel.sound =
 channel.intrinsic_gain = $awesome
-#channel.mutation = --either danger/warning/awesome
+# channel.mutation = --either danger/warning/awesome
 channel.monster_spell = $takesaction
-#channel.monster_enchant = --either danger/warning/boring/takesaction
+# channel.monster_enchant = --either danger/warning/boring/takesaction
 channel.friend_spell = $takesaction
-#channel.friend_enchant = --either danger/warning/boring/takesaction
+# channel.friend_enchant = --either danger/warning/boring/takesaction
 channel.friend_action = $takesaction
 channel.monster_damage = mute
-#monster_target = --currently unused by the game
-#channel.banishment = --either positive or danger
+# monster_target = --currently unused by the game
+# channel.banishment = --either positive or danger
 channel.rotten_meat = $boring
 channel.equipment = $interface
-#channel.floor =
+# channel.floor =
 channel.multiturn = $boring
-#channel.examine =
-#channel.examine_filter =
-#channel.diagnostics =
-#channel.error =
-#channel.tutorial =
+# channel.examine =
+# channel.examine_filter =
+# channel.diagnostics =
+# channel.error =
+# channel.tutorial =
 channel.orb = $awesome
-#channel.hell_effect = -either danger/warning/boring
+# channel.hell_effect = -either danger/warning/boring
 
 # Set Alias
 msc := message_colour
