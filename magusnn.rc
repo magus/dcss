@@ -28,8 +28,10 @@ function rc_err(msg)
   rc_out("❌", "lightred", msg)
 end
 
+-- Standard Colors (ignoring black, not visible)
+local colors = {"darkgrey","lightgrey","white","blue","lightblue","green","lightgreen","cyan","lightcyan","red","lightred","magenta","lightmagenta","yellow","brown"}
+
 function colortest()
-  local colors = {"darkgrey","lightgrey","white","blue","lightblue","green","lightgreen","cyan","lightcyan","red","lightred","magenta","lightmagenta","yellow","brown"}
   for i, color in ipairs(colors) do
     crawl.mpr(string.format("\n>> 🤖 colortest <%s>%s</%s>", color, color, color))
   end
