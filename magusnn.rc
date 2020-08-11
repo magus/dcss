@@ -80,7 +80,7 @@ end
 local function pickup_equipment(it, name)
   -- DEBUG
   -- rc_msg(string.format("pickup_equipment: %s", name))
-  
+
   if it.is_useless then return end
 
   -- always pickup artefacts
@@ -117,13 +117,13 @@ local function pickup_equipment(it, name)
       local cur = items.equipped_at(good_slots[st])
 
       if should_pickup_equip(cur, it) then return true end
-      
+
     -- Autopickup found body armour of the same kind we're wearing, according
     -- to conditions (2) and (3) above used for aux slots.
     elseif st == "body" then
       -- get currently equipped item in slot
       local cur = items.equipped_at("armour")
-      
+
       if should_pickup_equip(cur, it) then return true end
     end
   end
@@ -244,9 +244,6 @@ autopickup = /%?"!+|0}$
 
 ae := autopickup_exceptions
 
-# Reset all autopickup exceptions
-ae = 
-
 ae += <javelin
 ae += <throwing net
 : if you.race() == "Troll" then
@@ -255,10 +252,8 @@ ae += <large rock
 
 
 ae += <scrolls? of (vulnerability|immolation)
-ae += >scrolls? of (noise)
 
 ae += <potions? of (mutation|lignification)
-ae += >potions? of (degeneration)
 
 ae += <(tins of tremorstones)
 
