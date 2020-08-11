@@ -461,13 +461,16 @@ tile_map_pixels = 8
 # Enable use of darkgrey
 bold_brightens_foreground=true
 
+# Set alias
 item := item_glyph
 menu := menu_colour
+
+# Clear default
 menu =
 
 menu += notes:white:Reached XP level
 
-### General Inventory###
+### General Inventory ###
 
 ## Reasonable defaults
 item += potion:lightgrey
