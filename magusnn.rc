@@ -244,6 +244,9 @@ autopickup = /%?"!+|0}$
 
 ae := autopickup_exceptions
 
+# Reset all autopickup exceptions
+ae =
+
 ae += <javelin
 ae += <throwing net
 : if you.race() == "Troll" then
@@ -251,9 +254,17 @@ ae += <large rock
 : end
 
 
+: if you.race() == "Vampire" or you.race() == "Mummy" or you.race() == "Ghoul" then
+ae += <scrolls? of (holy word|tormet)
+: else
+ae += >scrolls? of (holy word|tormet)
+:end
+
 ae += <scrolls? of (vulnerability|immolation)
+ae += >scrolls? of (amnesia|noise|random uselessness)
 
 ae += <potions? of (mutation|lignification)
+ae += >potions? of (degeneration|stabbing)
 
 ae += <(tins of tremorstones)
 
@@ -352,6 +363,8 @@ menu += cyan:potions? of.*cancellation
 item += potions? of.*cancellation:cyan
 menu += blue:potions? of.*(lignification|ambrosia)
 item += potions? of.*(lignification|ambrosia):blue
+menu += lightred:potions? of.*experience
+item += potions? of.*experience:lightred
 menu += white:potions? of.*(heal wounds|curing)
 item += potions? of.*(heal wounds|curing):white
 menu += green:potions? of.*resistance
