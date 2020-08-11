@@ -3,6 +3,11 @@ rc for dcss
 
 ## magusnn.rc
 
+## TODO
+
+- Format `announce_damage`
+- `[HP(+X)/MHP][MP(+X)/MMP]`
+
 ### How to lookup a players RC file?
 > http://crawl.akrasiac.org/rcfiles/crawl-0.25/magusnn.rc
 
