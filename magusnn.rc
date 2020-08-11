@@ -1092,6 +1092,19 @@ more += (lich|orb of fire|executioner|juggernaut|shrike).*into view
 # Any uniques and any pan lords
 more += (?-i:[A-Z]).* comes? into view
 
+# Annoyances
+ignore += grinding sound
+ignore += contamination has completely
+ignore += your breath back
+
+ignore += pray:
+ignore += talk:
+ignore += talk_visual:
+ignore += friend_spell:
+ignore += friend_enchant:
+ignore += friend_action:
+ignore += sound:
+
 ##
 ## Morgue
 #######################################
