@@ -199,29 +199,30 @@ local function start_open_skills()
   end
 end
 
--- Compare item for same name but higher plus
 local function should_pickup_equip(cur, i2)
   -- always pickup god gift equipment
   if i2.god_gift then return true end
 
-  --  no item in the slot? autopickup anything!
+  --  not wearing any item in the slot? pickup!
   if cur == nil then return true end
 
   -- items names are the same, pickup higher plus
   if cur.name("qual") == i2.name("qual") then
-    if i2.plus ~= nil and cur.plus < i2.plus then
+    if i2.plus ~= nil and i2.plus > cur.plus then
       return true
     end
   end
 
-  if cur.branded or cur.artefact then return end
-  if i2.branded then return true end
+  -- not wearing artefact/ego/branded but item is? pickup!
+  if cur.branded or cur.ego() or cur.artefact then return end
+  if i2.branded or i2.ego() then return true end
 
   return false
 end
 
 -- Equipment autopickup (by Medar and various others)
 -- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
+local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Armour", shield="Shield"}
 local function pickup_equipment(it, name)
   -- DEBUG
   -- rc_msg(string.format("pickup_equipment: %s", name))
@@ -238,7 +239,7 @@ local function pickup_equipment(it, name)
     local cur = items.equipped_at("weapon")
 
     -- when using unarmed combat, we want to skip the should_pickup_equip for weapons
-    if cur == nil then
+    if cur == nil and you.skill("Unarmed Combat") > 3 then
       -- always pickup god gift equipment
       if it.god_gift then return true end
 
@@ -248,28 +249,17 @@ local function pickup_equipment(it, name)
     if should_pickup_equip(cur, it) then return true end
 
   elseif class == "armour" then
-    local good_slots = {cloak="Cloak", helmet="Helmet",
-                        gloves="Gloves", boots="Boots"}
-    st, _ = it.subtype()
+    local sub_type = it.subtype()
 
-    -- Autopickup found aux armour if 1) we don't have any or 2) it's artefact,
-    -- or 3) if we don't have artefact or ego armour, and the found armour is
-    -- ego.
-    if good_slots[st] ~= nil then
-      if good_slots[st] == "Gloves" and you.has_claws() > 0 then return end
+    if sub_type == "gloves" and you.has_claws() > 0 then return end
 
+    local armor_slot = armour_slots[sub_type];
+
+    if armor_slot ~= nil then
       -- get currently equipped item in slot
-      local cur = items.equipped_at(good_slots[st])
+      local equipped_item = items.equipped_at(armor_slot)
 
-      if should_pickup_equip(cur, it) then return true end
-
-    -- Autopickup found body armour of the same kind we're wearing, according
-    -- to conditions (2) and (3) above used for aux slots.
-    elseif st == "body" then
-      -- get currently equipped item in slot
-      local cur = items.equipped_at("armour")
-
-      if should_pickup_equip(cur, it) then return true end
+      if should_pickup_equip(equipped_item, it) then return true end
     end
   end
 
