@@ -12,6 +12,14 @@
 ################################################################################################
 
 ##
+## Globals
+################################################################################################
+$PAUSE_MORE := PAUSE
+{
+  PAUSE_MORE = "PAUSE"
+}
+
+##
 ## Utils
 ################################################################################################
 {
@@ -117,7 +125,7 @@ function announce_damage()
           crawl.mpr("<red>You take " .. hp_difference .. " damage,</red><green> and have " .. current_hp .. "/" .. max_hp .. " hp.</green>")
         end
         if hp_difference > (max_hp * 0.20) then
-          crawl.mpr("<lightred>MASSIVE DAMAGE!!</lightred>")
+          crawl.mpr(string.format("<lightred>MASSIVE DAMAGE!! (%s)</lightred>", PAUSE_MORE))
         end
       end
 
