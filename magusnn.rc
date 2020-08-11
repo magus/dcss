@@ -47,6 +47,7 @@ end
 ## Setup
 ################################################################################################
 -- announce_damage
+-- TODO improve output styling and formatting
 {
 local previous_hp = 0
 local previous_mp = 0
