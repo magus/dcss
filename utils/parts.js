@@ -1,7 +1,9 @@
 function Header(header) {
-  return `##
+  return `
+##
 ## ${header}
-################################################################################################`;
+################################################################################################
+`.trim();
 }
 
 exports.Header = Header;
@@ -38,7 +40,7 @@ exports.RunRegex = function RunRegex(regex, output, replacer) {
 
     const fill = replacer(content);
 
-    output = output.replace(placeholder, fill);
+    output = output.replace(placeholder, fill.trim());
   }
 
   return output;
