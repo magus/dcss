@@ -1,0 +1,41 @@
+##Header magus.rc
+
+{{Globals.rc}}
+
+{{Utils.lua}}
+
+##Header BEGIN
+: rc_msg("Initializing magus.rc...")
+
+##Header Lua Setup
+{{AnnounceDamage.lua}}
+
+{{OpenSkills.lua}}
+
+{{PickupEquipment.lua}}
+
+{{TurnReady.lua}}
+
+##Header RC Options (http://crawl.akrasiac.org/docs/options_guide.txt)
+{{Travel.rc}}
+
+{{Interface.rc}}
+
+{{AutoInscribe.rc}}
+
+{{AutoPickup.rc}}
+
+{{ItemColors.rc}}
+
+{{ForceMorePrompts.rc}}
+
+{{Morgue.rc}}
+
+{{Messages.rc}}
+
+
+
+{{DEBUG.lua}}
+
+##Header END
+: rc_scs("Successfully initialized magus.rc!")

@@ -1,0 +1,178 @@
+## Menu & Item colors should match exactly when possible.
+## For menu_colour, the first match ignores subsequent matches.
+## For item_glyph, subsequent matches override previous ones.
+## Many of the entries below come from dat/defaults/menu_colours.txt,
+## which we have to duplicate here since we want only some of the
+## entries from that file.
+
+# Enable use of darkgrey
+bold_brightens_foreground=true
+
+# Set alias
+item := item_glyph
+menu := menu_colour
+
+# Clear default
+menu =
+
+menu += notes:white:Reached XP level
+
+### General Inventory ###
+
+## Reasonable defaults
+item += potion:lightgrey
+item += scroll:lightgrey
+item += wand:lightgrey
+item += dangerous_item:blue
+item += useless_item:darkgrey
+
+# Items currently not affecting you.
+menu += darkgrey:(melded)
+# Items disliked by your god.
+menu += red:forbidden
+# Useless items, comes here to override artefacts etc.
+menu += darkgrey:.*useless.*
+# Handle cursed and equipped items early to override other colour settings.
+menu += lightred:.*equipped.* cursed
+menu += red: (a|the) cursed
+menu += inventory:lightgreen:.*equipped.*
+# Colouring of autoinscribed god gifts
+menu += pickup:cyan:god gift
+# Highlight (partly) selected items
+menu += inventory:white:\w \+\s
+menu += inventory:white:\w \#\s
+
+### Food ###
+## Color chunks, put ordinary ones on lightgrey.
+
+menu += red:evil_eating.*chunk
+item += evil_eating.*chunk:red
+menu += blue:mutagenic.*chunk
+item += mutagenic.*chunk:blue
+menu += lightgrey:chunks?.*flesh
+item += chunks?.*flesh:lightgrey
+menu += green:( ration)
+item += ( ration):green
+
+### Potions ###
+
+menu += lightgrey:potions? of.*(flight|stabbing)
+item += potions? of.*(flight|stabbing):lightgrey
+menu += brown:potions? of.*berserk
+item += potions? of.*berserk:brown
+menu += yellow:potions? of.*might
+item += potions? of.*might:yellow
+menu += cyan:potions? of.*cancellation
+item += potions? of.*cancellation:cyan
+menu += blue:potions? of.*(lignification|ambrosia)
+item += potions? of.*(lignification|ambrosia):blue
+menu += lightred:potions? of.*experience
+item += potions? of.*experience:lightred
+menu += white:potions? of.*(heal wounds|curing)
+item += potions? of.*(heal wounds|curing):white
+menu += green:potions? of.*resistance
+item += potions? of.*resistance:green
+menu += lightgreen:potions? of.*(haste|invisibility)
+item += potions? of.*(haste|invisibility):lightgreen
+menu += lightcyan:potions? of.*mutation
+item += potions? of.*mutation:lightcyan
+menu += magenta:potions? of.*brilliance
+item += potions? of.*brilliance:magenta
+menu += lightmagenta:potions? of.*magic
+item += potions? of.*magic:lightmagenta
+
+### Scrolls ###
+
+: if you.race() == "Vampire" or you.race() == "Mummy" or you.race() == "Ghoul" then
+  menu += darkgrey:scroll.*holy word
+  item += scroll.*holy word:darkgrey
+  menu += brown:scroll.*torment
+  item += scroll.*torment:brown
+: else
+  menu += brown:scroll.*holy word
+  item += scroll.*holy word:brown
+  menu += darkgrey:scroll.*torment
+  item += scroll.*torment:darkgrey
+: end
+menu += white:scroll.*acquirement
+item += scroll.*acquirement:white
+menu += yellow:scroll.*(summoning)
+item += scroll.*(summoning):yellow
+menu += cyan:scroll.*identify
+item += scroll.*identify:cyan
+menu += lightcyan:scroll.*magic mapping
+item += scroll.*magic mapping:lightcyan
+menu += blue:scroll.*(noise|silence|vulnerability|immolation)
+item += scroll.*(noise|silence|vulnerability|immolation):blue
+menu += lightgrey:scroll.*remove curse
+item += scroll.*remove curse:lightgrey
+menu += green:scroll.*(fog|teleport)
+item += scroll.*(fog|teleport):green
+menu += lightgreen:scroll.*(fear|blink)
+item += scroll.*(fear|blink):lightgreen
+menu += lightmagenta:scroll.*(enchant|brand weapon)
+item += scroll.*(enchant|brand weapon):lightmagenta
+
+### Wands ###
+
+# Sometimes can be dangerous or harmful
+menu += blue:wand of.*random effects
+item += wand of.*random effects:blue
+
+# Single target piercing
+menu += brown:wand of.*lightning
+item += wand of.*lightning:brown
+menu += yellow:wand of.*acid
+item += wand of.*acid:yellow
+
+menu += lightgrey:wand of.*flame
+item += wand of.*flame:lightgrey
+menu += white:wand of.*clouds
+item += wand of.*clouds:white
+
+menu += green:wand of.*digging
+item += wand of.*digging:green
+
+# Single-turn AOE
+menu += cyan:wand of.*iceblast
+item += wand of.*iceblast:cyan
+menu += lightcyan:wand of.*scattershot
+item += wand of.*scattershot:lightcyan
+
+# MR-checking
+menu += magenta:wand of.*(disintegration|confusion|polymorph)
+item += wand of.*(disintegration|confusion|polymorph):magenta
+menu += lightmagenta:wand of.*(paralysis|enslavement)
+item += wand of.*(paralysis|enslavement):lightmagenta
+
+### General identification ###
+
+menu += cyan:manual of
+item += manual of:cyan
+menu += lightcyan:manual
+item += manual:lightcyan
+menu += lightblue:unidentified .*(potion|scroll|wand|jewellery|book|rod|magical staff)
+item += unidentified.*(potion|scroll|wand|jewellery|book|rod|magical staff).*:lightblue
+
+### Gear ###
+
+menu += magenta:.*known .*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection)
+item += known.*(ring of (dexterity|strength|intelligence|slaying|evasion|protection(?! from))|amulet of reflection):magenta
+
+menu += inventory:lightgray:.*(book|jewellery|magical staff)
+item += (identified|known).*(book|jewellery|magical staff):lightgray
+
+menu += lightmagenta:unidentified.*artefact.*
+item += unidentified.*artefact.*(jewellery).*:lightmagenta
+menu += white:.*artefact.*
+item += identified.*artefact.*(jewellery):white
+
+# Ego items
+menu += lightblue:unidentified.*weapon.*(runed|glowing|enchanted)
+menu += lightblue:unidentified.*armour.*(runed|glowing|embroidered|shiny|dyed)
+
+# Want this to override anything above
+item += (a )?stones?$:lightgray
+item += useless:darkgrey
+# Only mark these types when forbidden; for other types it looks odd.
+item += forbidden.*(potion|scroll|food):red

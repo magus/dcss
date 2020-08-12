@@ -1,0 +1,4 @@
+$PAUSE_MORE := PAUSE
+{
+  PAUSE_MORE = "PAUSE"
+}

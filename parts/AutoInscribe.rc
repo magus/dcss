@@ -1,0 +1,57 @@
+show_god_gift = unident
+
+ai := autoinscribe
+
+ai += (bad|dangerous)_item.*potion:!q
+ai += (bad|dangerous)_item.*scroll:!r
+ai += potions? of berserk rage:!q
+ai += scrolls? of (blinking|immolation|magic mapping|silence|vulnerability):!r
+
+ai += of faith:!P
+ai += manual of:!d
+
+# Inscribe distortion weapons if you are not worshipping Lugonu
+: if you.god() ~= "Lugonu" then
+ai += distortion:!w
+ai += (Sonja|Psyche):!w
+: end
+
+# Prevent melee with all staves;
+# If we want to melee with one, it's safe to require removing the annotation.
+ai += magical staff:!a
+
+# Prevent auto quivering and cycling ammo
+ai += (large rock|throwing net|curare|of dispersal):=f
+
+# Convenient shortcuts
+ai += curing:@q1
+ai += potions? of heal wounds:@q2
+ai += potions? of haste:@q3
+ai += scrolls? of teleportation:@r4
+ai += identify:@r1
+ai += remove curse:@r2
+ai += chunks of flesh:@e1
+ai += ration:@e2
+
+# Automated inscription for sorting armor & weapons
+# e.g. `mace` to find any mace
+ai += (dagger|quick blade|short sword|rapier):short
+ai += (falchion|long sword|scimitar|demon blade|eudemon blade|double sword|great sword|triple sword):long
+ai += (hand axe|war axe|broad axe|battleaxe|executioner's axe):axe
+ai += (whip|club|mace|flail|morningstar|demon whip|sacred scourge|dire flail|eveningstar|great mace|giant club|giant spiked club):mace
+ai += (spear|trident|halberd|scythe|demon trident|trishula|glaive|bardiche):polearm
+ai += (staff|quarterstaff|lajatang):staff
+ai += (dart|throwing net|stone|boomerang|javelin|large rock):throwing
+ai += (hunting sling|fustibalus):sling
+ai += (shortbow|longbow):bow
+ai += (hand crossbow|arbalest|triple crossbow):crossbow
+
+
+# Rare items
+ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare
+ai += (storm dragon hide|storm dragon armour|pearl dragon|gold dragon|crystal plate):rare
+
+
+# Always automatically pickup
+ai += curare:=g
+ai += dragon scale:=g

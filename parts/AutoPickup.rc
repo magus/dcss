@@ -1,0 +1,52 @@
+: if you.race() == "Mummy" then
+autopickup = /?"+|0}$
+: else
+autopickup = /%?"!+|0}$
+: end
+# )       Weapons
+# (       Missiles
+# [       Armour
+# /       Wands
+# %       Food
+# ?       Scrolls
+# " or =  Jewellery
+# !       Potions
+# + or :  Books
+# |       Staves
+# 0       Orbs
+# }       Misc. items
+# $       Gold
+# Note that _whether_ items are picked up automatically or not, is
+# controlled by the in-game toggle Ctrl-A. Also note that picking
+# up takes a turn, but only one turn (regardless of the number of
+# items). If you teleport or blink onto a square with interesting
+# items, these will not be picked up.
+
+ae := autopickup_exceptions
+
+# Reset all autopickup exceptions
+ae =
+
+ae += <javelin
+ae += <throwing net
+: if you.race() == "Troll" then
+ae += <large rock
+: end
+
+
+: if you.race() == "Vampire" or you.race() == "Mummy" or you.race() == "Ghoul" then
+ae += <scrolls? of (holy word|tormet)
+: else
+ae += >scrolls? of (holy word|tormet)
+:end
+
+ae += <scrolls? of (vulnerability|immolation)
+ae += >scrolls? of (amnesia|noise|random uselessness)
+
+ae += <potions? of (mutation|lignification)
+ae += >potions? of (degeneration|stabbing)
+
+ae += <(tins of tremorstones)
+
+# Pickup runes but not 'runed' anything
+ae += <rune(s)?[^d]

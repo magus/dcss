@@ -1,0 +1,21 @@
+# hp and mp bar coloring
+view_delay = 300
+hp_colour = 100:lightgreen, 99:lightgray, 75:yellow, 50:lightred, 25:red
+mp_colour = 100:cyan, 99:lightgray, 75:yellow, 50:lightred, 25:red
+hp_warning = 50
+
+# monster colors
+monster_list_colour =
+monster_list_colour += friendly:green,neutral:brown
+monster_list_colour += good_neutral:brown,strict_neutral:brown
+monster_list_colour += trivial:darkgrey,easy:lightgrey
+monster_list_colour += tough:yellow,nasty:lightred
+
+# new characters start with manual skill (instead of automatic)
+default_manual_training = true
+# Unequip already equipped items by selecting in equip menus (i.e. w, W, P)
+equip_unequip = true
+# Cannot target self with risky magic
+allow_self_target = no
+# mini map size, [X] pixels per tile
+tile_map_pixels = 8

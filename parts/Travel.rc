@@ -1,0 +1,16 @@
+autofight_stop = 75
+autofight_caught = true
+travel_avoid_terrain = deep water
+
+# Set to -1 for instant-travel, set to 1 to see travel paths
+travel_delay = -1
+explore_delay = 1
+
+# Adjusts how much autoexplore favours attempting to discover room perimeters and corners.
+# At higher values, autoexplore will more heavily favour visiting squares that are next to walls;
+# at 0 it will not favour them at all.
+explore_wall_bias = 3
+
+# auto explore stop defaults
+explore_stop  = stairs,shops,altars,portals,branches,runed_doors,runes
+explore_stop += artefacts,glowing_items,greedy_pickup_smart,greedy_visited_item_stack

@@ -1,0 +1,31 @@
+dump_item_origins = all
+dump_message_count = 100
+dump_order  = header,hiscore,stats,misc,mutations,skills,spells,inventory
+dump_order += overview,screenshot,monlist,messages,skill_gains,action_counts
+dump_order += vaults,notes,kills,xp_by_level,skill_gains,action_counts,screenshots,kills_by_place,turns_by_place
+
+note_hp_percent = 25
+note_all_skill_levels = true
+note_chat_messages = false
+user_note_prefix = >>
+
+note_items += artefact
+note_items += experience,of Zot,acquirement,Archmagi
+note_items += crystal plate armour,pearl dragon scales,gold dragon scales
+
+note_messages += You feel monstrous
+note_messages += You pass through the gate
+note_messages += [bB]anish.*Abyss
+note_messages += cast .* Abyss
+note_messages += protects you from harm
+note_messages += You fall through a shaft
+
+# Noteable monsters
+# Undead
+note_monsters += ancient lich,curse skull,curse toe,greater mummy
+# Depths
+note_monsters += caustic shrike
+# Special hall_of_zot spawns
+note_monsters += killer klown,electric golem,orb of fire
+# Other
+note_monsters += silver star,pearl dragon
