@@ -9,8 +9,6 @@ const OUTPUT_FILENAME = "output/magus.rc";
 execSync(`rm -rf $(dirname ${OUTPUT_FILENAME})`);
 execSync(`mkdir -p $(dirname ${OUTPUT_FILENAME})`);
 
-console.info(`Hydrating ${TEMPLATE_FILENAME} parts...`);
-
 let OUTPUT_RC = FSUtils.read(TEMPLATE_FILENAME);
 
 // Replace `##Header Content` with a formatted header containing "Content"
@@ -26,6 +24,9 @@ OUTPUT_RC = PartsUtils.RunRegex(/{{(.*)}}/g, OUTPUT_RC, (filename) => {
   );
 });
 
-console.info("All parts successfully hydrated.");
-
 FSUtils.write(OUTPUT_FILENAME, OUTPUT_RC);
+
+// Copy content to clipboard
+execSync(`cat ${OUTPUT_FILENAME} | pbcopy`);
+
+console.info(`🤖 Generated ${OUTPUT_FILENAME} copied to clipboard! 📋`);
