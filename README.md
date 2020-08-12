@@ -11,10 +11,6 @@ yarn compile
 - Prettier format for `AnnounceDamage.lua`
   - `[HP(+X)/MHP][MP(+X)/MMP]`
 
-- Automatic RC updating
-  - ...can we see what endpoint the app is calling when we save the rc on web tiles?
-  - maybe we can programmatically update the rc as we make edits so that we don't have to edit files, build, open web app, copy paste, save, etc.
-
 
 ## FAQ
 ### How to lookup a players RC file?
