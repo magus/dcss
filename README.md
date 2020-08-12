@@ -6,7 +6,12 @@ rc for dcss
 ## TODO
 
 - Format `announce_damage`
-- `[HP(+X)/MHP][MP(+X)/MMP]`
+  - `[HP(+X)/MHP][MP(+X)/MMP]`
+
+- Automatic RC update
+  - ...can we see what endpoint the app is calling when we save the rc on web tiles?
+  - maybe we can programmatically update the rc as we make edits so that we don't have to edit files, build, open web app, copy paste, save, etc.
+
 
 ### How to lookup a players RC file?
 > http://crawl.akrasiac.org/rcfiles/crawl-0.25/magusnn.rc
