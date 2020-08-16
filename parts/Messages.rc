@@ -2640,20 +2640,20 @@ msc += $interface:Saving macro
 msc += $interface:you cannot use those schools of magic
 
 # Muted - unnecessary
-msc += mute:The (bush|fungus|plant) is engulfed
-msc += mute:The (bush|fungus|plant) is struck by lightning
-msc += mute:Cast which spell
-msc += mute:Use which ability
-msc += mute:Evoke which item
-msc += mute:Confirm with
-msc += mute:(Casting|Aiming|Zapping)\:
-msc += mute:Throwing.*\:
-msc += mute:You can\'t see any susceptible monsters within range
-msc += mute:Press\: \? \- help, Shift\-Dir \- straight line, f \- you
-msc += mute:for a list of commands and other information
-msc += mute:Firing \(i
-msc += mute:Fire\/throw which item\?
-msc += mute:You swap places
+# msc += mute:The (bush|fungus|plant) is engulfed
+# msc += mute:The (bush|fungus|plant) is struck by lightning
+# msc += mute:Cast which spell
+# msc += mute:Use which ability
+# msc += mute:Evoke which item
+# msc += mute:Confirm with
+# msc += mute:(Casting|Aiming|Zapping)\:
+# msc += mute:Throwing.*\:
+# msc += mute:You can\'t see any susceptible monsters within range
+# msc += mute:Press\: \? \- help, Shift\-Dir \- straight line, f \- you
+# msc += mute:for a list of commands and other information
+# msc += mute:Firing \(i
+# msc += mute:Fire\/throw which item\?
+# msc += mute:You swap places
 
 msc ^= mute:is lightly (damaged|wounded)
 msc ^= mute:is moderately (damaged|wounded)
@@ -2661,47 +2661,47 @@ msc ^= mute:is heavily (damaged|wounded)
 msc ^= mute:is severely (damaged|wounded)
 msc ^= mute:is almost (dead|destroyed)
 
-msc += mute:Was it this warm in here before
-msc += mute:The flames dance
-msc += mute:Your shadow attacks
-msc += mute:Marking area around
-msc += mute:Placed new exclusion
-msc += mute:Reduced exclusion size to a single square
-msc += mute:Removed exclusion
-msc += mute:You can access your shopping list by pressing
-msc += mute:for starvation awaits
-msc += mute:As you enter the labyrinth
-msc += mute:previously moving walls settle noisily into place
-msc += mute:You offer a prayer to Elyvilon
-msc += mute:You offer a prayer to Nemelex Xobeh
-msc += mute:You offer a prayer to Okawaru
-msc += mute:You offer a prayer to Makhleb
-msc ^= mute:You offer a prayer to Lugonu
-msc += mute:Lugonu accepts your kill
-msc += mute:Okawaru is noncommittal
-msc += mute:Nemelex Xobeh is (noncommittal|pleased)
-msc += mute:The plant looks sick
-msc += mute:You start butchering
-msc += mute:You continue butchering
-msc += mute:This raw flesh tastes terrible
+# msc += mute:Was it this warm in here before
+# msc += mute:The flames dance
+# msc += mute:Your shadow attacks
+# msc += mute:Marking area around
+# msc += mute:Placed new exclusion
+# msc += mute:Reduced exclusion size to a single square
+# msc += mute:Removed exclusion
+# msc += mute:You can access your shopping list by pressing
+# msc += mute:for starvation awaits
+# msc += mute:As you enter the labyrinth
+# msc += mute:previously moving walls settle noisily into place
+# msc += mute:You offer a prayer to Elyvilon
+# msc += mute:You offer a prayer to Nemelex Xobeh
+# msc += mute:You offer a prayer to Okawaru
+# msc += mute:You offer a prayer to Makhleb
+# msc ^= mute:You offer a prayer to Lugonu
+# msc += mute:Lugonu accepts your kill
+# msc += mute:Okawaru is noncommittal
+# msc += mute:Nemelex Xobeh is (noncommittal|pleased)
+# msc += mute:The plant looks sick
+# msc += mute:You start butchering
+# msc += mute:You continue butchering
+# msc += mute:This raw flesh tastes terrible
 
-: if string.find(you.god(), "Jiyva") then
-  msc += mute:You hear a.*slurping noise
-  msc += mute:You hear a.*squelching noise
-  msc += mute:You feel a little less hungry
-: end
+# : if string.find(you.god(), "Jiyva") then
+#   msc += mute:You hear a.*slurping noise
+#   msc += mute:You hear a.*squelching noise
+#   msc += mute:You feel a little less hungry
+# : end
 
---These don't seem to work, maybe a bug?
-msc ^= boring:disappears without a glow
-msc ^= boring:disappears without a sign
-msc ^= boring:disappears into the void
-msc ^= boring:glow with a rainbow of weird colours and disappear
-msc ^= boring:glows slightly and disappears
-msc ^= boring:is slowly consumed by flames
-msc ^= boring:slowly burns to ash
-msc ^= boring:slowly crumbles into the ground
-msc ^= boring:shimmers? and breaks? into pieces
-msc ^= boring:stares at you suspiciously for a moment
-msc += boring:trembles before you
-msc += boring:You feel mildly nauseous
-msc += boring:Multicoloured lights dance around
+# --These don't seem to work, maybe a bug?
+# msc ^= boring:disappears without a glow
+# msc ^= boring:disappears without a sign
+# msc ^= boring:disappears into the void
+# msc ^= boring:glow with a rainbow of weird colours and disappear
+# msc ^= boring:glows slightly and disappears
+# msc ^= boring:is slowly consumed by flames
+# msc ^= boring:slowly burns to ash
+# msc ^= boring:slowly crumbles into the ground
+# msc ^= boring:shimmers? and breaks? into pieces
+# msc ^= boring:stares at you suspiciously for a moment
+# msc += boring:trembles before you
+# msc += boring:You feel mildly nauseous
+# msc += boring:Multicoloured lights dance around
