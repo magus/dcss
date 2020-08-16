@@ -8,8 +8,7 @@ yarn compile
 ```
 
 ## Coming Soon...
-- Prettier format for `AnnounceDamage.lua`
-  - `[HP(+X)/MHP][MP(+X)/MMP]`
+- 
 
 
 ## FAQ
