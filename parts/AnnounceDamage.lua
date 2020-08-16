@@ -107,7 +107,7 @@ function simple_announce_damage(curr_hp, max_hp, hp_diff, mp_diff)
       emoji = "😨"
     elseif curr_hp <= (max_hp *  0.75) then
       emoji = "😮"
-    elseif curr_hp <= (max_hp * 0.95) then
+    elseif curr_hp < max_hp then
       emoji = "😕"
     else
       emoji = "😎"
