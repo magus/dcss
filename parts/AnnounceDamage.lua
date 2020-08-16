@@ -1,33 +1,71 @@
 local Messages = {
   ["HPSimple"] = function(delta)
-    return string.format("<white>HP[%s]</white>", delta_color(0 - delta))
+    return withColor(COLORS.white,
+      string.format("HP[%s]", delta_color(0 - delta))
+    )
   end,
   ["HPMax"] = function (color, hp, hpm, delta)
-    crawl.mpr(string.format("<lightgreen>You now have %s max hp (%s).</lightgreen>", hpm, delta_color(delta)))
+    crawl.mpr(
+      withColor(COLORS.lightgreen,
+        string.format("You now have %s max hp (%s).", hpm, delta_color(delta))
+      )
+    )
   end,
   ["HPLoss"] = function (color, hp, hpm, loss)
-    crawl.mpr(string.format("<red>You take %s damage, </red><%s>and have %s/%s hp.</%s>", loss, color, hp, hpm, color))
+    crawl.mpr(
+      string.format("%s%s",
+        withColor(COLORS.red, string.format("You take %s damage,", loss)),
+        withColor(color, string.format(" and now have %s/%s hp.", hp, hpm))
+      )
+    )
   end,
   ["HPGain"] = function (color, hp, hpm, gain)
-    crawl.mpr(string.format("<lightgreen>You regained %s hp, </lightgreen><%s>and now have %s/%s hp.</%s>", gain, color, hp, hpm, color))
+    crawl.mpr(
+      string.format("%s%s",
+        withColor(COLORS.lightgreen, string.format("You regained %s hp,", gain)),
+        withColor(color, string.format(" and now have %s/%s hp.", hp, hpm))
+      )
+    )
   end,
   ["HPFull"] = function (color, hp)
-    crawl.mpr(string.format("<lightgreen>Your hp is fully restored (%s).</lightgreen>", hp))
+    crawl.mpr(
+      withColor(COLORS.lightgreen,
+        string.format("Your hp is fully restored (%s).", hp)
+      )
+    )
   end,
   ["HPMassivePause"] = function ()
-    crawl.mpr(string.format("<lightred>MASSIVE DAMAGE!! (%s)</lightred>", PAUSE_MORE))
+    crawl.mpr(
+      withColor(COLORS.lightred,
+        string.format("MASSIVE DAMAGE!! (%s)", PAUSE_MORE)
+      )
+    )
   end,
   ["MPSimple"] = function(delta)
-    return string.format("<white>MP[%s]</white>", delta_color(0 - delta))
+    return withColor(COLORS.white,
+      string.format("MP[%s]", delta_color(0 - delta))
+    )
   end,
   ["MPLoss"] = function (color, mp, mpm, loss)
-    crawl.mpr(string.format("<cyan>You lost %s mp, </cyan><%s>and have %s/%s mp.</%s>", loss, color, mp, mpm, color))
+    crawl.mpr(
+      string.format("%s%s",
+        withColor(COLORS.cyan, string.format("You lost %s mp,", loss)),
+        withColor(color, string.format(" <%s>and now have %s/%s mp.</%s>", mp, mpm))
+      )
+    )
   end,
   ["MPGain"] = function (color, mp, mpm, gain)
-    crawl.mpr(string.format("<cyan>You regained %s mp, </cyan><%s>and now have %s/%s mp.</%s>", gain, color, mp, mpm, color))
+    crawl.mpr(
+      string.format("%s%s",
+        withColor(COLORS.cyan, string.format("You regained %s mp,", gain)),
+        withColor(color, string.format(" and now have %s/%s mp.", mp, mpm))
+      )
+    )
   end,
-  ["MPFull"] = function (color, hp)
-    crawl.mpr(string.format("<cyan>Your mp is fully restored (%s).</cyan>", hp))
+  ["MPFull"] = function (color, mp)
+    crawl.mpr(
+      withColor(COLORS.cyan, string.format("Your mp is fully restored (%s).", mp))
+    )
   end,
 [""]=""}
 
@@ -37,14 +75,14 @@ local prev_mp = 0
 local prev_mp_max = 0
 
 function delta_color(delta)
-  local color = delta < 0 and "red" or "green"
+  local color = delta < 0 and COLORS.red or COLORS.green
   local signDelta = delta < 0 and delta or "+"..delta
   return string.format("<%s>%s</%s>", color, signDelta, color)
 end
 
 -- Simplified condensed HP and MP output
 -- Print a single condensed line showing HP & MP change
--- e.g.😨 HP[-2] MP[-1] 
+-- e.g.😨 HP[-2] MP[-1]
 function simple_announce_damage(curr_hp, max_hp, hp_diff, mp_diff)
   local emoji = ""
   local message = nil
@@ -82,13 +120,13 @@ end
 -- Try to sync with colors defined in Interface.rc
 function color_by_max(message_func, curr, max, diff)
   if curr <= (max * 0.25) then
-    message_func("red", curr, max, diff)
+    message_func(COLORS.red, curr, max, diff)
   elseif curr <= (max * 0.50) then
-    message_func("lightred", curr, max, diff)
+    message_func(COLORS.lightred, curr, max, diff)
   elseif curr <= (max *  0.75) then
-    message_func("yellow", curr, max, diff)
+    message_func(COLORS.yellow, curr, max, diff)
   else
-    message_func("lightgrey", curr, max, diff)
+    message_func(COLORS.lightgrey, curr, max, diff)
   end
 end
 
@@ -102,7 +140,7 @@ function announce_damage()
 
   local curr_hp, max_hp = you.hp()
   local curr_mp, max_mp = you.mp()
-  
+
   --Skips message on initializing game
   if prev_hp > 0 then
     local hp_diff = prev_hp - curr_hp
@@ -115,9 +153,9 @@ function announce_damage()
 
     -- HP Max
     if max_hp_diff > 0 then
-      Messages.HPMax("green", curr_hp, max_hp, max_hp_diff)
+      Messages.HPMax(COLORS.green, curr_hp, max_hp, max_hp_diff)
     elseif max_hp_diff < 0 then
-      Messages.HPMax("yellow", curr_hp, max_hp, max_hp_diff)
+      Messages.HPMax(COLORS.yellow, curr_hp, max_hp, max_hp_diff)
     end
 
     -- HP Loss
@@ -136,7 +174,7 @@ function announce_damage()
     if (hp_diff < 0) then
       -- Remove the negative sign by taking absolute value
       local hp_gain = math.abs(hp_diff)
-      
+
       if (hp_gain > 1) and not (curr_hp == max_hp) then
         color_by_max(Messages.HPGain, curr_hp, max_hp, hp_gain)
       end
@@ -167,7 +205,7 @@ function announce_damage()
     if (mp_diff > 0 and mp_diff > math.abs(max_mp_diff)) then
       color_by_max(Messages.MPLoss, curr_mp, max_mp, mp_diff)
     end
-  
+
   end
 
   --Set previous hp/mp and form at end of turn
