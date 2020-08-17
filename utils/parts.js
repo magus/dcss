@@ -12,13 +12,18 @@ exports.Header = Header;
 
 const EXTENSION_REGEX = /\.(.*)$/;
 
-exports.ContentFormatter = function ContentFormatter(filename, content) {
+exports.ContentFormatter = function ContentFormatter(
+  filename,
+  content,
+  minifyLua = false
+) {
   const [, ext] = filename.match(EXTENSION_REGEX);
   let formattedContent;
   switch (ext) {
     // lua content must be wrapped in braces
     case "lua":
-      formattedContent = `{\n${luamin.minify(content)}\n}`;
+      const luaContent = minifyLua ? luamin.minify(content) + "\n" : content;
+      formattedContent = `{\n${luaContent}}`;
       break;
     // default and rc files just insert plain text
     case "rc":
