@@ -50,7 +50,7 @@ local Messages = {
     crawl.mpr(
       string.format("%s%s",
         withColor(COLORS.cyan, string.format("You lost %s mp,", loss)),
-        withColor(color, string.format(" <%s>and now have %s/%s mp.</%s>", mp, mpm))
+        withColor(color, string.format(" and now have %s/%s mp.", mp, mpm))
       )
     )
   end,
