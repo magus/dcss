@@ -35,22 +35,7 @@ $PAUSE_MORE := PAUSE
 ## Utils.lua
 ################################################################################################
 {
-function withColor(color, str)
-  return string.format("<%s>%s</%s>", color, str, color)
-end
-
-function rc_out(symbol, color, msg)
-  crawl.mpr(string.format("\n>> %s <%s>%s</%s>", symbol, color, msg, color))
-end
-function rc_msg(msg)
-  rc_out("🤖", "blue", msg)
-end
-function rc_scs(msg)
-  rc_out("✅", "green", msg)
-end
-function rc_err(msg)
-  rc_out("❌", "lightred", msg)
-end
+function withColor(a,b)return string.format("<%s>%s</%s>",a,b,a)end;function rc_out(c,a,d)crawl.mpr(string.format("\n>> %s <%s>%s</%s>",c,a,d,a))end;function rc_msg(d)rc_out("🤖","blue",d)end;function rc_scs(d)rc_out("✅","green",d)end;function rc_err(d)rc_out("❌","lightred",d)end
 }
 
 ##
@@ -65,327 +50,28 @@ end
 ## AnnounceDamage.lua
 ################################################################################################
 {
-local Messages = {
-  ["HPSimple"] = function(delta)
-    return withColor(COLORS.white,
-      string.format("HP[%s]", delta_color(0 - delta))
-    )
-  end,
-  ["HPMax"] = function (color, hp, hpm, delta)
-    crawl.mpr(
-      withColor(COLORS.lightgreen,
-        string.format("You now have %s max hp (%s).", hpm, delta_color(delta))
-      )
-    )
-  end,
-  ["HPLoss"] = function (color, hp, hpm, loss)
-    crawl.mpr(
-      string.format("%s%s",
-        withColor(COLORS.red, string.format("You take %s damage,", loss)),
-        withColor(color, string.format(" and now have %s/%s hp.", hp, hpm))
-      )
-    )
-  end,
-  ["HPGain"] = function (color, hp, hpm, gain)
-    crawl.mpr(
-      string.format("%s%s",
-        withColor(COLORS.lightgreen, string.format("You regained %s hp,", gain)),
-        withColor(color, string.format(" and now have %s/%s hp.", hp, hpm))
-      )
-    )
-  end,
-  ["HPFull"] = function (color, hp)
-    crawl.mpr(
-      withColor(COLORS.lightgreen,
-        string.format("Your hp is fully restored (%s).", hp)
-      )
-    )
-  end,
-  ["HPMassivePause"] = function ()
-    crawl.mpr(
-      withColor(COLORS.lightred,
-        string.format("MASSIVE DAMAGE!! (%s)", PAUSE_MORE)
-      )
-    )
-  end,
-  ["MPSimple"] = function(delta)
-    return withColor(COLORS.white,
-      string.format("MP[%s]", delta_color(0 - delta))
-    )
-  end,
-  ["MPLoss"] = function (color, mp, mpm, loss)
-    crawl.mpr(
-      string.format("%s%s",
-        withColor(COLORS.cyan, string.format("You lost %s mp,", loss)),
-        withColor(color, string.format(" <%s>and now have %s/%s mp.</%s>", mp, mpm))
-      )
-    )
-  end,
-  ["MPGain"] = function (color, mp, mpm, gain)
-    crawl.mpr(
-      string.format("%s%s",
-        withColor(COLORS.cyan, string.format("You regained %s mp,", gain)),
-        withColor(color, string.format(" and now have %s/%s mp.", mp, mpm))
-      )
-    )
-  end,
-  ["MPFull"] = function (color, mp)
-    crawl.mpr(
-      withColor(COLORS.cyan, string.format("Your mp is fully restored (%s).", mp))
-    )
-  end,
-[""]=""}
-
-local prev_hp = 0
-local prev_hp_max = 0
-local prev_mp = 0
-local prev_mp_max = 0
-
-function delta_color(delta)
-  local color = delta < 0 and COLORS.red or COLORS.green
-  local signDelta = delta < 0 and delta or "+"..delta
-  return string.format("<%s>%s</%s>", color, signDelta, color)
-end
-
--- Simplified condensed HP and MP output
--- Print a single condensed line showing HP & MP change
--- e.g.😨 HP[-2] MP[-1]
-function simple_announce_damage(curr_hp, max_hp, hp_diff, mp_diff)
-  local emoji = ""
-  local message = nil
-
-  -- MP[-1]
-  if hp_diff == 0 and mp_diff ~= 0 then
-    message = Messages.MPSimple(mp_diff)
-  -- HP[-2]
-  elseif hp_diff ~= 0 and mp_diff == 0 then
-    message = Messages.HPSimple(hp_diff)
-  -- HP[-2] MP[-1]
-  elseif hp_diff ~= 0 and mp_diff ~= 0 then
-    message = string.format("%s %s", Messages.HPSimple(hp_diff), Messages.MPSimple(mp_diff))
-  else
-    -- No changes
-  end
-
-  if message ~= nil then
-    if curr_hp <= (max_hp * 0.25) then
-      emoji = "😱"
-    elseif curr_hp <= (max_hp * 0.50) then
-      emoji = "😨"
-    elseif curr_hp <= (max_hp *  0.75) then
-      emoji = "😮"
-    elseif curr_hp < max_hp then
-      emoji = "😕"
-    else
-      emoji = "😎"
-    end
-
-    crawl.mpr(string.format("\n%s %s", emoji, message))
-  end
-end
-
--- Try to sync with colors defined in Interface.rc
-function color_by_max(message_func, curr, max, diff)
-  if curr <= (max * 0.25) then
-    message_func(COLORS.red, curr, max, diff)
-  elseif curr <= (max * 0.50) then
-    message_func(COLORS.lightred, curr, max, diff)
-  elseif curr <= (max *  0.75) then
-    message_func(COLORS.yellow, curr, max, diff)
-  else
-    message_func(COLORS.lightgrey, curr, max, diff)
-  end
-end
-
-function announce_damage()
-  -- TODO Define Colors.Red, Colors.Green, etc.
-
-  -- TODO Move current/previous into array pair
-  -- Save previous as last_hp
-  -- Shift current into previous
-  -- Early return if last_hp was == 0
-
-  local curr_hp, max_hp = you.hp()
-  local curr_mp, max_mp = you.mp()
-
-  --Skips message on initializing game
-  if prev_hp > 0 then
-    local hp_diff = prev_hp - curr_hp
-    local max_hp_diff = max_hp - prev_hp_max
-    local mp_diff = prev_mp - curr_mp
-    local max_mp_diff = max_mp - prev_mp_max
-
-    -- Simplified condensed HP and MP output
-    simple_announce_damage(curr_hp, max_hp, hp_diff, mp_diff)
-
-    -- HP Max
-    if max_hp_diff > 0 then
-      Messages.HPMax(COLORS.green, curr_hp, max_hp, max_hp_diff)
-    elseif max_hp_diff < 0 then
-      Messages.HPMax(COLORS.yellow, curr_hp, max_hp, max_hp_diff)
-    end
-
-    -- HP Loss
-    -- Ensure we lost MORE than the change in max hp
-    -- i.e. a change in max hp should not be considered damage
-    if (hp_diff > 0 and hp_diff > math.abs(max_hp_diff)) then
-      color_by_max(Messages.HPLoss, curr_hp, max_hp, hp_diff)
-
-      if hp_diff > (max_hp * 0.20) then
-        Messages.HPMassivePause()
-      end
-    end
-
-    -- HP Gain
-    -- More than 1 HP gained
-    if (hp_diff < 0) then
-      -- Remove the negative sign by taking absolute value
-      local hp_gain = math.abs(hp_diff)
-
-      if (hp_gain > 1) and not (curr_hp == max_hp) then
-        color_by_max(Messages.HPGain, curr_hp, max_hp, hp_gain)
-      end
-
-      if (curr_hp == max_hp) then
-        Messages.HPFull(nil, curr_hp)
-      end
-    end
-
-    -- MP Gain
-    -- More than 1 MP gained
-    if (mp_diff < 0) then
-      -- Remove the negative sign by taking absolute value
-      local mp_gain = math.abs(mp_diff)
-
-      if (mp_gain > 1) and not (curr_mp == max_mp) then
-        color_by_max(Messages.MPGain, curr_mp, max_mp, mp_gain)
-      end
-
-      if (curr_mp == max_mp) then
-        Messages.MPFull(nil, curr_mp)
-      end
-    end
-
-    -- MP Loss
-    -- Ensure we lost MORE than the change in max mp
-    -- i.e. a change in max mp should not be considered loss
-    if (mp_diff > 0 and mp_diff > math.abs(max_mp_diff)) then
-      color_by_max(Messages.MPLoss, curr_mp, max_mp, mp_diff)
-    end
-
-  end
-
-  --Set previous hp/mp and form at end of turn
-  prev_hp = curr_hp
-  prev_hp_max = max_hp
-  prev_mp = curr_mp
-  prev_mp_max = max_mp
-end
+local a={["HPSimple"]=function(b)return withColor(COLORS.white,string.format("HP[%s]",delta_color(0-b)))end,["HPMax"]=function(c,d,e,b)crawl.mpr(withColor(COLORS.lightgreen,string.format("You now have %s max hp (%s).",e,delta_color(b))))end,["HPLoss"]=function(c,d,e,f)crawl.mpr(string.format("%s%s",withColor(COLORS.red,string.format("You take %s damage,",f)),withColor(c,string.format(" and now have %s/%s hp.",d,e))))end,["HPGain"]=function(c,d,e,g)crawl.mpr(string.format("%s%s",withColor(COLORS.lightgreen,string.format("You regained %s hp,",g)),withColor(c,string.format(" and now have %s/%s hp.",d,e))))end,["HPFull"]=function(c,d)crawl.mpr(withColor(COLORS.lightgreen,string.format("Your hp is fully restored (%s).",d)))end,["HPMassivePause"]=function()crawl.mpr(withColor(COLORS.lightred,string.format("MASSIVE DAMAGE!! (%s)",PAUSE_MORE)))end,["MPSimple"]=function(b)return withColor(COLORS.white,string.format("MP[%s]",delta_color(0-b)))end,["MPLoss"]=function(c,h,i,f)crawl.mpr(string.format("%s%s",withColor(COLORS.cyan,string.format("You lost %s mp,",f)),withColor(c,string.format(" <%s>and now have %s/%s mp.</%s>",h,i))))end,["MPGain"]=function(c,h,i,g)crawl.mpr(string.format("%s%s",withColor(COLORS.cyan,string.format("You regained %s mp,",g)),withColor(c,string.format(" and now have %s/%s mp.",h,i))))end,["MPFull"]=function(c,h)crawl.mpr(withColor(COLORS.cyan,string.format("Your mp is fully restored (%s).",h)))end,[""]=""}local j=0;local k=0;local l=0;local m=0;function delta_color(b)local c=b<0 and COLORS.red or COLORS.green;local n=b<0 and b or"+"..b;return string.format("<%s>%s</%s>",c,n,c)end;function simple_announce_damage(o,p,q,r)local s=""local t=nil;if q==0 and r~=0 then t=a.MPSimple(r)elseif q~=0 and r==0 then t=a.HPSimple(q)elseif q~=0 and r~=0 then t=string.format("%s %s",a.HPSimple(q),a.MPSimple(r))else end;if t~=nil then if o<=p*0.25 then s="😱"elseif o<=p*0.50 then s="😨"elseif o<=p*0.75 then s="😮"elseif o<p then s="😕"else s="😎"end;crawl.mpr(string.format("\n%s %s",s,t))end end;function color_by_max(u,v,w,x)if v<=w*0.25 then u(COLORS.red,v,w,x)elseif v<=w*0.50 then u(COLORS.lightred,v,w,x)elseif v<=w*0.75 then u(COLORS.yellow,v,w,x)else u(COLORS.lightgrey,v,w,x)end end;function announce_damage()local o,p=you.hp()local y,z=you.mp()if j>0 then local q=j-o;local A=p-k;local r=l-y;local B=z-m;simple_announce_damage(o,p,q,r)if A>0 then a.HPMax(COLORS.green,o,p,A)elseif A<0 then a.HPMax(COLORS.yellow,o,p,A)end;if q>0 and q>math.abs(A)then color_by_max(a.HPLoss,o,p,q)if q>p*0.20 then a.HPMassivePause()end end;if q<0 then local C=math.abs(q)if C>1 and not(o==p)then color_by_max(a.HPGain,o,p,C)end;if o==p then a.HPFull(nil,o)end end;if r<0 then local D=math.abs(r)if D>1 and not(y==z)then color_by_max(a.MPGain,y,z,D)end;if y==z then a.MPFull(nil,y)end end;if r>0 and r>math.abs(B)then color_by_max(a.MPLoss,y,z,r)end end;j=o;k=p;l=y;m=z end
 }
 
 ##
 ## OpenSkills.lua
 ################################################################################################
 {
--- Open skills menu at start of runs
-local need_skills_opened = true
-local function start_open_skills()
-  if you.turns() == 0 and need_skills_opened then
-    need_skills_opened = false
-    crawl.sendkeys("m")
-  end
-end
-
--- Runs once when parsed during rc init
-start_open_skills()
+local a=true;local function b()if you.turns()==0 and a then a=false;crawl.sendkeys("m")end end;b()
 }
 
 ##
 ## PickupEquipment.lua
 ################################################################################################
 {
-local function should_pickup_equip(cur, i2)
-  -- always pickup god gift equipment
-  if i2.god_gift then return true end
-
-  --  not wearing any item in the slot? pickup!
-  if cur == nil then return true end
-
-  -- items names are the same, pickup higher plus
-  if cur.name("qual") == i2.name("qual") then
-    if i2.plus ~= nil and i2.plus > cur.plus then
-      return true
-    end
-  end
-
-  -- not wearing artefact/ego/branded but item is? pickup!
-  if cur.branded or cur.ego() or cur.artefact then return end
-  if i2.branded or i2.ego() then return true end
-
-  return false
-end
-
--- Equipment autopickup (by Medar and various others)
--- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
-local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Armour", shield="Shield"}
-local function pickup_equipment(it, name)
-  -- DEBUG
-  -- rc_msg(string.format("pickup_equipment: %s", name))
-
-  if it.is_useless then return end
-
-  -- always pickup artefacts
-  if it.artefact then return true end
-
-  local class = it.class(true)
-
-  if class == "weapon" then
-    -- get currently equipped item in slot
-    local cur = items.equipped_at("weapon")
-
-    -- when using unarmed combat, we want to skip the should_pickup_equip for weapons
-    if cur == nil and you.skill("Unarmed Combat") > 3 then
-      -- always pickup god gift equipment
-      if it.god_gift then return true end
-
-      return false
-    end
-
-    if should_pickup_equip(cur, it) then return true end
-
-  elseif class == "armour" then
-    local sub_type = it.subtype()
-
-    if sub_type == "gloves" and you.has_claws() > 0 then return end
-
-    local armor_slot = armour_slots[sub_type];
-
-    if armor_slot ~= nil then
-      -- get currently equipped item in slot
-      local equipped_item = items.equipped_at(armor_slot)
-
-      if should_pickup_equip(equipped_item, it) then return true end
-    end
-  end
-
-  return
-end
-
--- Runs once when parsed during rc init
-add_autopickup_func(pickup_equipment)
+local function a(b,c)if c.god_gift then return true end;if b==nil then return true end;if b.name("qual")==c.name("qual")then if c.plus~=nil and c.plus>b.plus then return true end end;if b.branded or b.ego()or b.artefact then return end;if c.branded or c.ego()then return true end;return false end;local d={cloak="Cloak",helmet="Helmet",gloves="Gloves",boots="Boots",body="Armour",shield="Shield"}local function e(f,g)if f.is_useless then return end;if f.artefact then return true end;local h=f.class(true)if h=="weapon"then local b=items.equipped_at("weapon")if b==nil and you.skill("Unarmed Combat")>3 then if f.god_gift then return true end;return false end;if a(b,f)then return true end elseif h=="armour"then local i=f.subtype()if i=="gloves"and you.has_claws()>0 then return end;local j=d[i]if j~=nil then local k=items.equipped_at(j)if a(k,f)then return true end end end;return end;add_autopickup_func(e)
 }
 
 ##
 ## TurnReady.lua
 ################################################################################################
 {
--- Run every player turn
-function ready()
-  -- rc_msg("Running ready function...")
-
-  -- Display damage taken in log
-  announce_damage()
-end
+function ready()announce_damage()end
 }
 
 ##
@@ -3947,23 +3633,11 @@ msc ^= mute:is almost (dead|destroyed)
 # msc += boring:You feel mildly nauseous
 # msc += boring:Multicoloured lights dance around
 
-
-
 ##
 ## DEBUG.lua
 ################################################################################################
 {
--- rc_msg("DEBUG")
 
--- function colortest()
---   for i, color in pairs(COLORS) do
---     crawl.mpr(string.format("\n>> 🤖 colortest <%s>%s</%s>", color, color, color))
---   end
--- end
-
--- colortest()
-
--- rc_out("COLORS", COLORS.brown, COLORS.brown)
 }
 
 ##

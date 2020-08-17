@@ -1,3 +1,5 @@
+const luamin = require("luamin");
+
 function Header(header) {
   return `
 ##
@@ -16,7 +18,7 @@ exports.ContentFormatter = function ContentFormatter(filename, content) {
   switch (ext) {
     // lua content must be wrapped in braces
     case "lua":
-      formattedContent = `{\n${content}}`;
+      formattedContent = `{\n${luamin.minify(content)}\n}`;
       break;
     // default and rc files just insert plain text
     case "rc":

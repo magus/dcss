@@ -9,5 +9,8 @@
     "debug": "node --inspect-brk compile.js",
     "compile": "node compile.js",
     "start": "yarn compile"
+  },
+  "devDependencies": {
+    "luamin": "^1.0.4"
   }
 }
