@@ -29,7 +29,12 @@ ae := autopickup_exceptions
 # Reset all autopickup exceptions
 ae =
 
+
+# Small & Little races cannot carry javelins
+: if you.race() ~= "Halfling" and you.race() ~= "Kobold" and you.race() ~= "Felid" and you.race() ~= "Spriggan" then
 ae += <javelin
+: end
+
 ae += <throwing net
 : if you.race() == "Troll" then
 ae += <large rock
