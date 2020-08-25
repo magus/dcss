@@ -31,7 +31,7 @@ ae =
 
 
 # Small & Little races cannot carry javelins
-: if you.race() ~= "Halfling" and you.race() ~= "Kobold" and you.race() ~= "Felid" and you.race() ~= "Spriggan" then
+: if not table_has({"Halfling", "Kobold", "Felid", "Spriggan"}, you.race()) then
 ae += <javelin
 : end
 
@@ -41,7 +41,7 @@ ae += <large rock
 : end
 
 
-: if you.race() == "Vampire" or you.race() == "Mummy" or you.race() == "Ghoul" then
+: if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
 ae += <scrolls? of (holy word|tormet)
 : else
 ae += >scrolls? of (holy word|tormet)

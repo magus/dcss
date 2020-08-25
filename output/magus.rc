@@ -51,6 +51,17 @@ end
 function rc_err(msg)
   rc_out("❌", "lightred", msg)
 end
+
+
+function table_has(table, match)
+  for index, value in ipairs(table) do
+    if value == match then
+      return true
+    end
+  end
+
+  return false
+end
 }
 
 ##
@@ -531,14 +542,19 @@ ae := autopickup_exceptions
 # Reset all autopickup exceptions
 ae =
 
+
+# Small & Little races cannot carry javelins
+: if not table_has({"Halfling", "Kobold", "Felid", "Spriggan"}, you.race()) then
 ae += <javelin
+: end
+
 ae += <throwing net
 : if you.race() == "Troll" then
 ae += <large rock
 : end
 
 
-: if you.race() == "Vampire" or you.race() == "Mummy" or you.race() == "Ghoul" then
+: if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
 ae += <scrolls? of (holy word|tormet)
 : else
 ae += >scrolls? of (holy word|tormet)
@@ -643,7 +659,7 @@ item += potions? of.*magic:lightmagenta
 
 ### Scrolls ###
 
-: if you.race() == "Vampire" or you.race() == "Mummy" or you.race() == "Ghoul" then
+: if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
   menu += darkgrey:scroll.*holy word
   item += scroll.*holy word:darkgrey
   menu += brown:scroll.*torment

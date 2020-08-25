@@ -14,3 +14,14 @@ end
 function rc_err(msg)
   rc_out("❌", "lightred", msg)
 end
+
+
+function table_has(table, match)
+  for index, value in ipairs(table) do
+    if value == match then
+      return true
+    end
+  end
+
+  return false
+end

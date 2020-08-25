@@ -83,7 +83,7 @@ item += potions? of.*magic:lightmagenta
 
 ### Scrolls ###
 
-: if you.race() == "Vampire" or you.race() == "Mummy" or you.race() == "Ghoul" then
+: if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
   menu += darkgrey:scroll.*holy word
   item += scroll.*holy word:darkgrey
   menu += brown:scroll.*torment
