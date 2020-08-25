@@ -549,7 +549,9 @@ ae += <javelin
 : end
 
 ae += <throwing net
-: if you.race() == "Troll" then
+
+# Troll & Ogre large rocks
+: if table_has({"Ogre", "Troll"}, you.race()) then
 ae += <large rock
 : end
 
