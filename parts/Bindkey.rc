@@ -1,0 +1,5 @@
+# All commands and their key binds
+# https://github.com/jmbjr/dcss/blob/master/crawl-ref/docs/keybind.txt
+
+# CTRL+N will autofight without moving
+bindkey = [^N] CMD_AUTOFIGHT_NOMOVE

@@ -448,6 +448,15 @@ allow_self_target = no
 tile_map_pixels = 8
 
 ##
+## Bindkey.rc
+################################################################################################
+# All commands and their key binds
+# https://github.com/jmbjr/dcss/blob/master/crawl-ref/docs/keybind.txt
+
+# CTRL+N will autofight without moving
+bindkey = [^N] CMD_AUTOFIGHT_NOMOVE
+
+##
 ## AutoInscribe.rc
 ################################################################################################
 show_god_gift = unident

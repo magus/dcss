@@ -21,6 +21,8 @@
 
 {{Interface.rc}}
 
+{{Bindkey.rc}}
+
 {{AutoInscribe.rc}}
 
 {{AutoPickup.rc}}
