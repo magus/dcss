@@ -49,7 +49,7 @@ ai += (hand crossbow|arbalest|triple crossbow):crossbow
 
 # Rare items
 ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare=g
-ai += (storm dragon hide|storm dragon armour|pearl dragon|gold dragon|crystal plate):rare=g
+ai += (storm dragon|pearl dragon|gold dragon|crystal plate):rare=g
 
 # Always automatically pickup
 ai += curare:=g
