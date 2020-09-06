@@ -67,7 +67,7 @@ end
 ##
 ## BEGIN
 ################################################################################################
-: rc_msg("Initializing magus.rc...")
+: rc_msg("Initializing magus.rc v1.1...")
 
 ##
 ## Lua Setup

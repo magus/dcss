@@ -5,7 +5,7 @@
 {{Utils.lua}}
 
 ##Header BEGIN
-: rc_msg("Initializing magus.rc...")
+: rc_msg("Initializing magus.rc v1.1...")
 
 ##Header Lua Setup
 {{AnnounceDamage.lua}}
