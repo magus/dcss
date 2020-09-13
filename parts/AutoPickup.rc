@@ -1,9 +1,9 @@
 : if you.race() == "Mummy" then
-autopickup = /?"+|0}$
+autopickup = (/?"+|0}$
 : elseif you.race() == "Vampire" then
-autopickup = /?"!+|0}$
+autopickup = (/?"!+|0}$
 : else
-autopickup = /%?"!+|0}$
+autopickup = (/%?"!+|0}$
 : end
 # )       Weapons
 # (       Missiles
@@ -16,7 +16,7 @@ autopickup = /%?"!+|0}$
 # + or :  Books
 # |       Staves
 # 0       Orbs
-# }       Misc. items
+# }       Miscellaneous
 # $       Gold
 # Note that _whether_ items are picked up automatically or not, is
 # controlled by the in-game toggle Ctrl-A. Also note that picking
@@ -29,20 +29,17 @@ ae := autopickup_exceptions
 # Reset all autopickup exceptions
 ae =
 
-
 # Small & Little races cannot carry javelins
-: if not table_has({"Halfling", "Kobold", "Felid", "Spriggan"}, you.race()) then
-ae += <javelin
+: if table_has({"Halfling", "Kobold", "Felid", "Spriggan"}, you.race()) then
+ae += >javelin
 : end
 
-ae += <throwing net
-
-# Troll & Ogre large rocks
-: if table_has({"Ogre", "Troll"}, you.race()) then
-ae += <large rock
+# Only Troll & Ogre pickup large rocks
+: if not table_has({"Ogre", "Troll"}, you.race()) then
+ae += >large rock
 : end
 
-
+# Scrolls
 : if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
 ae += <scrolls? of (holy word|torment)
 : else
@@ -55,6 +52,7 @@ ae += >scrolls? of (amnesia|noise|random uselessness)
 ae += <potions? of (mutation|lignification)
 ae += >potions? of (degeneration|stabbing)
 
+# Miscellaneous
 ae += <(tins of tremorstones)
 
 # Pickup runes but not 'runed' anything
