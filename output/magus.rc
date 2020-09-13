@@ -1,11 +1,10 @@
 ##
 ## magus.rc
 ################################################################################################
-
 ##
 ## BEGIN
 ################################################################################################
-: rc_msg("Initializing magus.rc v1.3...")
+: rc_msg("Initializing magus.rc [v1.4.1600035566306] ...")
 : crawl.enable_more(false)
 
 ##
@@ -421,6 +420,8 @@ function ready()
   announce_damage()
 end
 }
+
+
 
 ##
 ## RC Options (http://crawl.akrasiac.org/docs/options_guide.txt)
@@ -4036,6 +4037,8 @@ msc ^= mute:is almost (dead|destroyed)
 
 -- rc_out("COLORS", COLORS.brown, COLORS.brown)
 }
+
+
 
 ##
 ## END

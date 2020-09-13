@@ -1,6 +1,6 @@
 const luamin = require("luamin");
 
-function Header(header, withMsg) {
+function HeaderInternal(header, withMsg, withTime) {
   return `
 ##
 ## ${header}
@@ -9,7 +9,36 @@ ${withMsg ? `: rc_msg(" += ${header}")` : ""}
 `.trim();
 }
 
+function Header(args) {
+  const header = args.join(" ");
+  return HeaderInternal(header);
+}
+
 exports.Header = Header;
+
+function Begin(args) {
+  const version = args.join(" ");
+
+  return `
+##
+## BEGIN
+################################################################################################
+: rc_msg("Initializing magus.rc [v${version}.${Date.now()}] ...")
+`.trim();
+}
+
+exports.Begin = Begin;
+
+function End() {
+  return `
+##
+## END
+################################################################################################
+: rc_scs("Successfully initialized magus.rc!")
+`.trim();
+}
+
+exports.End = End;
 
 const EXTENSION_REGEX = /\.(.*)$/;
 
@@ -32,7 +61,9 @@ exports.ContentFormatter = function ContentFormatter(
       formattedContent = content;
   }
 
-  return [Header(filename, true /* withMsg */), formattedContent].join("\n");
+  return [HeaderInternal(filename, true /* withMsg */), formattedContent].join(
+    "\n"
+  );
 };
 
 exports.RunRegex = function RunRegex(regex, output, replacer) {
@@ -43,10 +74,12 @@ exports.RunRegex = function RunRegex(regex, output, replacer) {
     // match will be `null` and we can safely break out and exit
     if (match === null) break;
 
-    const [placeholder, content] = match;
-    // console.debug({ placeholder, content });
+    const [placeholder, headerType, args] = match;
+    const splitArgs = typeof args === "string" ? args.trim().split(" ") : [];
 
-    const fill = replacer(content);
+    console.debug({ placeholder, headerType, splitArgs });
+
+    const fill = replacer(headerType, splitArgs);
 
     output = output.replace(placeholder, fill.trim());
   }

@@ -1,7 +1,5 @@
-##Header magus.rc
-
-##Header BEGIN
-: rc_msg("Initializing magus.rc v1.3...")
+#--Header magus.rc
+#--Begin 1.4
 : crawl.enable_more(false)
 
 {{Globals.rc}}
@@ -10,7 +8,7 @@
 
 
 
-##Header Lua Setup
+#--Header Lua Setup
 {{AnnounceDamage.lua}}
 
 {{OpenSkills.lua}}
@@ -19,7 +17,9 @@
 
 {{TurnReady.lua}}
 
-##Header RC Options (http://crawl.akrasiac.org/docs/options_guide.txt)
+
+
+#--Header RC Options (http://crawl.akrasiac.org/docs/options_guide.txt)
 {{Travel.rc}}
 
 {{Interface.rc}}
@@ -40,6 +40,7 @@
 
 {{DEBUG.lua}}
 
-##Header END
-: rc_scs("Successfully initialized magus.rc!")
+
+
+#--End
 : crawl.enable_more(true)

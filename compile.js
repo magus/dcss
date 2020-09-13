@@ -11,10 +11,12 @@ execSync(`mkdir -p $(dirname ${OUTPUT_FILENAME})`);
 
 let OUTPUT_RC = FSUtils.read(TEMPLATE_FILENAME);
 
-// Replace `##Header Content` with a formatted header containing "Content"
-OUTPUT_RC = PartsUtils.RunRegex(/\#\#Header (.*)/g, OUTPUT_RC, (header) => {
-  return PartsUtils.Header(header);
-});
+// Replace ## Headers with proper part util function output
+OUTPUT_RC = PartsUtils.RunRegex(
+  /\#--([^\s]+)(.*)/g,
+  OUTPUT_RC,
+  (headerType, args) => PartsUtils[headerType](args)
+);
 
 // Replace `{{Filename.ext}}` with the file content using PartsUtil.ContentFormatter
 OUTPUT_RC = PartsUtils.RunRegex(/{{(.*)}}/g, OUTPUT_RC, (filename) => {
