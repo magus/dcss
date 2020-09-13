@@ -1,10 +1,11 @@
 ##
 ## magus.rc
 ################################################################################################
-
+: rc_msg(" += magus.rc")
 ##
 ## Globals.rc
 ################################################################################################
+: rc_msg(" += Globals.rc")
 # PAUSE variable for ForceMorePrompts.rc
 $PAUSE_MORE := PAUSE
 
@@ -34,6 +35,7 @@ $PAUSE_MORE := PAUSE
 ##
 ## Utils.lua
 ################################################################################################
+: rc_msg(" += Utils.lua")
 {
 function withColor(color, str)
   return string.format("<%s>%s</%s>", color, str, color)
@@ -67,14 +69,18 @@ end
 ##
 ## BEGIN
 ################################################################################################
+: rc_msg(" += BEGIN")
 : rc_msg("Initializing magus.rc v1.1...")
+: crawl.enable_more(false)
 
 ##
 ## Lua Setup
 ################################################################################################
+: rc_msg(" += Lua Setup")
 ##
 ## AnnounceDamage.lua
 ################################################################################################
+: rc_msg(" += AnnounceDamage.lua")
 {
 local Messages = {
   ["HPSimple"] = function(delta)
@@ -297,6 +303,7 @@ end
 ##
 ## OpenSkills.lua
 ################################################################################################
+: rc_msg(" += OpenSkills.lua")
 {
 -- Open skills menu at start of runs
 local need_skills_opened = true
@@ -314,6 +321,7 @@ start_open_skills()
 ##
 ## PickupEquipment.lua
 ################################################################################################
+: rc_msg(" += PickupEquipment.lua")
 {
 local function should_pickup_equip(cur, i2)
   -- always pickup god gift equipment
@@ -389,6 +397,7 @@ add_autopickup_func(pickup_equipment)
 ##
 ## TurnReady.lua
 ################################################################################################
+: rc_msg(" += TurnReady.lua")
 {
 -- Run every player turn
 function ready()
@@ -402,9 +411,11 @@ end
 ##
 ## RC Options (http://crawl.akrasiac.org/docs/options_guide.txt)
 ################################################################################################
+: rc_msg(" += RC Options (http://crawl.akrasiac.org/docs/options_guide.txt)")
 ##
 ## Travel.rc
 ################################################################################################
+: rc_msg(" += Travel.rc")
 autofight_stop = 75
 autofight_caught = true
 travel_avoid_terrain = deep water
@@ -422,9 +433,16 @@ explore_wall_bias = 3
 explore_stop  = stairs,shops,altars,portals,branches,runed_doors,runes
 explore_stop += artefacts,glowing_items,greedy_pickup_smart,greedy_visited_item_stack
 
+# do not stop exploring for hungry
+# activity_interrupt_names
+# https://github.com/crawl/crawl/blob/9bf6f1401de0176e0e695ad85b3e9fc7e42da3ab/crawl-ref/source/delay.cc#L1306
+interrupt_travel -= hungry
+runrest_stop_message += starving
+
 ##
 ## Interface.rc
 ################################################################################################
+: rc_msg(" += Interface.rc")
 # hp and mp bar coloring
 view_delay = 300
 hp_colour = 100:lightgreen, 99:lightgray, 75:yellow, 50:lightred, 25:red
@@ -450,6 +468,7 @@ tile_map_pixels = 8
 ##
 ## Bindkey.rc
 ################################################################################################
+: rc_msg(" += Bindkey.rc")
 # All commands and their key binds
 # https://github.com/jmbjr/dcss/blob/master/crawl-ref/docs/keybind.txt
 
@@ -459,6 +478,7 @@ bindkey = [^N] CMD_AUTOFIGHT_NOMOVE
 ##
 ## AutoInscribe.rc
 ################################################################################################
+: rc_msg(" += AutoInscribe.rc")
 show_god_gift = unident
 
 ai := autoinscribe
@@ -518,6 +538,7 @@ ai += curare:=g
 ##
 ## AutoPickup.rc
 ################################################################################################
+: rc_msg(" += AutoPickup.rc")
 : if you.race() == "Mummy" then
 autopickup = /?"+|0}$
 : elseif you.race() == "Vampire" then
@@ -564,9 +585,9 @@ ae += <large rock
 
 
 : if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
-ae += <scrolls? of (holy word|tormet)
+ae += <scrolls? of (holy word|torment)
 : else
-ae += >scrolls? of (holy word|tormet)
+ae += >scrolls? of (holy word|torment)
 :end
 
 ae += <scrolls? of (vulnerability|immolation)
@@ -583,6 +604,7 @@ ae += <rune(s)?[^d]
 ##
 ## ItemColors.rc
 ################################################################################################
+: rc_msg(" += ItemColors.rc")
 ## Menu & Item colors should match exactly when possible.
 ## For menu_colour, the first match ignores subsequent matches.
 ## For item_glyph, subsequent matches override previous ones.
@@ -765,6 +787,7 @@ item += forbidden.*(potion|scroll|food):red
 ##
 ## ForceMorePrompts.rc
 ################################################################################################
+: rc_msg(" += ForceMorePrompts.rc")
 show_more = false
 
 # 1. Dungeon Features
@@ -971,7 +994,7 @@ more += doors? slams? shut
 more += It doesn't seem very happy
 more += Mutagenic energies flood into your body
 more += Some monsters swap places
-more += (starving|devoid of blood)
+more += (are starving|devoid of blood)
 more += (The|Your).*falls away!
 more += The divine light dispels your darkness!
 more += The walls disappear
@@ -1229,6 +1252,7 @@ more += (?-i:[A-Z]).* comes? into view
 ##
 ## Morgue.rc
 ################################################################################################
+: rc_msg(" += Morgue.rc")
 dump_item_origins = all
 dump_message_count = 100
 dump_order  = header,hiscore,stats,misc,mutations,skills,spells,inventory
@@ -1264,6 +1288,7 @@ note_monsters += silver star,pearl dragon
 ##
 ## Messages.rc
 ################################################################################################
+: rc_msg(" += Messages.rc")
 # Variables for message highlighting
 $danger   := lightred
 $item_dmg := red
@@ -1323,6 +1348,8 @@ ignore := runrest_ignore_message
 ignore += grinding sound
 ignore += contamination has completely
 ignore += your breath back
+ignore += feeling hungry
+ignore += near starving
 
 ignore += pray:
 ignore += talk:
@@ -3975,6 +4002,7 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## DEBUG.lua
 ################################################################################################
+: rc_msg(" += DEBUG.lua")
 {
 -- rc_msg("DEBUG")
 
@@ -3992,4 +4020,6 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
+: rc_msg(" += END")
 : rc_scs("Successfully initialized magus.rc!")
+: crawl.enable_more(true)
