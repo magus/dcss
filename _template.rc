@@ -1,7 +1,7 @@
 ##Header magus.rc
 
 ##Header BEGIN
-: rc_msg("Initializing magus.rc v1.1...")
+: rc_msg("Initializing magus.rc v1.3...")
 : crawl.enable_more(false)
 
 {{Globals.rc}}
