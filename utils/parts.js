@@ -1,11 +1,11 @@
 const luamin = require("luamin");
 
-function Header(header) {
+function Header(header, withMsg) {
   return `
 ##
 ## ${header}
 ################################################################################################
-: rc_msg(" += ${header}")
+${withMsg ? `: rc_msg(" += ${header}")` : ""}
 `.trim();
 }
 
@@ -32,7 +32,7 @@ exports.ContentFormatter = function ContentFormatter(
       formattedContent = content;
   }
 
-  return [Header(filename), formattedContent].join("\n");
+  return [Header(filename, true /* withMsg */), formattedContent].join("\n");
 };
 
 exports.RunRegex = function RunRegex(regex, output, replacer) {

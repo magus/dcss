@@ -1,11 +1,14 @@
 ##Header magus.rc
-{{Globals.rc}}
-
-{{Utils.lua}}
 
 ##Header BEGIN
 : rc_msg("Initializing magus.rc v1.1...")
 : crawl.enable_more(false)
+
+{{Globals.rc}}
+
+{{Utils.lua}}
+
+
 
 ##Header Lua Setup
 {{AnnounceDamage.lua}}
