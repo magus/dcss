@@ -57,6 +57,8 @@ ignore := runrest_ignore_message
 ignore += grinding sound
 ignore += contamination has completely
 ignore += your breath back
+ignore += feeling hungry
+ignore += near starving
 
 ignore += pray:
 ignore += talk:

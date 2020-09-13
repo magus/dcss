@@ -14,3 +14,9 @@ explore_wall_bias = 3
 # auto explore stop defaults
 explore_stop  = stairs,shops,altars,portals,branches,runed_doors,runes
 explore_stop += artefacts,glowing_items,greedy_pickup_smart,greedy_visited_item_stack
+
+# do not stop exploring for hungry
+# activity_interrupt_names
+# https://github.com/crawl/crawl/blob/9bf6f1401de0176e0e695ad85b3e9fc7e42da3ab/crawl-ref/source/delay.cc#L1306
+interrupt_travel -= hungry
+runrest_stop_message += starving
