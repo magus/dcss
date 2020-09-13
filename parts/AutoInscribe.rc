@@ -2,6 +2,9 @@ show_god_gift = unident
 
 ai := autoinscribe
 
+# Inscribe forbidden items for PickupEquipment
+ai += forbidden:forbidden
+
 ai += (bad|dangerous)_item.*potion:!q
 ai += (bad|dangerous)_item.*scroll:!r
 ai += potions? of berserk rage:!q

@@ -26,6 +26,10 @@ local function pickup_equipment(it, name)
   -- DEBUG
   -- rc_msg(string.format("pickup_equipment: %s", name))
 
+  -- do not pickup forbidden items
+  if string.match(name, "forbidden") then return end
+
+  -- do not pickup useless items
   if it.is_useless then return end
 
   -- always pickup artefacts
