@@ -44,9 +44,9 @@ ae += <large rock
 
 
 : if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
-ae += <scrolls? of (holy word|tormet)
+ae += <scrolls? of (holy word|torment)
 : else
-ae += >scrolls? of (holy word|tormet)
+ae += >scrolls? of (holy word|torment)
 :end
 
 ae += <scrolls? of (vulnerability|immolation)
