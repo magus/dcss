@@ -596,6 +596,10 @@ ae += >javelin
 ae += >large rock
 : end
 
+# Jewellery
+ae += >amulets? of (inaccuracy)
+ae += >rings? of (teleportation)
+
 # Scrolls
 : if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
 ae += <scrolls? of (holy word|torment)
