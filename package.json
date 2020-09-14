@@ -11,6 +11,9 @@
     "start": "yarn compile"
   },
   "devDependencies": {
-    "luamin": "^1.0.4"
+    "chalk": "^4.1.0",
+    "isomorphic-unfetch": "^3.0.0",
+    "luamin": "^1.0.4",
+    "ora": "^5.1.0"
   }
 }

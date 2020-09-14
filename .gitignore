@@ -115,4 +115,9 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+
+# vercel / now
 .now
+
+# ignore scripts cache
+scripts/.cache
