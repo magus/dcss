@@ -2,6 +2,10 @@ autofight_stop = 75
 autofight_caught = true
 travel_avoid_terrain = deep water
 
+# Wait until your HP and MP are both at rest_wait_percent before moving
+rest_wait_percent = 100
+explore_auto_rest = true
+
 # Set to -1 for instant-travel, set to 1 to see travel paths
 travel_delay = -1
 explore_delay = 1

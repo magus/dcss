@@ -77,7 +77,7 @@ exports.RunRegex = function RunRegex(regex, output, replacer) {
     const [placeholder, headerType, args] = match;
     const splitArgs = typeof args === "string" ? args.trim().split(" ") : [];
 
-    console.debug({ placeholder, headerType, splitArgs });
+    // console.debug({ placeholder, headerType, splitArgs });
 
     const fill = replacer(headerType, splitArgs);
 
