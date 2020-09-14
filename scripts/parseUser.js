@@ -30,7 +30,7 @@ async function run() {
   console.info(`🤖 Search [${chalk.cyan(username)}] for [${chalk.yellow(search)}]`);
   const spinner = ora('🤖 Searching...').start();
 
-  const allMorgueFileContent = await getUsernameMorgueContents(username);
+  const allMorgueFileContent = await getUsernameMorgueContents(username, spinner);
 
   // console.debug(allMorgueFileContent.length, 'allMorgueFileContent');
   // console.debug(allMorgueFileContent[0]);
@@ -89,28 +89,29 @@ async function run() {
   console.info(`🤖 ${chalk.green(searchResults.length)} results found.`);
 }
 
-async function getUsernameMorgueContents(username) {
+async function getUsernameMorgueContents(username, spinner) {
   const morgueFilenames = await getMorgueFilenames(username);
   // console.debug(morgueFilenames.length, 'morgueFilenames');
 
   const promiseAllMorgueFileContent = morgueFilenames.map(async (filename) => {
-    const content = await cachedMorgue(username, filename);
+    const content = await cachedMorgue(username, filename, spinner);
     return { filename, content };
   });
 
   return await Promise.all(promiseAllMorgueFileContent);
 }
 
-async function cachedMorgue(username, morgueFilename) {
+async function cachedMorgue(username, morgueFilename, spinner) {
   const cacheMorguePath = `${CACHE_DIR}/${morgueFilename}`;
 
   if (!fs.existsSync(cacheMorguePath)) {
     const morgueUrl = `${RAWDATA_PATH}/${username}/${morgueFilename}`;
 
+    spinner.text = `fetch(${morgueUrl})`;
+    spinner.render();
+
     const resp = await fetch(morgueUrl);
     const respText = await resp.text();
-
-    console.debug(`fetch(${morgueUrl}) = ${respText.length} bytes`);
 
     fs.writeFileSync(cacheMorguePath, respText);
   }
