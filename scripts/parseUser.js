@@ -11,6 +11,7 @@ const CACHE_DIR = path.join(__dirname, '.cache', path.basename(__filename));
 fs.mkdirSync(CACHE_DIR, { recursive: true });
 
 async function run() {
+  const hrStartTime = process.hrtime();
   const [, , username, ...restArgs] = process.argv;
   const search = restArgs.join(' ');
   // const username = 'magusnn';
@@ -73,8 +74,13 @@ async function run() {
 
   await Promise.all(promseSearchAllContent);
 
+  const searchTime = Math.round(hrTimeUnit(process.hrtime(hrStartTime), 'ms'));
+  const searchResultMessage = `${chalk.green(searchResults.length)} result${
+    searchResults.length > 1 ? 's' : ''
+  } (${chalk.dim(`${searchTime}ms`)}) found in ${chalk.magenta(allMorgueFileContent.length)} morgue files .`;
+
   spinner.prefixText = '🤖';
-  spinner.succeed(`${chalk.green(searchResults.length)} results found.`);
+  spinner.succeed(searchResultMessage);
   console.info();
 
   searchResults.forEach((result, i) => {
@@ -96,10 +102,13 @@ async function run() {
     console.debug(chalk.gray(wrapedSearchInGrep));
   });
 
-  console.info(`🤖 ${chalk.green(searchResults.length)} results found.`);
+  console.info(`🤖 ${searchResultMessage}`);
 }
 
 async function getUsernameMorgueContents(username, morgueFilenames, spinner) {
+  spinner.text = `Gathering morgue files...`;
+  spinner.render();
+
   const promiseAllMorgueFileContent = morgueFilenames.map(async (filename) => {
     const content = await cachedMorgue(username, filename, spinner);
     return { filename, content };
@@ -112,11 +121,10 @@ async function cachedMorgue(username, morgueFilename, spinner) {
   const cacheMorguePath = `${CACHE_DIR}/${morgueFilename}`;
 
   if (!fs.existsSync(cacheMorguePath)) {
-    const morgueUrl = `${RAWDATA_PATH}/${username}/${morgueFilename}`;
-
-    spinner.text = `fetch(${morgueUrl})`;
+    spinner.text = `Fetching morgue files...`;
     spinner.render();
 
+    const morgueUrl = `${RAWDATA_PATH}/${username}/${morgueFilename}`;
     const resp = await fetch(morgueUrl);
     const respText = await resp.text();
 
@@ -151,5 +159,19 @@ async function getMorgueFilenames(username) {
 
   return morgueFilenames;
 }
+
+const hrTimeUnit = (hrTime, unit) => {
+  switch (unit) {
+    case 'milli':
+    case 'millis':
+    case 'ms':
+      return hrTime[0] * 1e3 + hrTime[1] / 1e6;
+    case 'micro':
+      return hrTime[0] * 1e6 + hrTime[1] / 1e3;
+    case 'nano':
+    default:
+      return hrTime[0] * 1e9 + hrTime[1];
+  }
+};
 
 run();
