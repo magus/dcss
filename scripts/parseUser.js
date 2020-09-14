@@ -30,8 +30,18 @@ async function run() {
   console.info(`🤖 Search [${chalk.cyan(username)}] for [${chalk.yellow(search)}]`);
   const spinner = ora('🤖 Searching...').start();
 
-  const allMorgueFileContent = await getUsernameMorgueContents(username, spinner);
+  let morgueFilenames = [];
+  try {
+    morgueFilenames = await getMorgueFilenames(username, spinner);
+    // console.debug(morgueFilenames.length, 'morgueFilenames');
+  } catch (err) {
+    spinner.prefixText = '🤖';
+    spinner.fail(`[${chalk.cyan(username)}] not found. Are you sure you spelled it correctly?`);
+    console.error(chalk.dim(`${RAWDATA_PATH}/${username}/?C=M;O=D`));
+    process.exit(1);
+  }
 
+  const allMorgueFileContent = await getUsernameMorgueContents(username, morgueFilenames, spinner);
   // console.debug(allMorgueFileContent.length, 'allMorgueFileContent');
   // console.debug(allMorgueFileContent[0]);
 
@@ -89,10 +99,7 @@ async function run() {
   console.info(`🤖 ${chalk.green(searchResults.length)} results found.`);
 }
 
-async function getUsernameMorgueContents(username, spinner) {
-  const morgueFilenames = await getMorgueFilenames(username);
-  // console.debug(morgueFilenames.length, 'morgueFilenames');
-
+async function getUsernameMorgueContents(username, morgueFilenames, spinner) {
   const promiseAllMorgueFileContent = morgueFilenames.map(async (filename) => {
     const content = await cachedMorgue(username, filename, spinner);
     return { filename, content };
@@ -121,6 +128,11 @@ async function cachedMorgue(username, morgueFilename, spinner) {
 
 async function getMorgueFilenames(username) {
   const resp = await fetch(`${RAWDATA_PATH}/${username}/?C=M;O=D`);
+
+  if (resp.status === 404) {
+    throw new Error('username not found');
+  }
+
   const respText = await resp.text();
 
   const morgueFilenames = [];
