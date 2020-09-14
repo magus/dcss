@@ -1,5 +1,10 @@
 # dcss
 
+## Table of contents
+- [parseUser](#parseUser)
+- [magusnn.rc generator](#magusnnrc-generator)
+- [Resources](#resources)
+
 ## scripts
 
 ### parseUser
@@ -10,7 +15,7 @@ node parseUser magusnn by Sigmund
 
 ![Demo GIF of parseUser for user "magusnn" for term "by sigmund"](https://raw.githubusercontent.com/magus/dcss/master/static/parseuser-demo-4x.766b70.gif)
 
-## rc generator
+## magusnn.rc generator
 
 generate rc for dcss
 
