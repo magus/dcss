@@ -29,14 +29,16 @@ async function run() {
 
   console.info();
   console.info(`🤖 Search [${chalk.cyan(username)}] for [${chalk.yellow(search)}]`);
-  const spinner = ora('🤖 Searching...').start();
+  const spinner = ora({
+    text: 'Searching...',
+    prefixText: '🤖',
+  }).start();
 
   let morgueFilenames = [];
   try {
     morgueFilenames = await getMorgueFilenames(username, spinner);
     // console.debug(morgueFilenames.length, 'morgueFilenames');
   } catch (err) {
-    spinner.prefixText = '🤖';
     spinner.fail(`[${chalk.cyan(username)}] not found. Are you sure you spelled it correctly?`);
     console.error(chalk.dim(`${RAWDATA_PATH}/${username}/?C=M;O=D`));
     process.exit(1);
@@ -50,7 +52,7 @@ async function run() {
 
   const promseSearchAllContent = allMorgueFileContent.map(async (morgue) => {
     return new Promise((resolve) => {
-      spinner.text = morgue.filename;
+      spinner.text = `Parsing ${morgue.filename}`;
       spinner.render();
 
       const cacheMorguePath = `${CACHE_DIR}/${morgue.filename}`;
@@ -79,7 +81,6 @@ async function run() {
     searchResults.length > 1 ? 's' : ''
   } (${chalk.dim(`${searchTime}ms`)}) found in ${chalk.magenta(allMorgueFileContent.length)} morgue files .`;
 
-  spinner.prefixText = '🤖';
   spinner.succeed(searchResultMessage);
   console.info();
 
