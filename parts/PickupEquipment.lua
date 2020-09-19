@@ -38,20 +38,19 @@ local function pickup_equipment(it, name)
   if it.artefact then return true end
 
   local class = it.class(true)
+  -- get currently equipped item in slot
+  local currentWeapon = items.equipped_at("weapon")
 
   if class == "weapon" then
-    -- get currently equipped item in slot
-    local cur = items.equipped_at("weapon")
-
     -- when using unarmed combat, we want to skip the should_pickup_equip for weapons
-    if cur == nil and you.skill("Unarmed Combat") > 3 then
+    if currentWeapon == nil and you.skill("Unarmed Combat") > 3 then
       -- always pickup god gift equipment
       if it.god_gift then return true end
 
       return false
     end
 
-    if should_pickup_equip(cur, it) then return true end
+    if should_pickup_equip(currentWeapon, it) then return true end
 
   elseif class == "armour" then
     local sub_type = it.subtype()
@@ -61,7 +60,10 @@ local function pickup_equipment(it, name)
     -- skip picking up shields, when
     if sub_type == "shield" then
       -- using 2 handed weapons
-      if table_has(two_handed_always, items.equipped_at("weapon").subtype()) then return end
+      if currentWeapon then
+        if table_has(two_handed_always, currentWeapon.subtype()) then return end
+      end
+
       -- shield skill less than 3
       if you.skill("Shields") <= 3 then return end
     end
