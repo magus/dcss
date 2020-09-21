@@ -4,7 +4,7 @@
 ##
 ## BEGIN
 ################################################################################################
-: rc_msg("Initializing magus.rc [v1.4.1600545056006] ...")
+: rc_msg("Initializing magus.rc [v1.4.1600578570661] ...")
 : crawl.enable_more(false)
 
 ##
@@ -553,10 +553,8 @@ ai += (hand crossbow|arbalest|triple crossbow):crossbow
 
 # Rare items
 ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare=g
-ai += (storm dragon|pearl dragon|gold dragon|crystal plate):rare=g
-
-# Always automatically pickup
-ai += curare:=g
+ai += (storm dragon|pearl dragon|gold dragon|crystal plate):rare
+ai += (pearl dragon|crystal plate):=g
 
 ##
 ## AutoPickup.rc
