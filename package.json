@@ -6,6 +6,7 @@
   "author": "magus <noah@iamnoah.com>",
   "license": "MIT",
   "scripts": {
+    "search": "node ./scripts/parseUser",
     "debug": "node --inspect-brk compile.js",
     "compile": "node compile.js",
     "start": "yarn compile"
