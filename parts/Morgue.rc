@@ -11,7 +11,10 @@ user_note_prefix = >>
 
 note_items += artefact
 note_items += experience,of Zot,acquirement,Archmagi
-note_items += crystal plate armour,pearl dragon scales,gold dragon scales
+note_items += crystal plate,pearl dragon scales,gold dragon scales
+
+# note some auto inscribes
+note_messages += rare
 
 note_messages += You feel monstrous
 note_messages += You pass through the gate
@@ -19,6 +22,10 @@ note_messages += [bB]anish.*Abyss
 note_messages += cast .* Abyss
 note_messages += protects you from harm
 note_messages += You fall through a shaft
+
+# record spellbook and spell locations
+note_messages += You pick up a book
+note_messages += You add the spells
 
 # Noteable monsters
 # Undead
