@@ -45,12 +45,12 @@ ae += >rings? of (teleportation)
 
 # Scrolls
 : if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
-ae += <scrolls? of (holy word|torment)
+ae += >scrolls? of (holy word)
 : else
-ae += >scrolls? of (holy word|torment)
+ae += <scrolls? of (holy word)
 :end
 
-ae += <scrolls? of (vulnerability|immolation)
+ae += <scrolls? of (vulnerability|immolation|torment)
 ae += >scrolls? of (amnesia|noise|random uselessness)
 
 ae += <potions? of (mutation|lignification)
