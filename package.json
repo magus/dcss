@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "search": "node ./scripts/parseUser",
+    "find-version": "./scripts/find-version.sh",
     "debug": "node --inspect-brk compile.js",
     "compile": "node compile.js",
     "start": "yarn compile"
