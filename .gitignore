@@ -121,3 +121,6 @@ dist
 
 # ignore scripts cache
 scripts/.cache
+
+# ignore magusnn.rc to prevent searching it and editing it
+output/magus.rc
