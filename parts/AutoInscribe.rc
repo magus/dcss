@@ -44,7 +44,22 @@ ai += (hand axe|war axe|broad axe|battleaxe|executioner's axe):axe
 ai += (whip|club|mace|flail|morningstar|demon whip|sacred scourge|dire flail|eveningstar|great mace|giant club|giant spiked club):mace
 ai += (spear|trident|halberd|scythe|demon trident|trishula|glaive|bardiche):polearm
 ai += (staff|quarterstaff|lajatang):staff
-ai += (dart|throwing net|(?<!moon|soap)stone|boomerang|javelin|large rock):throwing
+# throwing match tests (https://regexr.com/)
+# should match
+#   - stone
+#   - stones
+#   - dart
+#   - darts
+#   - throwing net
+#   - boomerange
+#   - javelin
+#   - large rock
+# should not match
+#   - dart slug
+#   - a chunk of flesh
+#   - moonstone
+#   - soapstone
+ai += (darts?(?! slug)|throwing net|(?<!moon|soap)stones?|boomerang|javelin|large rock):throwing
 ai += (hunting sling|fustibalus):sling
 ai += (shortbow|longbow):bow
 ai += (hand crossbow|arbalest|triple crossbow):crossbow
