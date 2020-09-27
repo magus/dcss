@@ -4,7 +4,7 @@
 ##
 ## BEGIN
 ################################################################################################
-: rc_msg("Initializing magus.rc [v1.4.1601160553209] ...")
+: rc_msg("Initializing magus.rc [v1.4.1601175675583] ...")
 : crawl.enable_more(false)
 
 ##
@@ -545,22 +545,21 @@ ai += (hand axe|war axe|broad axe|battleaxe|executioner's axe):axe
 ai += (whip|club|mace|flail|morningstar|demon whip|sacred scourge|dire flail|eveningstar|great mace|giant club|giant spiked club):mace
 ai += (spear|trident|halberd|scythe|demon trident|trishula|glaive|bardiche):polearm
 ai += (staff|quarterstaff|lajatang):staff
-# throwing match tests (https://regexr.com/)
+# throwing match tests (https://regexr.com/5cs44)
 # should match
 #   - stone
-#   - stones
 #   - dart
-#   - darts
 #   - throwing net
-#   - boomerange
+#   - boomerang
 #   - javelin
 #   - large rock
+#   - ...and plurals of all above
 # should not match
 #   - dart slug
 #   - a chunk of flesh
 #   - moonstone
 #   - soapstone
-ai += (darts?(?! slug)|throwing net|(?<!moon|soap)stones?|boomerang|javelin|large rock):throwing
+ai += (dart(?! slug)|throwing net|(?<!moon|soap)stone|boomerang|javelin|large rock)s?:throwing
 ai += (hunting sling|fustibalus):sling
 ai += (shortbow|longbow):bow
 ai += (hand crossbow|arbalest|triple crossbow):crossbow
