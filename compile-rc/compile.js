@@ -1,23 +1,34 @@
 const { execSync } = require('child_process');
+const path = require('path');
 const FSUtils = require('./utils/fs');
 const PartsUtils = require('./utils/parts');
 
-const TEMPLATE_FILENAME = '_template.rc';
+const TEMPLATE_FILENAME = path.join(__dirname, '_template.rc');
 const OUTPUT_FILENAME = 'output/magus.rc';
 
+const RAW_RELEASES = path.join(__dirname, '_releases');
 const RELEASES_LOG = 'RELEASES.md';
-const RELEASES_LOG_TEMPLATE = '_template_RELEASES.md';
+const RELEASES_LOG_TEMPLATE = path.join(__dirname, '_template_RELEASES.md');
 
 const GIT_DIRTY = execSync('git status --porcelain').toString().trim();
 const GIT_HEAD_SHA = execSync('git rev-parse HEAD').toString().trim();
 
-if (GIT_DIRTY) {
+const [, , write, commit] = process.argv;
+
+if (write !== '--write') {
+  console.info('🤖 Dry running without writing and committing.');
+  console.info('🤖 To update files, try `yarn compile --write`');
+} else if (commit !== '--commmit') {
+  console.info('🤖 Running without committing.');
+  console.info('🤖 To commit, try `yarn compile --write --commmit`');
+}
+
+if (commit && GIT_DIRTY) {
   console.info('🤖 Uncommitted changes. Cannot compile without a valid git SHA.');
   process.exit(1);
 }
 
 // ensure output directory
-execSync(`rm -rf $(dirname ${OUTPUT_FILENAME})`);
 execSync(`mkdir -p $(dirname ${OUTPUT_FILENAME})`);
 
 let OUTPUT_RC = FSUtils.read(TEMPLATE_FILENAME);
@@ -27,10 +38,8 @@ OUTPUT_RC = PartsUtils.RunRegex(/\#--([^\s]+)(.*)/g, OUTPUT_RC, (headerType, arg
 
 // Replace `{{Filename.ext}}` with the file content using PartsUtil.ContentFormatter
 OUTPUT_RC = PartsUtils.RunRegex(/{{(.*)}}/g, OUTPUT_RC, (filename) => {
-  return PartsUtils.ContentFormatter(filename, FSUtils.read(`parts/${filename}`));
+  return PartsUtils.ContentFormatter(filename, FSUtils.read(path.join(__dirname, `parts/${filename}`)));
 });
-
-FSUtils.write(OUTPUT_FILENAME, OUTPUT_RC);
 
 // grab version from compiled output
 // version is set is _template.rc (e.g. #--Begin 1.4)
@@ -39,26 +48,34 @@ FSUtils.write(OUTPUT_FILENAME, OUTPUT_RC);
 const [, VERSION] = OUTPUT_RC.match(/\[v(.*?)\]/);
 
 // Parse RELEASES.md and update log and examples
-const releaseLogFileContent = FSUtils.read(RELEASES_LOG);
-const [, allReleasesContent] = releaseLogFileContent.match(/# Releases((.|[\n])*)/);
-const allReleases = allReleasesContent.trim().split('\n');
+const allReleases = FSUtils.read(RAW_RELEASES).split('\n');
 const [ExampleVersion, ExampleSHA] = allReleases[1].split(' ');
+const UpdatedReleases = [`${VERSION} ${GIT_HEAD_SHA}`, ...allReleases];
 
 const updatedReleaseLog = PartsUtils.RunRegex(/{{(.*?)}}/g, FSUtils.read(RELEASES_LOG_TEMPLATE), (replaceKey) => {
   return {
     ExampleVersion,
     ExampleSHA,
     GIT_HEAD_SHA,
-    AllReleases: [`${VERSION} ${GIT_HEAD_SHA}`, ...allReleases].join('\n'),
+    AllReleases: UpdatedReleases.map((line) => {
+      if (line) {
+        return `| ${line.split(' ').join(' | ')} |`;
+      }
+    }).join('\n'),
   }[replaceKey];
 });
 
-FSUtils.write(RELEASES_LOG, updatedReleaseLog);
+if (write) {
+  FSUtils.write(RAW_RELEASES, UpdatedReleases.join('\n'));
+  FSUtils.write(OUTPUT_FILENAME, OUTPUT_RC);
+  FSUtils.write(RELEASES_LOG, updatedReleaseLog);
 
-// Copy content to clipboard
-execSync(`cat ${OUTPUT_FILENAME} | pbcopy`);
-
-console.info(`🤖 Generated ${OUTPUT_FILENAME} copied to clipboard! 📋`);
+  // Copy content to clipboard
+  execSync(`cat ${OUTPUT_FILENAME} | pbcopy`);
+  console.info(`🤖 Generated ${OUTPUT_FILENAME} copied to clipboard! 📋`);
+}
 
 // Commit all changes
-execSync(`git commit -am  "[v${VERSION}]"`);
+if (commit) {
+  execSync(`git commit -am  "[v${VERSION}]"`);
+}

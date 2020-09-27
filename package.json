@@ -8,8 +8,8 @@
   "scripts": {
     "search": "node ./scripts/parseUser",
     "find-version": "./scripts/find-version.sh",
-    "debug": "node --inspect-brk compile.js",
-    "compile": "node compile.js",
+    "compile:debug": "node --inspect-brk compile-rc/compile.js",
+    "compile": "node compile-rc/compile.js",
     "start": "yarn compile"
   },
   "devDependencies": {
