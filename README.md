@@ -4,16 +4,12 @@
 
 **[Click here to copy the latest magus.rc](https://github.com/magus/dcss/raw/master/output/magus.rc)**
 
-**[Releases](Releases)**
+**[Releases](/RELEASES.md)**
 
 ## Table of contents
 - [parseUser](#parseUser)
 - [magusnn.rc generator](#magusnnrc-generator)
 - [Resources](#resources)
-
-## How do I use this?
-
-Copy the [latest release](output/magus.rc)
 
 ## scripts
 
