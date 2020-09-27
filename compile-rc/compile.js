@@ -75,7 +75,8 @@ if (write) {
   console.info(`🤖 Generated ${OUTPUT_FILENAME} copied to clipboard! 📋`);
 }
 
-// Commit all changes
+// Commit and tag these changes for Releases
 if (commit) {
   execSync(`git commit -am  "[v${VERSION}]"`);
+  execSync(`git tag -a v${VERSION} -m "[v${VERSION}]"`);
 }
