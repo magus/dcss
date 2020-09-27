@@ -79,7 +79,9 @@ exports.RunRegex = function RunRegex(regex, output, replacer) {
 
     const fill = replacer(headerType, splitArgs);
 
-    output = output.replace(placeholder, fill.trim());
+    if (typeof fill === 'string') {
+      output = output.replace(placeholder, fill.trim());
+    }
   }
 
   return output;
