@@ -59,3 +59,6 @@ FSUtils.write(RELEASES_LOG, updatedReleaseLog);
 execSync(`cat ${OUTPUT_FILENAME} | pbcopy`);
 
 console.info(`🤖 Generated ${OUTPUT_FILENAME} copied to clipboard! 📋`);
+
+// Commit all changes
+execSync(`git commit -am  "[v${VERSION}]"`);
