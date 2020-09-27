@@ -26,7 +26,7 @@ Follow the instructions below to easily see the differences!
     ```
     https://github.com/magus/dcss/compare/<SHA>...{{ExampleSHA}}
     ```
-    _Example_: `https://github.com/magus/dcss/compare/{{ExampleSHA}}...{{GIT_HEAD_SHA}}`
+    _Example_: https://github.com/magus/dcss/compare/{{ExampleSHA}}...{{GIT_HEAD_SHA}}
 
 1. Paste the new URL into your browser and discover all the changes since you last copied the RC, Enjoy! 😄
 
