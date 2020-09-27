@@ -49,7 +49,7 @@ const [, VERSION] = OUTPUT_RC.match(/\[v(.*?)\]/);
 
 // Parse RELEASES.md and update log and examples
 const allReleases = FSUtils.read(RAW_RELEASES).split('\n');
-const [ExampleVersion, ExampleSHA] = allReleases[1].split(' ');
+const [ExampleVersion, ExampleSHA] = allReleases[0].split(' ');
 const UpdatedReleases = [`${VERSION} ${GIT_HEAD_SHA}`, ...allReleases];
 
 const updatedReleaseLog = PartsUtils.RunRegex(/{{(.*?)}}/g, FSUtils.read(RELEASES_LOG_TEMPLATE), (replaceKey) => {
