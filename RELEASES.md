@@ -15,27 +15,17 @@ Follow the instructions below to easily see the differences!
     1.4.1601175901483
     ```
 
-1. Find the row with your **Version** string in the [Releases](#Releases) table below
-
-1. Copy the **SHA** column from the row containing your **Version**
-
-    > [What's a SHA?](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/github-glossary#commit-id)
-
-1. Using the URL below, replace **`<SHA>`** with the **SHA** you found above
+1. Using the URL below, replace **`<Version>`** with your **Version**
 
     ```
-    https://github.com/magus/dcss/compare/<SHA>...07455ef0954f3d4703713634b47d77c12f1ba569
+    https://github.com/magus/dcss/compare/<Version>...1.5.1601180970905
     ```
-    _Example_: https://github.com/magus/dcss/compare/07455ef0954f3d4703713634b47d77c12f1ba569...9c4ee6bbbc3c582097ba75caf003fbcb819ecf7e
+    _Example_: https://github.com/magus/dcss/compare/1.4.1601175901483...1.5.1601180970905
 
 1. Paste the new URL into your browser and discover all the changes since you last copied the RC, Enjoy! 😄
 
 
 # Releases
-| Version  | SHA |
-| ------------- | ------------- |
-| `1.5.1601181277522` | `9c4ee6bbbc3c582097ba75caf003fbcb819ecf7e` |
-| `1.4.1601175901483` | `07455ef0954f3d4703713634b47d77c12f1ba569` |
-| `1.4.1601175675583` | `b045fc9a62f90129a89505b742a476b40afb3b69` |
-| `1.4.1601160553209` | `d524aabc7505e2a92757bbeb85110de028af46ef` |
+
+**[Click here to see a list of all previous releases!](https://github.com/magus/dcss/releases)**
 

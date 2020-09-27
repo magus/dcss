@@ -15,24 +15,17 @@ Follow the instructions below to easily see the differences!
     {{ExampleVersion}}
     ```
 
-1. Find the row with your **Version** string in the [Releases](#Releases) table below
-
-1. Copy the **SHA** column from the row containing your **Version**
-
-    > [What's a SHA?](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/github-glossary#commit-id)
-
-1. Using the URL below, replace **`<SHA>`** with the **SHA** you found above
+1. Using the URL below, replace **`<Version>`** with your **Version**
 
     ```
-    https://github.com/magus/dcss/compare/<SHA>...{{ExampleSHA}}
+    https://github.com/magus/dcss/compare/<Version>...{{LatestVersion}}
     ```
-    _Example_: https://github.com/magus/dcss/compare/{{ExampleSHA}}...{{GIT_HEAD_SHA}}
+    _Example_: https://github.com/magus/dcss/compare/{{ExampleVersion}}...{{LatestVersion}}
 
 1. Paste the new URL into your browser and discover all the changes since you last copied the RC, Enjoy! 😄
 
 
 # Releases
-| Version  | SHA |
-| ------------- | ------------- |
-{{AllReleases}}
+
+**[Click here to see a list of all previous releases!](https://github.com/magus/dcss/releases)**
 

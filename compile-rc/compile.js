@@ -52,21 +52,15 @@ const allReleases = FSUtils.read(RAW_RELEASES).split('\n');
 const [ExampleVersion, ExampleSHA] = allReleases[0].split(' ');
 const UpdatedReleases = [`${VERSION} ${GIT_HEAD_SHA}`, ...allReleases];
 
-const updatedReleaseLog = PartsUtils.RunRegex(/{{(.*?)}}/g, FSUtils.read(RELEASES_LOG_TEMPLATE), (replaceKey) => {
-  return {
-    ExampleVersion,
-    ExampleSHA,
-    GIT_HEAD_SHA,
-    AllReleases: UpdatedReleases.map((line) => {
-      if (line) {
-        return `| ${line
-          .split(' ')
-          .map((_) => `\`${_}\``)
-          .join(' | ')} |`;
-      }
-    }).join('\n'),
-  }[replaceKey];
-});
+const updatedReleaseLog = PartsUtils.RunRegex(
+  /{{(.*?)}}/g,
+  FSUtils.read(RELEASES_LOG_TEMPLATE),
+  (replaceKey) =>
+    ({
+      ExampleVersion,
+      LatestVersion: VERSION,
+    }[replaceKey]),
+);
 
 if (write) {
   FSUtils.write(RAW_RELEASES, UpdatedReleases.join('\n'));
