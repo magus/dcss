@@ -59,7 +59,10 @@ const updatedReleaseLog = PartsUtils.RunRegex(/{{(.*?)}}/g, FSUtils.read(RELEASE
     GIT_HEAD_SHA,
     AllReleases: UpdatedReleases.map((line) => {
       if (line) {
-        return `| ${line.split(' ').join(' | ')} |`;
+        return `| ${line
+          .split(' ')
+          .map((_) => `\`${_}\``)
+          .join(' | ')} |`;
       }
     }).join('\n'),
   }[replaceKey];
