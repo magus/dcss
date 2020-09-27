@@ -1317,6 +1317,9 @@ note_messages += cast .* Abyss
 note_messages += protects you from harm
 note_messages += You fall through a shaft
 
+# note treasure troves and requirements for parsing
+note_messages += This trove needs
+
 # record spellbook and spell locations
 note_messages += You pick up a book
 note_messages += You add the spells
@@ -4068,5 +4071,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.6.1601182612949]")
+: rc_scs("Successfully initialized magus.rc [v1.6.1601236893711]")
 : crawl.enable_more(true)
