@@ -11,6 +11,10 @@
 - [magusnn.rc generator](#magusnnrc-generator)
 - [Resources](#resources)
 
+## How do I use this?
+
+Copy the [latest release](output/magus.rc)
+
 ## scripts
 
 ### parseUser
