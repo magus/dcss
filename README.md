@@ -4,6 +4,8 @@
 
 **[Click here to copy the latest magus.rc](https://github.com/magus/dcss/raw/master/output/magus.rc)**
 
+**[Releases](Releases)**
+
 ## Table of contents
 - [parseUser](#parseUser)
 - [magusnn.rc generator](#magusnnrc-generator)
