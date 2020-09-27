@@ -1,5 +1,5 @@
 #--Header magus.rc
-#--Begin 1.4
+#--Begin
 : crawl.enable_more(false)
 
 {{Globals.rc}}
@@ -42,5 +42,5 @@
 
 
 
-#--End
+#--End  1.5
 : crawl.enable_more(true)

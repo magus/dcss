@@ -17,6 +17,17 @@ function Header(args) {
 exports.Header = Header;
 
 function Begin(args) {
+  return `
+##
+## BEGIN
+################################################################################################
+: rc_msg("Initializing magus.rc ...")
+`.trim();
+}
+
+exports.Begin = Begin;
+
+function End(args) {
   const version = args.join(' ');
 
   // version is set is _template.rc (e.g. #--Begin 1.4)
@@ -25,20 +36,9 @@ function Begin(args) {
 
   return `
 ##
-## BEGIN
-################################################################################################
-: rc_msg("Initializing magus.rc [v${version}.${Date.now()}] ...")
-`.trim();
-}
-
-exports.Begin = Begin;
-
-function End() {
-  return `
-##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc!")
+: rc_scs("Successfully initialized magus.rc [v${version}.${Date.now()}]")
 `.trim();
 }
 
