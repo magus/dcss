@@ -47,11 +47,9 @@ OUTPUT_RC = PartsUtils.RunRegex(/{{(.*)}}/g, OUTPUT_RC, (filename) => {
 // e.g. [v1.4.1601160553209] (v1.4 on Sat Sep 26 2020 at 15:49:13 PST)
 const [, VERSION] = OUTPUT_RC.match(/\[v(.*?)\]/);
 
-// Parse RELEASES.md and update log and examples
-const allReleases = FSUtils.read(RAW_RELEASES).split('\n');
-const [ExampleVersion, ExampleSHA] = allReleases[0].split(' ');
-const UpdatedReleases = [`${VERSION} ${GIT_HEAD_SHA}`, ...allReleases];
-
+// Get latest past git tag for updating RELEASES.md
+const ExampleVersion = execSync('git describe --abbrev=0').toString().trim().replace(/^v/, '');
+// Update RELEASES.md examples to use last version
 const updatedReleaseLog = PartsUtils.RunRegex(
   /{{(.*?)}}/g,
   FSUtils.read(RELEASES_LOG_TEMPLATE),
@@ -63,7 +61,6 @@ const updatedReleaseLog = PartsUtils.RunRegex(
 );
 
 if (write) {
-  FSUtils.write(RAW_RELEASES, UpdatedReleases.join('\n'));
   FSUtils.write(OUTPUT_FILENAME, OUTPUT_RC);
   FSUtils.write(RELEASES_LOG, updatedReleaseLog);
 
