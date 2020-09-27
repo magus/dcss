@@ -1,23 +1,27 @@
-const luamin = require("luamin");
+const luamin = require('luamin');
 
 function HeaderInternal(header, withMsg, withTime) {
   return `
 ##
 ## ${header}
 ################################################################################################
-${withMsg ? `: rc_msg(" += ${header}")` : ""}
+${withMsg ? `: rc_msg(" += ${header}")` : ''}
 `.trim();
 }
 
 function Header(args) {
-  const header = args.join(" ");
+  const header = args.join(' ');
   return HeaderInternal(header);
 }
 
 exports.Header = Header;
 
 function Begin(args) {
-  const version = args.join(" ");
+  const version = args.join(' ');
+
+  // version is set is _template.rc (e.g. #--Begin 1.4)
+  // then the UNIX epoch ms are appended to make it unique
+  // e.g. [v1.4.1601160553209] (v1.4 on Sat Sep 26 2020 at 15:49:13 PST)
 
   return `
 ##
@@ -42,28 +46,22 @@ exports.End = End;
 
 const EXTENSION_REGEX = /\.(.*)$/;
 
-exports.ContentFormatter = function ContentFormatter(
-  filename,
-  content,
-  minifyLua = false
-) {
+exports.ContentFormatter = function ContentFormatter(filename, content, minifyLua = false) {
   const [, ext] = filename.match(EXTENSION_REGEX);
   let formattedContent;
   switch (ext) {
     // lua content must be wrapped in braces
-    case "lua":
-      const luaContent = minifyLua ? luamin.minify(content) + "\n" : content;
+    case 'lua':
+      const luaContent = minifyLua ? luamin.minify(content) + '\n' : content;
       formattedContent = `{\n${luaContent}}`;
       break;
     // default and rc files just insert plain text
-    case "rc":
+    case 'rc':
     default:
       formattedContent = content;
   }
 
-  return [HeaderInternal(filename, true /* withMsg */), formattedContent].join(
-    "\n"
-  );
+  return [HeaderInternal(filename, true /* withMsg */), formattedContent].join('\n');
 };
 
 exports.RunRegex = function RunRegex(regex, output, replacer) {
@@ -75,7 +73,7 @@ exports.RunRegex = function RunRegex(regex, output, replacer) {
     if (match === null) break;
 
     const [placeholder, headerType, args] = match;
-    const splitArgs = typeof args === "string" ? args.trim().split(" ") : [];
+    const splitArgs = typeof args === 'string' ? args.trim().split(' ') : [];
 
     // console.debug({ placeholder, headerType, splitArgs });
 
