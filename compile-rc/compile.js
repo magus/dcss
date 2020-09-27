@@ -73,4 +73,8 @@ if (write) {
 if (commit) {
   execSync(`git commit -am  "[v${VERSION}]"`);
   execSync(`git tag -a v${VERSION} -m "[v${VERSION}]"`);
+} else {
+  // Revert outputs to prevent accidental commit
+  execSync(`git checkout ${OUTPUT_FILENAME}`);
+  execSync(`git checkout ${RELEASES_LOG}`);
 }
