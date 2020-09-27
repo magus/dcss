@@ -26,7 +26,7 @@ Follow the instructions below to easily see the differences!
     ```
     https://github.com/magus/dcss/compare/<SHA>...b045fc9a62f90129a89505b742a476b40afb3b69
     ```
-    _Example_: `https://github.com/magus/dcss/compare/b045fc9a62f90129a89505b742a476b40afb3b69...6087cd3d8b936c36578f021833b50e589c0d84b4`
+    _Example_: `https://github.com/magus/dcss/compare/b045fc9a62f90129a89505b742a476b40afb3b69...0c1734700a9ee696627c867a858e012b21c89e74`
 
 1. Paste the new URL into your browser and discover all the changes since you last copied the RC, Enjoy! 😄
 
@@ -34,7 +34,7 @@ Follow the instructions below to easily see the differences!
 # Releases
 | Version  | SHA |
 | ------------- | ------------- |
-| 1.5.1601180127104 | 6087cd3d8b936c36578f021833b50e589c0d84b4 |
+| 1.5.1601180970905 | 0c1734700a9ee696627c867a858e012b21c89e74 |
 | 1.4.1601175901483 | 07455ef0954f3d4703713634b47d77c12f1ba569 |
 | 1.4.1601175675583 | b045fc9a62f90129a89505b742a476b40afb3b69 |
 | 1.4.1601160553209 | d524aabc7505e2a92757bbeb85110de028af46ef |

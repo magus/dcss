@@ -4068,5 +4068,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.5.1601180127104]")
+: rc_scs("Successfully initialized magus.rc [v1.5.1601180970905]")
 : crawl.enable_more(true)
