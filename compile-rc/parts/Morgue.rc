@@ -23,6 +23,13 @@ note_messages += cast .* Abyss
 note_messages += protects you from harm
 note_messages += You fall through a shaft
 
+# note when things come into view with noteworthy items
+note_messages += wielding .*\}
+note_messages += wielding .*}
+note_messages += wearing .*\}
+note_messages += wearing .*}
+
+
 # note treasure troves and requirements for parsing
 note_messages += This trove needs
 
