@@ -24,6 +24,8 @@ note_messages += protects you from harm
 note_messages += You fall through a shaft
 
 # note when things come into view with noteworthy items
+# note_messages += wielding
+# note_messages += wearing
 note_messages += wielding .*\}
 note_messages += wielding .*}
 note_messages += wearing .*\}
