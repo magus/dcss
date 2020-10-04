@@ -410,6 +410,23 @@ add_autopickup_func(pickup_equipment)
 }
 
 ##
+## NoteVersion.lua
+################################################################################################
+: rc_msg(" += NoteVersion.lua")
+{
+local didRun = false
+function note_version()
+  if didRun then
+    return
+  end
+
+  local version = "magus.rc [vv1.8.0.1601776985870]"
+  crawl.take_note(version)
+  didRun = true
+end
+}
+
+##
 ## TurnReady.lua
 ################################################################################################
 : rc_msg(" += TurnReady.lua")
@@ -420,6 +437,8 @@ function ready()
 
   -- Display damage taken in log
   announce_damage()
+
+  note_version()
 end
 }
 
@@ -1316,6 +1335,15 @@ note_messages += [bB]anish.*Abyss
 note_messages += cast .* Abyss
 note_messages += protects you from harm
 note_messages += You fall through a shaft
+
+# note when things come into view with noteworthy items
+# note_messages += wielding
+# note_messages += wearing
+note_messages += wielding .*\}
+note_messages += wielding .*}
+note_messages += wearing .*\}
+note_messages += wearing .*}
+
 
 # note treasure troves and requirements for parsing
 note_messages += This trove needs
@@ -4071,5 +4099,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.6.1601236893711]")
+: rc_scs("Successfully initialized magus.rc [v1.8.0.1601776985870]")
 : crawl.enable_more(true)
