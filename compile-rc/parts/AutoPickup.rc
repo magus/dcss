@@ -41,7 +41,7 @@ ae += >large rock
 
 # Jewellery
 ae += >amulets? of (inaccuracy)
-ae += >rings? of (teleportation)
+ae += >rings? of (teleportation|attention)
 
 # Scrolls
 : if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
