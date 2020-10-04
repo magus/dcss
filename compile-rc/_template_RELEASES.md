@@ -18,9 +18,9 @@ Follow the instructions below to easily see the differences!
 1. Using the URL below, replace **`<Version>`** with your **Version**
 
     ```
-    https://github.com/magus/dcss/compare/v<Version>...v{{LatestVersion}}
+    https://github.com/magus/dcss/compare/<Version>...{{LatestVersion}}
     ```
-    _Example_: https://github.com/magus/dcss/compare/v{{ExampleVersion}}...v{{LatestVersion}}
+    _Example_: https://github.com/magus/dcss/compare/{{ExampleVersion}}...{{LatestVersion}}
 
 1. Paste the new URL into your browser and discover all the changes since you last copied the RC, Enjoy! 😄
 

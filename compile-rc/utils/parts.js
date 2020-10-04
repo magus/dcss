@@ -28,17 +28,11 @@ function Begin(args) {
 exports.Begin = Begin;
 
 function End(args) {
-  const version = args.join(' ');
-
-  // version is set is _template.rc (e.g. #--Begin 1.4)
-  // then the UNIX epoch ms are appended to make it unique
-  // e.g. [v1.4.1601160553209] (v1.4 on Sat Sep 26 2020 at 15:49:13 PST)
-
   return `
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v${version}.${Date.now()}]")
+: rc_scs("Successfully initialized magus.rc [{{VERSION}}]")
 `.trim();
 }
 

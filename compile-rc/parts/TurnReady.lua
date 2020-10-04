@@ -4,4 +4,6 @@ function ready()
 
   -- Display damage taken in log
   announce_damage()
+
+  note_version()
 end

@@ -28,6 +28,13 @@ if (commit && GIT_DIRTY) {
   process.exit(1);
 }
 
+// Grab version from package.json
+const packageJson = FSUtils.readJSON('package.json');
+const { version } = packageJson;
+// then the UNIX epoch ms are appended to make it unique
+// e.g. [v1.4.1601160553209] (v1.4 on Sat Sep 26 2020 at 15:49:13 PST)
+const VERSION = `v${version}.${Date.now()}`;
+
 // ensure output directory
 execSync(`mkdir -p $(dirname ${OUTPUT_FILENAME})`);
 
@@ -37,18 +44,19 @@ let OUTPUT_RC = FSUtils.read(TEMPLATE_FILENAME);
 OUTPUT_RC = PartsUtils.RunRegex(/\#--([^\s]+)(.*)/g, OUTPUT_RC, (headerType, args) => PartsUtils[headerType](args));
 
 // Replace `{{Filename.ext}}` with the file content using PartsUtil.ContentFormatter
-OUTPUT_RC = PartsUtils.RunRegex(/{{(.*)}}/g, OUTPUT_RC, (filename) => {
+OUTPUT_RC = PartsUtils.RunRegex(/{{(.*?\..*)}}/g, OUTPUT_RC, (filename) => {
   return PartsUtils.ContentFormatter(filename, FSUtils.read(path.join(__dirname, `parts/${filename}`)));
 });
 
-// grab version from compiled output
-// version is set is _template.rc (e.g. #--Begin 1.4)
-// then the UNIX epoch ms are appended to make it unique
-// e.g. [v1.4.1601160553209] (v1.4 on Sat Sep 26 2020 at 15:49:13 PST)
-const [, VERSION] = OUTPUT_RC.match(/\[v(.*?)\]/);
+// Replace {{VERSION}} with package.json version
+OUTPUT_RC = PartsUtils.RunRegex(/{{VERSION}}/g, OUTPUT_RC, () => VERSION);
+
+// ===============
+// RELEASES.md
+// ===============
 
 // Get latest past git tag for updating RELEASES.md
-const ExampleVersion = execSync('git describe --abbrev=0').toString().trim().replace(/^v/, '');
+const ExampleVersion = execSync('git describe --abbrev=0').toString().trim();
 // Update RELEASES.md examples to use last version
 const updatedReleaseLog = PartsUtils.RunRegex(
   /{{(.*?)}}/g,
@@ -71,8 +79,8 @@ if (write) {
 
 // Commit and tag these changes for Releases
 if (commit) {
-  execSync(`git commit -am  "[v${VERSION}]"`);
-  execSync(`git tag -a v${VERSION} -m "[v${VERSION}]"`);
+  execSync(`git commit -am  "[${VERSION}]"`);
+  execSync(`git tag -a ${VERSION} -m "[${VERSION}]"`);
 } else {
   // Revert outputs to prevent accidental commit
   execSync(`git checkout ${OUTPUT_FILENAME}`);
