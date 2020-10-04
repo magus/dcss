@@ -1,6 +1,8 @@
-# FAQ
+# Newest RC
 
-### What's new?
+https://raw.githubusercontent.com/magus/dcss/{{LatestVersion}}/output/magus.rc
+
+# What's new?
 
 Sometimes you want to know what has changed between your current version
 of the RC and the another version, usually the latest version.
@@ -27,5 +29,5 @@ Follow the instructions below to easily see the differences!
 
 # Releases
 
-**[Click here to see a list of all previous releases!](https://github.com/magus/dcss/releases)**
+https://github.com/magus/dcss/releases
 
