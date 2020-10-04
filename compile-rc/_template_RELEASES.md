@@ -10,7 +10,7 @@ Follow the instructions below to easily see the differences!
 
 1. Copy your **Version** string
 
-    ![Example screenshot highlighting magus.rc version string](https://raw.githubusercontent.com/magus/dcss/master/static/version-string-example.dac80c.png)
+    ![Example screenshot highlighting magus.rc version string](https://raw.githubusercontent.com/magus/dcss/master/static/version-string-example.97956d.png)
 
     _Example_
     ```
