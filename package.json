@@ -1,6 +1,6 @@
 {
   "name": "dcss",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "main": "index.js",
   "repository": "git@github.com:magus/dcss.git",
   "author": "magus <noah@iamnoah.com>",
@@ -10,6 +10,7 @@
     "find-version": "./scripts/find-version.sh",
     "compile:debug": "node --inspect-brk compile-rc/compile.js",
     "compile": "node compile-rc/compile.js",
+    "version": "yarn version --no-git-tag-version",
     "start": "yarn compile"
   },
   "devDependencies": {
