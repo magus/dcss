@@ -58,13 +58,20 @@ exports.ContentFormatter = function ContentFormatter(filename, content, minifyLu
   return [HeaderInternal(filename, true /* withMsg */), formattedContent].join('\n');
 };
 
-exports.RunRegex = function RunRegex(regex, output, replacer) {
+exports.RunRegex = function RunRegex(regex, input, replacer) {
+  // copy input to string output
+  // if we do not copy here the regex will skip weirdly
+  // See https://codesandbox.io/s/infallible-moser-v2m6s?file=/src/index.js
+  let output = input;
+
   while (true) {
-    const match = regex.exec(output);
+    const match = regex.exec(input);
 
     // regex will cycle when all matches have been found
     // match will be `null` and we can safely break out and exit
-    if (match === null) break;
+    if (match === null) {
+      break;
+    }
 
     const [placeholder, headerType, args] = match;
     const splitArgs = typeof args === 'string' ? args.trim().split(' ') : [];
