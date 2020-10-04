@@ -28,12 +28,25 @@ if (commit && GIT_DIRTY) {
   process.exit(1);
 }
 
+// Always increment patch to ensure unique version number
+if (commit) {
+  // Committed versions (production versions)
+  // Use the simple version string without unix epoch ms
+  // e.g. v1.4.12
+  execSync(`yarn version --no-commit-hooks --no-git-tag-version --patch`);
+}
+
 // Grab version from package.json
 const packageJson = FSUtils.readJSON('package.json');
 const { version } = packageJson;
-// then the UNIX epoch ms are appended to make it unique
-// e.g. [v1.4.1601160553209] (v1.4 on Sat Sep 26 2020 at 15:49:13 PST)
-const VERSION = `v${version}.${Date.now()}`;
+let VERSION = `v${version}`;
+
+if (!commit) {
+  // Only use UNIX epoch ms for local compiles
+  // then the UNIX epoch ms are appended to make it unique
+  // e.g. v1.4.1601160553209 (v1.4 on Sat Sep 26 2020 at 15:49:13 PST)
+  VERSION = `${VERSION}.${Date.now()}`;
+}
 
 // ensure output directory
 execSync(`mkdir -p $(dirname ${OUTPUT_FILENAME})`);
