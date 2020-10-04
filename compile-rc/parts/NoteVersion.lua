@@ -4,7 +4,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v{{VERSION}}]"
+  local version = "magus.rc [{{VERSION}}]"
   crawl.take_note(version)
   didRun = true
 end
