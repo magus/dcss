@@ -1,6 +1,6 @@
 # Newest RC
 
-https://raw.githubusercontent.com/magus/dcss/v1.8.4/output/magus.rc
+https://raw.githubusercontent.com/magus/dcss/v1.8.5/output/magus.rc
 
 # What's new?
 
@@ -14,15 +14,15 @@ Follow the instructions below to easily see the differences!
 
     _Example_
     ```
-    v1.8.3
+    v1.8.4
     ```
 
 1. Using the URL below, replace **`<Version>`** with your **Version**
 
     ```
-    https://github.com/magus/dcss/compare/<Version>...v1.8.4
+    https://github.com/magus/dcss/compare/<Version>...v1.8.5
     ```
-    _Example_: https://github.com/magus/dcss/compare/v1.8.3...v1.8.4
+    _Example_: https://github.com/magus/dcss/compare/v1.8.4...v1.8.5
 
 1. Paste the new URL into your browser and discover all the changes since you last copied the RC, Enjoy! 😄
 

@@ -420,7 +420,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.8.4]"
+  local version = "magus.rc [v1.8.5]"
   crawl.take_note(version)
   didRun = true
 end
@@ -1336,13 +1336,122 @@ note_messages += cast .* Abyss
 note_messages += protects you from harm
 note_messages += You fall through a shaft
 
-# note when things come into view with noteworthy items
-# note_messages += wielding
-# note_messages += wearing
-note_messages += wielding .*\}
-note_messages += wielding .*}
-note_messages += wearing .*\}
-note_messages += wearing .*}
+# note when things come into view with unrands
+# unrands are not identified properly in notes
+# see https://github.com/crawl/crawl/issues/1580
+
+# hardcode note_messages for unrands as a temporary work around
+# http://crawl.chaosforge.org/List_of_unrands
+#short blades
+note_messages += wielding.*?Vampire's Tooth
+note_messages += wielding.*?dagger "Morg"
+note_messages += wielding.*?Spriggan's Knife
+note_messages += wielding.*?arc blade
+note_messages += wielding.*?captain's cutlass
+note_messages += wielding.*?quick blades "Gyre" and "Gimble"
+# long blades
+note_messages += wielding.*?Singing Sword
+note_messages += wielding.*?Sword of Zonguldrok
+note_messages += wielding.*?Maxwell's Thermic Engine
+note_messages += wielding.*?autumn katana
+note_messages += wielding.*?demon blade "Leech"
+note_messages += wielding.*?zealot's sword
+note_messages += wielding.*?sword of Power
+note_messages += wielding.*?sword of Cerebov
+note_messages += wielding.*?plutonium sword
+# staves
+note_messages += wielding.*staff of Dispater
+note_messages += wielding.*sceptre of Asmodeus
+note_messages += wielding.*staff of Olgreb
+note_messages += wielding.*Elemental Staff
+note_messages += wielding.*staff of Wucad Mu
+note_messages += wielding.*staff of Battle
+note_messages += wielding.*Majin-Bo
+note_messages += wielding.*?lajatang of Order
+# axes
+note_messages += wielding.*?mithril axe "Arga"
+note_messages += wielding.*?obsidian axe
+note_messages += wielding.*?Wrath of Trog
+note_messages += wielding.*?frozen axe "Frostbite"
+note_messages += wielding.*?Axe of Woe
+# polearms
+note_messages += wielding.*?lance "Wyrmbane"
+note_messages += wielding.*?trident of the Octopus King
+note_messages += wielding.*?demon trident "Rift"
+note_messages += wielding.*?glaive of the Guard
+note_messages += wielding.*?glaive of Prune
+note_messages += wielding.*?scythe of Curses
+note_messages += wielding.*?scythe "Finisher"
+# maces & flails
+note_messages += wielding.*?shillelagh "Devastator"
+note_messages += wielding.*?whip "Snakebite"
+note_messages += wielding.*?morningstar "Eos"
+note_messages += wielding.*?demon whip "Spellbinder"
+note_messages += wielding.*?sceptre of Torment
+note_messages += wielding.*?great mace "Undeadhunter"
+note_messages += wielding.*?great mace "Firestarter"
+note_messages += wielding.*?mace of Variability
+note_messages += wielding.*?giant club "Skullcrusher"
+note_messages += wielding.*?dark maul
+# ranged weapons
+note_messages += wielding.*?fustibalus "Punk"
+note_messages += wielding.*?longbow "Zephyr"
+note_messages += wielding.*?storm bow
+note_messages += wielding.*?arbalest "Damnation"
+note_messages += wielding.*?heavy crossbow "Sniper"
+# armours
+note_messages += wearing.*?robe of Folly
+note_messages += wearing.*?robe of Misfortune
+note_messages += wearing.*?robe of Augmentation
+note_messages += wearing.*?robe of Night
+note_messages += wearing.*?robe of Clouds
+note_messages += wearing.*?robe of Vines
+note_messages += wearing.*?skin of Zhor
+note_messages += wearing.*?salamander hide armour
+note_messages += wearing.*?Cigotuvi's embrace
+note_messages += wearing.*?moon troll leather armour
+note_messages += wearing.*?Kryia's mail coat
+note_messages += wearing.*?faerie dragon scales (randomised properties)
+note_messages += wearing.*?Lear's hauberk
+note_messages += wearing.*?Maxwell's patent armour
+note_messages += wearing.*?scales of the Dragon King
+note_messages += wearing.*?orange crystal plate armour
+# shields
+note_messages += wearing.*?warlock's mirror
+note_messages += wearing.*?shield of Resistance
+note_messages += wearing.*?shield of the Gong
+note_messages += wearing.*?tower shield of Ignorance
+# cloaks
+note_messages += wearing.*?cloak of the Thief
+note_messages += wearing.*?ratskin cloak
+note_messages += wearing.*?cloak of Starlight
+note_messages += wearing.*?dragonskin cloak
+# headgear
+note_messages += wearing.*?hat of the Bear Spirit
+note_messages += wearing.*?crown of Dyrovepreva
+note_messages += wearing.*?mask of the Dragon
+note_messages += wearing.*?hat of the Alchemist
+note_messages += wearing.*?hat of Pondering
+note_messages += wearing.*?hood of the Assassin
+# gloves
+note_messages += wearing.*?gauntlets of War
+note_messages += wearing.*?fencer's gloves
+# bardings
+note_messages += wearing.*?Black Knight's horse barding
+note_messages += wearing.*?lightning scales
+# rings
+note_messages += wearing.*?ring of the Mage
+note_messages += wearing.*?ring of Robustness
+note_messages += wearing.*?ring of Phasing
+note_messages += wearing.*?ring of Shadows
+note_messages += wearing.*?rings of the Octopus King
+# amulets
+note_messages += wearing.*?brooch of Shielding
+note_messages += wearing.*?necklace of Bloodlust
+note_messages += wearing.*?amulet of the Four Winds
+note_messages += wearing.*?amulet of the Air
+note_messages += wearing.*?macabre finger necklace
+note_messages += wearing.*?amulet of Vitality
 
 
 # note treasure troves and requirements for parsing
@@ -4099,5 +4208,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.8.4]")
+: rc_scs("Successfully initialized magus.rc [v1.8.5]")
 : crawl.enable_more(true)
