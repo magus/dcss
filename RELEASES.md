@@ -1,6 +1,8 @@
-# FAQ
+# Newest RC
 
-### What's new?
+https://raw.githubusercontent.com/magus/dcss/v1.8.3/output/magus.rc
+
+# What's new?
 
 Sometimes you want to know what has changed between your current version
 of the RC and the another version, usually the latest version.
@@ -12,20 +14,20 @@ Follow the instructions below to easily see the differences!
 
     _Example_
     ```
-    v1.8.1
+    v1.8.2
     ```
 
 1. Using the URL below, replace **`<Version>`** with your **Version**
 
     ```
-    https://github.com/magus/dcss/compare/<Version>...v1.8.2
+    https://github.com/magus/dcss/compare/<Version>...v1.8.3
     ```
-    _Example_: https://github.com/magus/dcss/compare/v1.8.1...v1.8.2
+    _Example_: https://github.com/magus/dcss/compare/v1.8.2...v1.8.3
 
 1. Paste the new URL into your browser and discover all the changes since you last copied the RC, Enjoy! 😄
 
 
 # Releases
 
-**[Click here to see a list of all previous releases!](https://github.com/magus/dcss/releases)**
+https://github.com/magus/dcss/releases
 

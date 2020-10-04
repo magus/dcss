@@ -420,7 +420,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.8.2]"
+  local version = "magus.rc [v1.8.3]"
   crawl.take_note(version)
   didRun = true
 end
@@ -4099,5 +4099,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.8.2]")
+: rc_scs("Successfully initialized magus.rc [v1.8.3]")
 : crawl.enable_more(true)
