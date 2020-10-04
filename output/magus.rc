@@ -420,7 +420,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [vv1.8.0.1601776985870]"
+  local version = "magus.rc [v1.8.1]"
   crawl.take_note(version)
   didRun = true
 end
@@ -636,7 +636,7 @@ ae += >large rock
 
 # Jewellery
 ae += >amulets? of (inaccuracy)
-ae += >rings? of (teleportation)
+ae += >rings? of (teleportation|attention)
 
 # Scrolls
 : if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
@@ -4099,5 +4099,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.8.0.1601776985870]")
+: rc_scs("Successfully initialized magus.rc [v1.8.1]")
 : crawl.enable_more(true)
