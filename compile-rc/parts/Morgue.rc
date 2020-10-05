@@ -14,7 +14,8 @@ note_items += experience,of Zot,acquirement,Archmagi
 note_items += crystal plate,pearl dragon scales,gold dragon scales
 
 # note some auto inscribes
-note_messages += rare
+# do not match curare
+note_messages += (?<!cu)rare
 
 note_messages += You feel monstrous
 note_messages += You pass through the gate
