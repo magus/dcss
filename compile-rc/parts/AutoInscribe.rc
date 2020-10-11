@@ -34,7 +34,8 @@ ai += scrolls? of teleportation:@r4
 ai += identify:@r1
 ai += remove curse:@r2
 ai += chunks of flesh:@e1
-ai += ration:@e2
+# match ration but not wand of disinteg(ration)
+ai += (?<!disinteg)ration:@e2
 
 # Automated inscription for sorting armor & weapons
 # e.g. `mace` to find any mace
