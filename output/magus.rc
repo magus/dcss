@@ -420,7 +420,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.8.5]"
+  local version = "magus.rc [v1.8.6]"
   crawl.take_note(version)
   didRun = true
 end
@@ -554,7 +554,8 @@ ai += scrolls? of teleportation:@r4
 ai += identify:@r1
 ai += remove curse:@r2
 ai += chunks of flesh:@e1
-ai += ration:@e2
+# match ration but not wand of disinteg(ration)
+ai += (?<!disinteg)ration:@e2
 
 # Automated inscription for sorting armor & weapons
 # e.g. `mace` to find any mace
@@ -637,6 +638,9 @@ ae += >large rock
 # Jewellery
 ae += >amulets? of (inaccuracy)
 ae += >rings? of (teleportation|attention)
+: if table_has({"Gargoyle", "Vampire", "Mummy", "Ghoul"}, you.race()) then
+ae += >rings? of (poison resistance)
+: end
 
 # Scrolls
 : if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
@@ -1327,7 +1331,8 @@ note_items += experience,of Zot,acquirement,Archmagi
 note_items += crystal plate,pearl dragon scales,gold dragon scales
 
 # note some auto inscribes
-note_messages += rare
+# do not match curare
+note_messages += (?<!cu)rare
 
 note_messages += You feel monstrous
 note_messages += You pass through the gate
@@ -1411,7 +1416,7 @@ note_messages += wearing.*?salamander hide armour
 note_messages += wearing.*?Cigotuvi's embrace
 note_messages += wearing.*?moon troll leather armour
 note_messages += wearing.*?Kryia's mail coat
-note_messages += wearing.*?faerie dragon scales (randomised properties)
+note_messages += wearing.*?faerie dragon scales
 note_messages += wearing.*?Lear's hauberk
 note_messages += wearing.*?Maxwell's patent armour
 note_messages += wearing.*?scales of the Dragon King
@@ -4208,5 +4213,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.8.5]")
+: rc_scs("Successfully initialized magus.rc [v1.8.6]")
 : crawl.enable_more(true)
