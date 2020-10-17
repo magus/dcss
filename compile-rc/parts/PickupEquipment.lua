@@ -15,7 +15,7 @@ local function should_pickup_equip(cur, i2)
   -- wearing artefact/ego/branded? skip pickup
   if cur.branded or cur.ego() or cur.artefact then return end
   -- wearing dragon scales? skip pickup
-  if cur.name("qual").find("dragon scale") then return end
+  if string.find(cur.name("qual"), "dragon scale") then return end
 
   -- if we got to this point we are not wearing dragon scales/artefact/ego/branded
   -- pickup if item is ego/branded/plus
