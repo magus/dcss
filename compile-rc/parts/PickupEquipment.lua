@@ -19,7 +19,8 @@ local function should_pickup_equip(cur, i2)
 
   -- if we got to this point we are not wearing dragon scales/artefact/ego/branded
   -- pickup if item is ego/branded/plus
-  if i2.branded or i2.ego() or i2.plus > 0 then return true end
+  local plus = i2.plus and i2.plus > 0
+  if i2.branded or i2.ego() or plus then return true end
 
   return false
 end
