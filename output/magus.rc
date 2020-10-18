@@ -338,7 +338,8 @@ local function should_pickup_equip(cur, i2)
 
   -- if we got to this point we are not wearing dragon scales/artefact/ego/branded
   -- pickup if item is ego/branded/plus
-  if i2.branded or i2.ego() or i2.plus > 0 then return true end
+  local plus = i2.plus and i2.plus > 0
+  if i2.branded or i2.ego() or plus then return true end
 
   return false
 end
@@ -419,7 +420,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.8.9]"
+  local version = "magus.rc [v1.8.10]"
   crawl.take_note(version)
   didRun = true
 end
@@ -4201,5 +4202,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.8.9]")
+: rc_scs("Successfully initialized magus.rc [v1.8.10]")
 : crawl.enable_more(true)
