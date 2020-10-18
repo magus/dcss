@@ -3,7 +3,7 @@ function withColor(color, str)
 end
 
 function rc_out(symbol, color, msg)
-  crawl.mpr(string.format("\n%s <%s>%s</%s>", symbol, color, msg, color))
+  crawl.mpr(string.format("%s <%s>%s</%s>", symbol, color, msg, color))
 end
 function rc_msg(msg)
   rc_out("🤖", "blue", msg)

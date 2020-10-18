@@ -5,7 +5,6 @@ function HeaderInternal(header, withMsg, withTime) {
 ##
 ## ${header}
 ################################################################################################
-${withMsg ? `: rc_msg(" += ${header}")` : ''}
 `.trim();
 }
 
