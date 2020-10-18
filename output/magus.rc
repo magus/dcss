@@ -10,7 +10,6 @@
 ##
 ## Globals.rc
 ################################################################################################
-: rc_msg(" += Globals.rc")
 # PAUSE variable for ForceMorePrompts.rc
 $PAUSE_MORE := PAUSE
 
@@ -40,14 +39,13 @@ $PAUSE_MORE := PAUSE
 ##
 ## Utils.lua
 ################################################################################################
-: rc_msg(" += Utils.lua")
 {
 function withColor(color, str)
   return string.format("<%s>%s</%s>", color, str, color)
 end
 
 function rc_out(symbol, color, msg)
-  crawl.mpr(string.format("\n>> %s <%s>%s</%s>", symbol, color, msg, color))
+  crawl.mpr(string.format("%s <%s>%s</%s>", symbol, color, msg, color))
 end
 function rc_msg(msg)
   rc_out("🤖", "blue", msg)
@@ -79,7 +77,6 @@ end
 ##
 ## AnnounceDamage.lua
 ################################################################################################
-: rc_msg(" += AnnounceDamage.lua")
 {
 local Messages = {
   ["HPSimple"] = function(delta)
@@ -302,7 +299,6 @@ end
 ##
 ## OpenSkills.lua
 ################################################################################################
-: rc_msg(" += OpenSkills.lua")
 {
 -- Open skills menu at start of runs
 local need_skills_opened = true
@@ -320,7 +316,6 @@ start_open_skills()
 ##
 ## PickupEquipment.lua
 ################################################################################################
-: rc_msg(" += PickupEquipment.lua")
 {
 local function should_pickup_equip(cur, i2)
   -- always pickup god gift equipment
@@ -417,7 +412,6 @@ add_autopickup_func(pickup_equipment)
 ##
 ## NoteVersion.lua
 ################################################################################################
-: rc_msg(" += NoteVersion.lua")
 {
 local didRun = false
 function note_version()
@@ -425,7 +419,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.8.8]"
+  local version = "magus.rc [v1.8.9]"
   crawl.take_note(version)
   didRun = true
 end
@@ -434,7 +428,6 @@ end
 ##
 ## TurnReady.lua
 ################################################################################################
-: rc_msg(" += TurnReady.lua")
 {
 -- Run every player turn
 function ready()
@@ -455,7 +448,6 @@ end
 ##
 ## Travel.rc
 ################################################################################################
-: rc_msg(" += Travel.rc")
 autofight_stop = 75
 autofight_caught = true
 travel_avoid_terrain = deep water
@@ -486,7 +478,6 @@ runrest_stop_message += starving
 ##
 ## Interface.rc
 ################################################################################################
-: rc_msg(" += Interface.rc")
 # hp and mp bar coloring
 view_delay = 300
 hp_colour = 100:lightgreen, 99:lightgray, 75:yellow, 50:lightred, 25:red
@@ -512,7 +503,6 @@ tile_map_pixels = 8
 ##
 ## Bindkey.rc
 ################################################################################################
-: rc_msg(" += Bindkey.rc")
 # All commands and their key binds
 # https://github.com/jmbjr/dcss/blob/master/crawl-ref/docs/keybind.txt
 
@@ -522,7 +512,6 @@ bindkey = [^N] CMD_AUTOFIGHT_NOMOVE
 ##
 ## AutoInscribe.rc
 ################################################################################################
-: rc_msg(" += AutoInscribe.rc")
 show_god_gift = unident
 
 ai := autoinscribe
@@ -598,7 +587,6 @@ ai += (pearl dragon scales|crystal plate):=g
 ##
 ## AutoPickup.rc
 ################################################################################################
-: rc_msg(" += AutoPickup.rc")
 : if you.race() == "Mummy" then
 autopickup = (/?"+|0}$
 : elseif you.race() == "Vampire" then
@@ -669,7 +657,6 @@ ae += <rune(s)?[^d]
 ##
 ## ItemColors.rc
 ################################################################################################
-: rc_msg(" += ItemColors.rc")
 ## Menu & Item colors should match exactly when possible.
 ## For menu_colour, the first match ignores subsequent matches.
 ## For item_glyph, subsequent matches override previous ones.
@@ -852,7 +839,6 @@ item += forbidden.*(potion|scroll|food):red
 ##
 ## ForceMorePrompts.rc
 ################################################################################################
-: rc_msg(" += ForceMorePrompts.rc")
 show_more = false
 
 # 1. Dungeon Features
@@ -1319,7 +1305,6 @@ more += (?-i:[A-Z]).* comes? into view
 ##
 ## Morgue.rc
 ################################################################################################
-: rc_msg(" += Morgue.rc")
 dump_item_origins = all
 dump_message_count = 100
 dump_order  = header,hiscore,stats,misc,mutations,skills,spells,inventory
@@ -1484,7 +1469,6 @@ note_monsters += silver star,pearl dragon
 ##
 ## Messages.rc
 ################################################################################################
-: rc_msg(" += Messages.rc")
 # Variables for message highlighting
 $danger   := lightred
 $item_dmg := red
@@ -4198,7 +4182,6 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## DEBUG.lua
 ################################################################################################
-: rc_msg(" += DEBUG.lua")
 {
 -- rc_msg("DEBUG")
 
@@ -4218,5 +4201,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.8.8]")
+: rc_scs("Successfully initialized magus.rc [v1.8.9]")
 : crawl.enable_more(true)
