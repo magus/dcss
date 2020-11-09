@@ -17,5 +17,8 @@
     "isomorphic-unfetch": "^3.0.0",
     "luamin": "^1.0.4",
     "ora": "^5.1.0"
+  },
+  "dependencies": {
+    "luxon": "^1.25.0"
   }
 }

@@ -1,4 +1,5 @@
 const { execSync } = require('child_process');
+const { DateTime } = require('luxon');
 const path = require('path');
 const FSUtils = require('./utils/fs');
 const PartsUtils = require('./utils/parts');
@@ -45,7 +46,9 @@ if (!commit) {
   // Only use UNIX epoch ms for local compiles
   // then the UNIX epoch ms are appended to make it unique
   // e.g. v1.4.1601160553209 (v1.4 on Sat Sep 26 2020 at 15:49:13 PST)
-  VERSION = `${VERSION}.${Date.now()}`;
+  const now = DateTime.local();
+  const datetimestamp = now.toFormat('yyyy-M-dd.hh:mm:ssa');
+  VERSION = `${VERSION}.${datetimestamp}`;
 }
 
 // ensure output directory
