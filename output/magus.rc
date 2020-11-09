@@ -368,7 +368,7 @@ local function pickup_equipment(it, name)
 
   if class == "weapon" then
     -- when using unarmed combat, we want to skip the should_pickup_equip for weapons
-    if currentWeapon == nil and you.skill("Unarmed Combat") > 3 then
+    if currentWeapon == nil and you.skill("Unarmed Combat") >= 3 then
       -- always pickup god gift equipment
       if it.god_gift then return true end
 
@@ -420,7 +420,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.8.11]"
+  local version = "magus.rc [v1.9.1]"
   crawl.take_note(version)
   didRun = true
 end
@@ -1451,7 +1451,8 @@ note_messages += wearing.*?amulet of Vitality
 
 
 # note treasure troves and requirements for parsing
-note_messages += This trove needs
+# https://regexr.com/5fqgo
+note_messages += This trove
 
 # record spellbook and spell locations
 note_messages += You pick up a book
@@ -4202,5 +4203,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.8.11]")
+: rc_scs("Successfully initialized magus.rc [v1.9.1]")
 : crawl.enable_more(true)
