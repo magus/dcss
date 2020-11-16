@@ -45,6 +45,9 @@ ae += >rings? of (teleportation|attention)
 : if table_has({"Gargoyle", "Vampire", "Mummy", "Ghoul"}, you.race()) then
 ae += >rings? of (poison resistance)
 : end
+: if table_has({"Deep Dwarf"}, you.race()) then
+ae += >amulets? of (regeneration)
+: end
 
 # Scrolls
 : if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
