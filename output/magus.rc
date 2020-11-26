@@ -420,7 +420,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.9.1]"
+  local version = "magus.rc [v1.9.2]"
   crawl.take_note(version)
   didRun = true
 end
@@ -582,7 +582,7 @@ ai += (hand crossbow|arbalest|triple crossbow):crossbow
 
 # Rare items
 ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare=g
-ai += (storm dragon scales|pearl dragon scales|gold dragon scales|crystal plate scales):rare
+ai += (storm dragon scales|pearl dragon scales|gold dragon scales|crystal plate):rare
 ai += (pearl dragon scales|crystal plate):=g
 
 ##
@@ -634,6 +634,9 @@ ae += >amulets? of (inaccuracy)
 ae += >rings? of (teleportation|attention)
 : if table_has({"Gargoyle", "Vampire", "Mummy", "Ghoul"}, you.race()) then
 ae += >rings? of (poison resistance)
+: end
+: if table_has({"Deep Dwarf"}, you.race()) then
+ae += >amulets? of (regeneration)
 : end
 
 # Scrolls
@@ -4203,5 +4206,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.9.1]")
+: rc_scs("Successfully initialized magus.rc [v1.9.2]")
 : crawl.enable_more(true)
