@@ -28,11 +28,17 @@ end
 -- Equipment autopickup (by Medar and various others)
 -- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
 local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Armour", shield="Shield"}
-local two_handed_always = {"shortbow", "longbow", "arbalest", "triple crossbow"}
+local two_handed_always = {"executioner's axe", "shortbow", "longbow", "arbalest", "triple crossbow"}
 
 local function pickup_equipment(it, name)
+  local class = it.class(true)
+  -- get currently equipped item in slot
+  local currentWeapon = items.equipped_at("weapon")
+
   -- DEBUG
   -- rc_msg(string.format("[pickup_equipment] name: %s", name))
+  -- rc_msg(string.format("[pickup_equipment] currentWeapon.subtype: %s", currentWeapon.subtype()))
+
 
   -- do not pickup forbidden items
   if string.match(name, "forbidden") then return end
@@ -43,9 +49,7 @@ local function pickup_equipment(it, name)
   -- always pickup artefacts
   if it.artefact then return true end
 
-  local class = it.class(true)
-  -- get currently equipped item in slot
-  local currentWeapon = items.equipped_at("weapon")
+
 
   if class == "weapon" then
     -- when using unarmed combat, we want to skip the should_pickup_equip for weapons
