@@ -145,6 +145,7 @@ note_messages += wearing.*?amulet of Vitality
 # note treasure troves and requirements for parsing
 # https://regexr.com/5fqgo
 note_messages += This trove
+note_messages += This portal proclaims the superiority
 
 # record spellbook and spell locations
 note_messages += You pick up a book
