@@ -22,6 +22,8 @@
 
 
 #--Header RC Options (http://crawl.akrasiac.org/docs/options_guide.txt)
+{{Init.rc}}
+
 {{Travel.rc}}
 
 {{Interface.rc}}

@@ -1,0 +1,15 @@
+# When set to `true` or `full`, the game will pregenerate the entire
+# connected dungeon when starting a new character. This leads to
+# deterministic dungeon generation relative to a particular game seed, at
+# the cost of a slow game start. If set to `incremental`, the game will
+# generate levels as needed so that it always generates them in the same
+# order, also producing a deterministic dungeon. You still may encounter
+# variation in bazaars, the abyss, pandemonium, and ziggurats, and for
+# incremental pregeneration, artefacts. When set to `false` or `classic`,
+# the game will generate all levels on level entry, as was the rule before
+# 0.23. Some servers may disallow full pregeneration.
+# https://github.com/crawl/crawl/blob/master/crawl-ref/docs/options_guide.txt#L421
+#
+# `incremental` produces deterministic results and `full` is not supported
+# by webtiles, so we set this to `incremental` here for the best result
+pregen_dungeon = incremental
