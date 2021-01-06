@@ -347,11 +347,17 @@ end
 -- Equipment autopickup (by Medar and various others)
 -- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
 local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Armour", shield="Shield"}
-local two_handed_always = {"shortbow", "longbow", "arbalest", "triple crossbow"}
+local two_handed_always = {"executioner's axe", "shortbow", "longbow", "arbalest", "triple crossbow"}
 
 local function pickup_equipment(it, name)
+  local class = it.class(true)
+  -- get currently equipped item in slot
+  local currentWeapon = items.equipped_at("weapon")
+
   -- DEBUG
   -- rc_msg(string.format("[pickup_equipment] name: %s", name))
+  -- rc_msg(string.format("[pickup_equipment] currentWeapon.subtype: %s", currentWeapon.subtype()))
+
 
   -- do not pickup forbidden items
   if string.match(name, "forbidden") then return end
@@ -362,9 +368,7 @@ local function pickup_equipment(it, name)
   -- always pickup artefacts
   if it.artefact then return true end
 
-  local class = it.class(true)
-  -- get currently equipped item in slot
-  local currentWeapon = items.equipped_at("weapon")
+
 
   if class == "weapon" then
     -- when using unarmed combat, we want to skip the should_pickup_equip for weapons
@@ -420,7 +424,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.9.2]"
+  local version = "magus.rc [v1.9.3]"
   crawl.take_note(version)
   didRun = true
 end
@@ -446,6 +450,25 @@ end
 ##
 ## RC Options (http://crawl.akrasiac.org/docs/options_guide.txt)
 ################################################################################################
+##
+## Init.rc
+################################################################################################
+# When set to `true` or `full`, the game will pregenerate the entire
+# connected dungeon when starting a new character. This leads to
+# deterministic dungeon generation relative to a particular game seed, at
+# the cost of a slow game start. If set to `incremental`, the game will
+# generate levels as needed so that it always generates them in the same
+# order, also producing a deterministic dungeon. You still may encounter
+# variation in bazaars, the abyss, pandemonium, and ziggurats, and for
+# incremental pregeneration, artefacts. When set to `false` or `classic`,
+# the game will generate all levels on level entry, as was the rule before
+# 0.23. Some servers may disallow full pregeneration.
+# https://github.com/crawl/crawl/blob/master/crawl-ref/docs/options_guide.txt#L421
+#
+# `incremental` produces deterministic results and `full` is not supported
+# by webtiles, so we set this to `incremental` here for the best result
+pregen_dungeon = incremental
+
 ##
 ## Travel.rc
 ################################################################################################
@@ -582,7 +605,7 @@ ai += (hand crossbow|arbalest|triple crossbow):crossbow
 
 # Rare items
 ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare=g
-ai += (storm dragon scales|pearl dragon scales|gold dragon scales|crystal plate):rare
+ai += (storm dragon scales|quicksilver dragon scales|shadow dragon scales|pearl dragon scales|gold dragon scales|crystal plate):rare
 ai += (pearl dragon scales|crystal plate):=g
 
 ##
@@ -1456,6 +1479,7 @@ note_messages += wearing.*?amulet of Vitality
 # note treasure troves and requirements for parsing
 # https://regexr.com/5fqgo
 note_messages += This trove
+note_messages += This portal proclaims the superiority
 
 # record spellbook and spell locations
 note_messages += You pick up a book
@@ -4206,5 +4230,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.9.2]")
+: rc_scs("Successfully initialized magus.rc [v1.9.3]")
 : crawl.enable_more(true)
