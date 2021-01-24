@@ -424,7 +424,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.9.3]"
+  local version = "magus.rc [v1.9.4]"
   crawl.take_note(version)
   didRun = true
 end
@@ -616,7 +616,7 @@ autopickup = (/?"+|0}$
 : elseif you.race() == "Vampire" then
 autopickup = (/?"!+|0}$
 : else
-autopickup = (/%?"!+|0}$
+autopickup = (/?"!+|0}$
 : end
 # )       Weapons
 # (       Missiles
@@ -1079,7 +1079,7 @@ more += The walls disappear
 more += There is a sealed passage
 more += You are wearing\:
 more += You cannot afford.*fee
-more += You feel (dopey|clumsy|weak)
+# more += You feel (dopey|clumsy|weak)
 more += You feel a genetic drift
 more += You feel monstrous
 more += You feel your rage building
@@ -1518,10 +1518,8 @@ $mp := lightcyan
 # channel.plain =
 channel.prompt = $interface
 channel.god = $godaction
-channel.pray = $godaction
 channel.duration = $warning
 channel.danger = $danger
-channel.food = $warning
 channel.warning = $danger
 channel.recovery = $verypositive
 channel.talk = $warning
@@ -1538,7 +1536,6 @@ channel.friend_action = $takesaction
 channel.monster_damage = mute
 # monster_target = --currently unused by the game
 # channel.banishment = --either positive or danger
-channel.rotten_meat = $boring
 channel.equipment = $interface
 # channel.floor =
 channel.multiturn = $boring
@@ -4230,5 +4227,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.9.3]")
+: rc_scs("Successfully initialized magus.rc [v1.9.4]")
 : crawl.enable_more(true)
