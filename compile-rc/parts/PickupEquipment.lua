@@ -28,7 +28,14 @@ end
 -- Equipment autopickup (by Medar and various others)
 -- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
 local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Armour", shield="Shield"}
-local two_handed_always = {"executioner's axe", "shortbow", "longbow", "arbalest", "triple crossbow"}
+local two_handed_always = {
+  "great sword", "triple sword",
+  "battleaxe", "executioner's axe",
+  "dire flail", "great mace", "giant club", "giant spiked club",
+  "halberd", "scythe", "glaive", "bardiche",
+  "quarterstaff", "lajatang",
+  "shortbow", "longbow",
+  "arbalest", "triple crossbow"}
 
 local function pickup_equipment(it, name)
   local class = it.class(true)
