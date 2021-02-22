@@ -26,6 +26,9 @@ ai += magical staff:!a
 # Prevent auto quivering and cycling ammo
 ai += (large rock|throwing net|curare|of dispersal):=f
 
+# Warn before throwing
+ai += (throwing net|of dispersal):!f
+
 # Convenient shortcuts
 ai += curing:@q1
 ai += potions? of heal wounds:@q2
