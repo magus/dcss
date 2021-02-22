@@ -106,7 +106,7 @@ async function run() {
         spinner.succeed(searchResultMessage);
         console.info();
 
-        searchResults.forEach((result, i) => {
+        searchResults.reverse().forEach((result, i) => {
           const {
             grep,
             morgue: { filename },
