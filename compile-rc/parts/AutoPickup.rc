@@ -56,6 +56,12 @@ ae += >scrolls? of (holy word)
 ae += <scrolls? of (holy word)
 :end
 
+: if table_has({"Formicid"}, you.race()) then
+ae += >scrolls? of (teleportation)
+: else
+ae += <scrolls? of (teleportation)
+:end
+
 ae += <scrolls? of (vulnerability|immolation|torment)
 ae += >scrolls? of (amnesia|noise|random uselessness)
 
