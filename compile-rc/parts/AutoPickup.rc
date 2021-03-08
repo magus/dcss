@@ -2,6 +2,9 @@
 autopickup = (/?"+|0}$
 : elseif you.race() == "Vampire" then
 autopickup = (/?"!+|0}$
+# Felids are hard.
+: elseif you.race() == "Felid" then
+autopickup = /?"!+0}$
 : else
 autopickup = (/?"!+|0}$
 : end
