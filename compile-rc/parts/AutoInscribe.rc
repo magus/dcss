@@ -62,7 +62,8 @@ ai += (staff|quarterstaff|lajatang):staff
 #   - a chunk of flesh
 #   - moonstone
 #   - soapstone
-ai += (dart(?! slug)|throwing net|(?<!moon|soap)stone|boomerang|javelin|large rock)s?:throwing
+#   - a stone giant corpse
+ai += (dart(?! slug)|throwing net|(?<!moon|soap)stone(?!(\s(giant|golem)))|boomerang|javelin|large rock)s?:throwing
 ai += (hunting sling|fustibalus):sling
 ai += (shortbow|longbow):bow
 ai += (hand crossbow|arbalest|triple crossbow):crossbow
