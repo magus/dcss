@@ -347,7 +347,14 @@ end
 -- Equipment autopickup (by Medar and various others)
 -- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
 local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Armour", shield="Shield"}
-local two_handed_always = {"executioner's axe", "shortbow", "longbow", "arbalest", "triple crossbow"}
+local two_handed_always = {
+  "great sword", "triple sword",
+  "battleaxe", "executioner's axe",
+  "dire flail", "great mace", "giant club", "giant spiked club",
+  "halberd", "scythe", "glaive", "bardiche",
+  "quarterstaff", "lajatang",
+  "shortbow", "longbow",
+  "arbalest", "triple crossbow"}
 
 local function pickup_equipment(it, name)
   local class = it.class(true)
@@ -424,7 +431,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.9.4]"
+  local version = "magus.rc [v1.9.5]"
   crawl.take_note(version)
   didRun = true
 end
@@ -474,7 +481,11 @@ pregen_dungeon = incremental
 ################################################################################################
 autofight_stop = 75
 autofight_caught = true
-travel_avoid_terrain = deep water
+
+# Prevent travel from routing through deep water.
+# By default, this option is commented out. For merfolk and/or characters with
+# permanent levitation, this will prevent travel or explore from going through any water
+# travel_avoid_terrain = deep water
 
 # Wait until your HP and MP are both at rest_wait_percent before moving
 rest_wait_percent = 100
@@ -564,6 +575,9 @@ ai += magical staff:!a
 # Prevent auto quivering and cycling ammo
 ai += (large rock|throwing net|curare|of dispersal):=f
 
+# Warn before throwing
+ai += (throwing net|of dispersal):!f
+
 # Convenient shortcuts
 ai += curing:@q1
 ai += potions? of heal wounds:@q2
@@ -615,6 +629,9 @@ ai += (pearl dragon scales|crystal plate):=g
 autopickup = (/?"+|0}$
 : elseif you.race() == "Vampire" then
 autopickup = (/?"!+|0}$
+# Felids are hard.
+: elseif you.race() == "Felid" then
+autopickup = /?"!+0}$
 : else
 autopickup = (/?"!+|0}$
 : end
@@ -667,6 +684,12 @@ ae += >amulets? of (regeneration)
 ae += >scrolls? of (holy word)
 : else
 ae += <scrolls? of (holy word)
+:end
+
+: if table_has({"Formicid"}, you.race()) then
+ae += >scrolls? of (teleportation)
+: else
+ae += <scrolls? of (teleportation)
 :end
 
 ae += <scrolls? of (vulnerability|immolation|torment)
@@ -1551,6 +1574,8 @@ channel.orb = $awesome
 ignore := runrest_ignore_message
 
 # Annoyances
+ignore += melds into your body
+ignore += unmelds from your body
 ignore += grinding sound
 ignore += contamination has completely
 ignore += your breath back
@@ -4211,6 +4236,15 @@ msc ^= mute:is almost (dead|destroyed)
 {
 -- rc_msg("DEBUG")
 
+-- rc_msg(you.race())
+-- rc_msg(tostring(not table_has({"Merfolk", "Octopode"}, you.race())))
+
+-- if not table_has({"Merfolk", "Octopode"}, you.race()) then
+--   rc_msg("1 Is NOT deep water walking race")
+-- else
+--   rc_msg("1 Is deep water walking race")
+-- end
+
 -- function colortest()
 --   for i, color in pairs(COLORS) do
 --     crawl.mpr(string.format("\n>> 🤖 colortest <%s>%s</%s>", color, color, color))
@@ -4227,5 +4261,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.9.4]")
+: rc_scs("Successfully initialized magus.rc [v1.9.5]")
 : crawl.enable_more(true)
