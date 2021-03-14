@@ -51,6 +51,8 @@ channel.orb = $awesome
 ignore := runrest_ignore_message
 
 # Annoyances
+ignore += melds into your body
+ignore += unmelds from your body
 ignore += grinding sound
 ignore += contamination has completely
 ignore += your breath back
