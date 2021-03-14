@@ -1,6 +1,10 @@
 autofight_stop = 75
 autofight_caught = true
-travel_avoid_terrain = deep water
+
+# Prevent travel from routing through deep water.
+# By default, this option is commented out. For merfolk and/or characters with
+# permanent levitation, this will prevent travel or explore from going through any water
+# travel_avoid_terrain = deep water
 
 # Wait until your HP and MP are both at rest_wait_percent before moving
 rest_wait_percent = 100
