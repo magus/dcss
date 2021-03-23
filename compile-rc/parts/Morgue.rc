@@ -39,8 +39,8 @@ note_messages += wielding.*?captain's cutlass
 note_messages += wielding.*?quick blades "Gyre" and "Gimble"
 # long blades
 note_messages += wielding.*?Singing Sword
-note_messages += wielding.*?Sword of Zonguldrok
-note_messages += wielding.*?Maxwell's Thermic Engine
+note_messages += wielding.*?sword of Zonguldrok
+note_messages += wielding.*?Maxwell's thermic engine
 note_messages += wielding.*?autumn katana
 note_messages += wielding.*?demon blade "Leech"
 note_messages += wielding.*?zealot's sword
@@ -48,14 +48,14 @@ note_messages += wielding.*?sword of Power
 note_messages += wielding.*?sword of Cerebov
 note_messages += wielding.*?plutonium sword
 # staves
-note_messages += wielding.*staff of Dispater
-note_messages += wielding.*sceptre of Asmodeus
-note_messages += wielding.*staff of Olgreb
-note_messages += wielding.*Elemental Staff
-note_messages += wielding.*staff of Wucad Mu
-note_messages += wielding.*staff of Battle
-note_messages += wielding.*Majin-Bo
-note_messages += wielding.*?lajatang of Order
+note_messages += wielding.*?staff of Dispater
+note_messages += wielding.*?sceptre of Asmodeus
+note_messages += wielding.*?staff of Olgreb
+note_messages += wielding.*?Elemental Staff
+note_messages += wielding.*?staff of Wucad Mu
+note_messages += wielding.*?staff of Battle
+note_messages += wielding.*?Majin-Bo
+note_messages += wielding.*??lajatang of Order
 # axes
 note_messages += wielding.*?mithril axe "Arga"
 note_messages += wielding.*?obsidian axe
@@ -82,7 +82,7 @@ note_messages += wielding.*?mace of Variability
 note_messages += wielding.*?giant club "Skullcrusher"
 note_messages += wielding.*?dark maul
 # ranged weapons
-note_messages += wielding.*?fustibalus "Punk"
+note_messages += wielding.*?sling "Punk"
 note_messages += wielding.*?longbow "Zephyr"
 note_messages += wielding.*?storm bow
 note_messages += wielding.*?arbalest "Damnation"
@@ -125,14 +125,14 @@ note_messages += wearing.*?hood of the Assassin
 note_messages += wearing.*?gauntlets of War
 note_messages += wearing.*?fencer's gloves
 # bardings
-note_messages += wearing.*?Black Knight's horse barding
+note_messages += wearing.*?Black Knight's barding
 note_messages += wearing.*?lightning scales
 # rings
-note_messages += wearing.*?ring of the Mage
-note_messages += wearing.*?ring of Robustness
-note_messages += wearing.*?ring of Phasing
 note_messages += wearing.*?ring of Shadows
-note_messages += wearing.*?rings of the Octopus King
+note_messages += wearing.*?ring of the Hare
+note_messages += wearing.*?ring of the Mage
+note_messages += wearing.*?ring of the Octopus King
+note_messages += wearing.*?ring of the Tortoise
 # amulets
 note_messages += wearing.*?brooch of Shielding
 note_messages += wearing.*?necklace of Bloodlust
