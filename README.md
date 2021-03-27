@@ -1,25 +1,10 @@
 # dcss
 
+# **[Curious about what changed? Check out Releases!](/RELEASES.md)**
+
 ## tl;dr
 
 **[Click here to copy the latest magus.rc](https://github.com/magus/dcss/raw/master/output/magus.rc)**
-
-**[Curious about what changed? Check out Releases!](/RELEASES.md)**
-
-## Table of contents
-- [parseUser](#parseUser)
-- [magusnn.rc generator](#magusnnrc-generator)
-- [Resources](#resources)
-
-## scripts
-
-### parseUser
-
-```sh
-yarn search magusnn by Sigmund
-```
-
-![Demo GIF of parseUser for user "magusnn" for term "by sigmund"](https://raw.githubusercontent.com/magus/dcss/master/static/parseuser-demo-4x.766b70.gif)
 
 ## magusnn.rc generator
 

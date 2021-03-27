@@ -6,17 +6,13 @@
   "author": "magus <noah@iamnoah.com>",
   "license": "MIT",
   "scripts": {
-    "search": "node ./scripts/parseUser",
     "find-version": "./scripts/find-version.sh",
     "compile:debug": "node --inspect-brk compile-rc/compile.js",
     "compile": "node compile-rc/compile.js",
     "start": "yarn compile"
   },
   "devDependencies": {
-    "chalk": "^4.1.0",
-    "isomorphic-unfetch": "^3.0.0",
-    "luamin": "^1.0.4",
-    "ora": "^5.1.0"
+    "luamin": "^1.0.4"
   },
   "dependencies": {
     "luxon": "^1.25.0"

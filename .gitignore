@@ -118,6 +118,3 @@ dist
 
 # vercel / now
 .now
-
-# ignore scripts cache
-scripts/.cache
