@@ -19,3 +19,10 @@ equip_unequip = true
 allow_self_target = no
 # mini map size, [X] pixels per tile
 tile_map_pixels = 8
+
+# Zot count status
+# If you spend the indicated number of turns in this branch without descending to
+# a new floor, Zot will find and consume you.
+# always_show_zot determines whether to show the "Zot" status light at all times
+# even when you've got plenty of time left. defaults to `false`
+always_show_zot = true
