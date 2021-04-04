@@ -14,6 +14,22 @@
 -- local result = crawl.yesno("Answer this question (result)")
 -- rc_msg(string.format("result=[%s]", tostring(result)))
 
+-- -- attempting to listen to chat logs for distortion in logs
+-- -- http://doc.dcss.io/modules/Hooks.html
+-- function c_message(text, channel)
+--   -- local recursion = string.find(text, "[c_message]")
+--   -- if recursion then return end
+--   -- if rc_msg == nil then return end
+
+--   -- if string.find(text, "you") then
+--   --   crawl.more()
+--   -- end
+
+--   -- if string.find(text, "You") then
+--   --   crawl.more()
+--   -- end
+-- end
+
 -- rc_msg(you.race())
 -- rc_msg(tostring(not table_has({"Merfolk", "Octopode", "Barachi"}, you.race())))
 
