@@ -70,6 +70,5 @@ ai += (hand crossbow|arbalest|triple crossbow):crossbow
 
 
 # Rare items
-ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare=g
+ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare
 ai += (storm dragon scales|quicksilver dragon scales|shadow dragon scales|pearl dragon scales|gold dragon scales|crystal plate):rare
-ai += (pearl dragon scales|crystal plate):=g
