@@ -85,7 +85,7 @@ local function pickup_equipment(it, name)
 
   if class == "weapon" then
     -- when using unarmed combat, we want to skip the should_pickup for weapons
-    if currentWeapon == nil and you.skill("Unarmed Combat") >= 3 then
+    if currentWeapon == nil then
       -- always pickup god gift equipment
       if it.god_gift then return true end
 
