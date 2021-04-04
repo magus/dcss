@@ -31,6 +31,7 @@ yarn compile
 > http://crawl.akrasiac.org/docs/options_guide.txt
 
 ### RC Examples
+https://github.com/gammafunk/dcss-rc
 http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
 https://github.com/gammafunk/dcss-rc#1-include-the-rc-or-lua-file-in-your-rc
 https://github.com/HilariousDeathArtist/DCSSConfigFile/blob/master/HilariousDeathArtist.txt
