@@ -1,27 +1,52 @@
-local function should_pickup_equip(cur, i2)
+local favor_egos = false
+local favor_plus = false
+
+local function is_branded_ego(item)
+  return item.branded or item.ego()
+end
+local function is_magical(item)
+  return is_branded_ego(item) or item.artefact
+end
+
+local function debug_item(item)
+  return string.format("name: %s; subtype: %s, magical: %s", item.name("qual"), item.subtype(), tostring(is_magical(item)))
+end
+
+
+local function should_pickup(cur, i2)
   -- always pickup god gift equipment
   if i2.god_gift then return true end
 
   --  not wearing any item in the slot? pickup!
   if cur == nil then return true end
 
-  -- items names are the same, pickup higher plus
+  local higher_plus = i2.plus ~= nil and i2.plus > cur.plus
+  local more_magical = not is_magical(cur) and is_magical(i2)
+
+  -- DEBUG
+  -- rc_msg(string.format("[should_pickup] (cur): %s", debug_item(cur)))
+  -- rc_msg(string.format("[should_pickup] (i2): %s", debug_item(i2)))
+  -- rc_msg(string.format("[should_pickup] higher_plus: %s, more_magical: %s", tostring(higher_plus), tostring(more_magical)))
+
+  -- items names are the same, pickup higher plus or more magical
   if cur.name("qual") == i2.name("qual") then
-    if i2.plus ~= nil and i2.plus > cur.plus then
+    if  higher_plus or more_magical then
       return true
     end
   end
 
-  -- wearing artefact/ego/branded? skip pickup
-  if cur.branded or cur.ego() or cur.artefact then return end
-  -- wearing dragon scales? skip pickup
-  if string.find(cur.name("qual"), "dragon scale") then return end
+  local is_dragon_scales = string.find(cur.name("qual"), "dragon scale")
+  -- wearing magical item (artefact/ego/branded) or dragon scales? skip pickup
+  if is_magical(cur) or is_dragon_scales then return end
 
   -- if we got to this point we are not wearing dragon scales/artefact/ego/branded
-  -- pickup if item is ego/branded/plus
-  local plus = i2.plus and i2.plus > 0
-  if i2.branded or i2.ego() or plus then return true end
 
+  -- if favoring egos and item is ego/branded, pickup
+  if favor_egos and is_magical(i2) then return true end
+  -- if favoring plus and plus is higher, pickup
+  if favor_plus and higher_plus then return true end
+
+  -- no not pickup by default
   return false
 end
 
@@ -59,7 +84,7 @@ local function pickup_equipment(it, name)
 
 
   if class == "weapon" then
-    -- when using unarmed combat, we want to skip the should_pickup_equip for weapons
+    -- when using unarmed combat, we want to skip the should_pickup for weapons
     if currentWeapon == nil and you.skill("Unarmed Combat") >= 3 then
       -- always pickup god gift equipment
       if it.god_gift then return true end
@@ -67,7 +92,7 @@ local function pickup_equipment(it, name)
       return false
     end
 
-    if should_pickup_equip(currentWeapon, it) then return true end
+    if should_pickup(currentWeapon, it) then return true end
 
   elseif class == "armour" then
     local sub_type = it.subtype()
@@ -91,7 +116,7 @@ local function pickup_equipment(it, name)
       -- get currently equipped item in slot
       local equipped_item = items.equipped_at(armor_slot)
 
-      if should_pickup_equip(equipped_item, it) then return true end
+      if should_pickup(equipped_item, it) then return true end
     end
   end
 
