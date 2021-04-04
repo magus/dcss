@@ -30,6 +30,8 @@
 
 {{Bindkey.rc}}
 
+{{Slots.rc}}
+
 {{AutoInscribe.rc}}
 
 {{AutoPickup.rc}}

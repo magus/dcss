@@ -29,16 +29,16 @@ ai += (large rock|throwing net|curare|of dispersal):=f
 # Warn before throwing
 ai += (throwing net|of dispersal):!f
 
-# Convenient shortcuts
+### Convenient shortcuts
+###########################
+# Potions
 ai += curing:@q1
 ai += potions? of heal wounds:@q2
 ai += potions? of haste:@q3
-ai += scrolls? of teleportation:@r4
+# Scrolls
 ai += identify:@r1
 ai += remove curse:@r2
-ai += chunks of flesh:@e1
-# match ration but not wand of disinteg(ration)
-ai += (?<!disinteg)ration:@e2
+ai += scrolls? of teleportation:@r4
 
 # Automated inscription for sorting armor & weapons
 # e.g. `mace` to find any mace
