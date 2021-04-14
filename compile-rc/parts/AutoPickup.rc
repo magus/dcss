@@ -1,12 +1,12 @@
 : if you.race() == "Mummy" then
-autopickup = (/?"+|0}$
+autopickup = (/?"+|}$
 : elseif you.race() == "Vampire" then
-autopickup = (/?"!+|0}$
+autopickup = (/?"!+|}$
 # Felids are hard.
 : elseif you.race() == "Felid" then
-autopickup = /?"!+0}$
+autopickup = /?"!+}$
 : else
-autopickup = (/?"!+|0}$
+autopickup = (/?"!+|}$
 : end
 # )       Weapons
 # (       Missiles
@@ -76,3 +76,6 @@ ae += <(tins of tremorstones)
 
 # Pickup runes but not 'runed' anything
 ae += <rune(s)?[^d]
+
+# IMPORTANT: Do not auto pickup the Orb of Zot
+ae += >orb of Zot
