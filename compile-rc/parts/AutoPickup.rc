@@ -69,7 +69,7 @@ ae += <scrolls? of (vulnerability|immolation|torment)
 ae += >scrolls? of (amnesia|noise|random uselessness)
 
 ae += <potions? of (mutation|lignification)
-ae += >potions? of (degeneration|stabbing)
+ae += >potions? of (degeneration)
 
 # Miscellaneous
 ae += <(tins of tremorstones)
