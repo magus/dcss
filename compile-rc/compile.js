@@ -29,6 +29,9 @@ if (commit && GIT_DIRTY) {
   process.exit(1);
 }
 
+// Grab initial version from package.json
+const initialVersion = FSUtils.readJSON('package.json').version;
+
 // Always increment patch to ensure unique version number
 if (commit) {
   // Committed versions (production versions)
@@ -95,8 +98,12 @@ if (write) {
 
 // Commit and tag these changes for Releases
 if (commit) {
-  execSync(`git commit -am  "[${VERSION}]"`);
-  execSync(`git tag -a ${VERSION} -m "[${VERSION}]"`);
+  // build very simple changelog from commit messages since last version tag
+  const changelog = execSync(`git log --format=%B v${initialVersion}..HEAD`).toString();
+  const message = `[${VERSION}]\n\n${changelog}`;
+
+  execSync(`git commit -am  "${message}"`);
+  execSync(`git tag -a ${VERSION} -m "${message}"`);
 } else {
   // Revert outputs to prevent accidental commit
   execSync(`git checkout ${OUTPUT_FILENAME}`);
