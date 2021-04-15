@@ -40,34 +40,6 @@ ai += identify:@r1
 ai += remove curse:@r2
 ai += scrolls? of teleportation:@r4
 
-# Automated inscription for sorting armor & weapons
-# e.g. `mace` to find any mace
-ai += (dagger|quick blade|short sword|rapier):short
-ai += (falchion|long sword|scimitar|demon blade|eudemon blade|double sword|great sword|triple sword):long
-ai += (hand axe|war axe|broad axe|battleaxe|executioner's axe):axe
-ai += (whip|club|mace|flail|morningstar|demon whip|sacred scourge|dire flail|eveningstar|great mace|giant club|giant spiked club):mace
-ai += (spear|trident|halberd|scythe|demon trident|trishula|glaive|bardiche):polearm
-ai += (staff|quarterstaff|lajatang):staff
-# throwing match tests (https://regexr.com/5cs44)
-# should match
-#   - stone
-#   - dart
-#   - throwing net
-#   - boomerang
-#   - javelin
-#   - large rock
-#   - ...and plurals of all above
-# should not match
-#   - dart slug
-#   - a chunk of flesh
-#   - moonstone
-#   - soapstone
-#   - a stone giant corpse
-ai += (dart(?! slug)|throwing net|(?<!moon|soap)stone(?!(\s(giant|golem)))|boomerang|javelin|large rock)s?:throwing
-ai += (hunting sling|fustibalus):sling
-ai += (shortbow|longbow):bow
-ai += (hand crossbow|arbalest|triple crossbow):crossbow
-
 
 # Rare items
 ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare
