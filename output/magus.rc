@@ -328,7 +328,7 @@ local function is_magical(item)
 end
 
 local function debug_item(item)
-  return string.format("name: %s; subtype: %s, magical: %s", item.name("qual"), item.subtype(), tostring(is_magical(item)))
+  return string.format("name: %s; subtype: %s, magical: %s, plus: %s", item.name("qual"), item.subtype(), tostring(is_magical(item)), tostring(item.plus))
 end
 
 
@@ -339,7 +339,7 @@ local function should_pickup(cur, i2)
   --  not wearing any item in the slot? pickup!
   if cur == nil then return true end
 
-  local higher_plus = i2.plus ~= nil and i2.plus > cur.plus
+  local higher_plus = i2.plus ~= nil and i2.plus > (cur.plus or 0)
   local more_magical = not is_magical(cur) and is_magical(i2)
 
   -- DEBUG
@@ -456,7 +456,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.9.9]"
+  local version = "magus.rc [v1.9.10]"
   crawl.take_note(version)
   didRun = true
 end
@@ -785,34 +785,6 @@ ai += identify:@r1
 ai += remove curse:@r2
 ai += scrolls? of teleportation:@r4
 
-# Automated inscription for sorting armor & weapons
-# e.g. `mace` to find any mace
-ai += (dagger|quick blade|short sword|rapier):short
-ai += (falchion|long sword|scimitar|demon blade|eudemon blade|double sword|great sword|triple sword):long
-ai += (hand axe|war axe|broad axe|battleaxe|executioner's axe):axe
-ai += (whip|club|mace|flail|morningstar|demon whip|sacred scourge|dire flail|eveningstar|great mace|giant club|giant spiked club):mace
-ai += (spear|trident|halberd|scythe|demon trident|trishula|glaive|bardiche):polearm
-ai += (staff|quarterstaff|lajatang):staff
-# throwing match tests (https://regexr.com/5cs44)
-# should match
-#   - stone
-#   - dart
-#   - throwing net
-#   - boomerang
-#   - javelin
-#   - large rock
-#   - ...and plurals of all above
-# should not match
-#   - dart slug
-#   - a chunk of flesh
-#   - moonstone
-#   - soapstone
-#   - a stone giant corpse
-ai += (dart(?! slug)|throwing net|(?<!moon|soap)stone(?!(\s(giant|golem)))|boomerang|javelin|large rock)s?:throwing
-ai += (hunting sling|fustibalus):sling
-ai += (shortbow|longbow):bow
-ai += (hand crossbow|arbalest|triple crossbow):crossbow
-
 
 # Rare items
 ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare
@@ -822,14 +794,14 @@ ai += (storm dragon scales|quicksilver dragon scales|shadow dragon scales|pearl 
 ## AutoPickup.rc
 ################################################################################################
 : if you.race() == "Mummy" then
-autopickup = (/?"+|0}$
+autopickup = (/?"+|}$
 : elseif you.race() == "Vampire" then
-autopickup = (/?"!+|0}$
+autopickup = (/?"!+|}$
 # Felids are hard.
 : elseif you.race() == "Felid" then
-autopickup = /?"!+0}$
+autopickup = /?"!+}$
 : else
-autopickup = (/?"!+|0}$
+autopickup = (/?"!+|}$
 : end
 # )       Weapons
 # (       Missiles
@@ -892,13 +864,16 @@ ae += <scrolls? of (vulnerability|immolation|torment)
 ae += >scrolls? of (amnesia|noise|random uselessness)
 
 ae += <potions? of (mutation|lignification)
-ae += >potions? of (degeneration|stabbing)
+ae += >potions? of (degeneration)
 
 # Miscellaneous
 ae += <(tins of tremorstones)
 
 # Pickup runes but not 'runed' anything
 ae += <rune(s)?[^d]
+
+# IMPORTANT: Do not auto pickup the Orb of Zot
+ae += >orb of Zot
 
 ##
 ## ItemColors.rc
@@ -1141,7 +1116,7 @@ stop += An alarm trap emits a blaring wail
 stop += found a zot trap
 stop += hear a soft click
 more += The power of Zot is invoked against you
-more += You (become entangled|are caught) in (a|the) (web|net)
+more += You (become entangled|are caught) in (a|the) (net)
 more += You fall through a shaft
 more += You stumble into the trap
 
@@ -4487,5 +4462,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.9.9]")
+: rc_scs("Successfully initialized magus.rc [v1.9.10]")
 : crawl.enable_more(true)
