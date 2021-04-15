@@ -9,7 +9,7 @@ local function is_magical(item)
 end
 
 local function debug_item(item)
-  return string.format("name: %s; subtype: %s, magical: %s", item.name("qual"), item.subtype(), tostring(is_magical(item)))
+  return string.format("name: %s; subtype: %s, magical: %s, plus: %s", item.name("qual"), item.subtype(), tostring(is_magical(item)), tostring(item.plus))
 end
 
 
@@ -20,7 +20,7 @@ local function should_pickup(cur, i2)
   --  not wearing any item in the slot? pickup!
   if cur == nil then return true end
 
-  local higher_plus = i2.plus ~= nil and i2.plus > cur.plus
+  local higher_plus = i2.plus ~= nil and i2.plus > (cur.plus or 0)
   local more_magical = not is_magical(cur) and is_magical(i2)
 
   -- DEBUG
