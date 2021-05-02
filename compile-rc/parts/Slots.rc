@@ -20,6 +20,9 @@ ability_slot += Enter the Abyss:E
 # of words in the spell, (3) anywhere from the spell name, or (4) from the
 # names of the spell schools, in order preference.
 
+# Trying to organize slots with a web app
+# https://codesandbox.io/s/determined-monad-zt5px?file=/src/App.js:1830-1864
+
 spell_slot += Absolute Zero:azeo
 spell_slot += Alistair's intoxication:aisn
 spell_slot += Apportation:anpt
@@ -48,7 +51,7 @@ spell_slot += Death channel:dtcl
 spell_slot += Death's door:EAOI
 spell_slot += Discord:DCSR
 spell_slot += Disjunction:iuoe
-spell_slot += Dispel undead:ndp
+spell_slot += Dispel undead:dunp
 spell_slot += Dispersal:iea
 spell_slot += Dragon form:dgrf
 spell_slot += Dragon's call:dcl
@@ -88,8 +91,8 @@ spell_slot += Orb of destruction:dbn
 spell_slot += Ozocubu's armour:oau
 spell_slot += Ozocubu's refrigeration:cbz
 spell_slot += Pain:pnai
-spell_slot += Passage of golubria:uoi
-spell_slot += Passwall:aeu
+spell_slot += Passage of golubria:pgagolubria
+spell_slot += Passwall:pawls
 spell_slot += Petrify:pyt
 spell_slot += Poisonous vapours:pvs
 spell_slot += Portal projectile:oei
@@ -108,6 +111,7 @@ spell_slot += Statue form:stmf
 spell_slot += Sticky flame:yfk
 spell_slot += Sting:zptg
 spell_slot += Stone arrow:wtn
+spell_slot += Sublimation of blood:sbSBmodlt
 spell_slot += Summon demon:dsmn
 spell_slot += Summon forest:ftms
 spell_slot += Summon greater demon:gds
@@ -118,7 +122,7 @@ spell_slot += Summon ice beast:bct
 spell_slot += Summon lightning spire:lst
 spell_slot += Summon mana viper:vms
 spell_slot += Summon small mammal:zsm
-spell_slot += Swiftness:ieao
+spell_slot += Swiftness:swfine
 spell_slot += Teleport other:tprh
 spell_slot += Tornado:TDN
 spell_slot += Tukima's Dance:dkc
