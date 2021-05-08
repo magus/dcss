@@ -1,3 +1,139 @@
+###########
+# Sorting #
+###########
+# sort_menus = [menu:](true | false | auto:X)[:sort_order]
+#         Controls if and how items are sorted in inventory and pickup
+#         menus.
+
+#         When sort_menus = false (the default), items are not sorted, and
+#         will be ordered by inventory letter (or in the order they're
+#         stacked for items on the floor).
+
+#         When sort_menus = true, items are sorted according to the specified
+#         sort_order, with the default being:
+#              equipped, basename, qualname, curse, qty
+
+#         If sort_menus = auto:X, items are sorted if there are at least
+#         X items in the same category. For instance:
+#              sort_menus = auto:5
+#         will sort item classes that have at least 5 items. For instance,
+#         having 4 kinds of potions would not sort them, but having 5
+#         would.
+
+#         You can explicitly specify sort criteria in the sort_menus
+#         option as:
+#              sort_menus = true : art, basename, qualname, curse, qty
+
+#         Two items will be compared based on the first sort criteria
+#         where they differ. So with the sort_menus line given above,
+#         if only one of two different items is a known artefact, it will be
+#         listed first, else (if both or neither are artefacts) if their
+#         basenames are different they will be alphabetically compared using
+#         their basenames; if the basenames are the same but the qualified
+#         names are different it will compare their qualified names, and so
+#         on.
+
+#         The available sort criteria are:
+
+#         * basename:
+#           This is the name of the item type. The basename for all of
+#           "a +0 robe", "an embroidered robe" and "the cursed +2 robe of
+#           Ponies" is just "robe". The basename for both of "a brass
+#           ring" and "a ring of fire resistance" are "ring".
+
+#         * qualname:
+#           The name of the item without articles (a/an/the), quantities,
+#           enchantments, or curse-status. The qualified names for the
+#           robes described above are "robe", "embroidered robe" and "robe
+#           of Ponies", respectively. The qualified names for the rings
+#           described above are "brass ring" and "ring of fire
+#           resistance", respectively.
+
+#         * fullname:
+#           This is the name of the item as displayed in menus (including
+#           (quantities, curse-status, etc.)
+
+#         * dbname:
+#           Sorts based on an item's unique internal name which is linked
+#           to its description. Items with the same description will be
+#           grouped together.
+
+#         * curse:
+#           Curse-status of the item (if known). Uncursed items show up
+#           first.
+
+#         * equipped:
+#           Equipped items show up first.
+
+#         * art:
+#           Identified artefacts show up first.
+
+#         * ego:
+#           Identified ego items show up first.
+
+#         * glowing:
+#           Unidentified glowing/shiny/runed/etc items show up first.
+
+#         * identified:
+#           Identified items show up before unidentified ones of the
+#           same type. An item is regarded as identified once you know
+#           its subtype or ego.
+
+#         * qty:
+#           The quantity for stackable items (such as scrolls, potions,
+#           etc.)
+
+#         * slot:
+#           The inventory letter for items in inventory; irrelevant for
+#           items on the floor.
+
+#         * charged:
+#           Makes wands known or assumed to have some charges left appear
+#           before wands known to be empty; irrelevant for all other item
+#           types.
+
+#         You can ask for a descending order sort by prefixing one or more
+#         sort criteria with > as:
+#              sort_menus = true : basename, >qty
+
+#         You can also request sorting only for specific menus:
+#              sort_menus = pickup: true
+#         or
+#              sort_menus = inv: true
+#         (Menu types must be specified as name:, with no space between
+#         name and colon.)
+
+#         By default only pickup menus are sorted, and the sort criteria are:
+#              "equipped, basename, qualname, curse, qty".
+#         All other menus (drop, inv) will be sorted by inventory letter.
+
+#         The menu selectors available are:
+
+#         pickup: All pickup menus, stash-search menus, etc. for items not
+#                 in your inventory.
+#         drop:   The item drop menu.
+#         inv:    Inventory listings for any command (but not for dropping
+#                 items).
+#         any:    All menus; this is the default when unspecified.
+
+#         For example,
+#              sort_menus = true : equipped, basename, qualname, curse, qty
+#         will produce the same inventory and drop menus as by default,
+#         with the exception that all worn/wielded items come first. This
+#         can be convenient if you use the '.' command to select
+#         subsequent items.
+#         If you define sort_menus differently for two or more selectors,
+#         the last one matching will always take precedence, i.e. "any"
+#         as last setting would override any of the others.
+
+# for all menus (unspecified)
+# ignore equipped status for sorting
+sort_menus = true : identified , curse , art , ego , basename , qualname, >qty
+# sort equipped items to top
+# sort_menus = true : equipped , identified , curse , art , ego , basename , qualname, >qty
+# sort by quantity first
+# sort_menus = true : >qty , identified , curse , art , ego , basename , qualname, equipped, >qty
+
 #####################
 ### Ability slots ###
 #####################
