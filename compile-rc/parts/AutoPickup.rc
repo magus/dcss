@@ -68,8 +68,14 @@ ae += <scrolls? of (teleportation)
 ae += <scrolls? of (vulnerability|immolation|torment)
 ae += >scrolls? of (amnesia|noise|random uselessness)
 
+# Potions
 ae += <potions? of (mutation|lignification)
 ae += >potions? of (degeneration)
+
+# Tengu do not need flying
+: if table_has({"Tengu"}, you.race()) then
+ae += >potions? of (flight)
+: end
 
 # Miscellaneous
 ae += <(tins of tremorstones)
