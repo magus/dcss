@@ -7,6 +7,63 @@
 : rc_msg("Initializing magus.rc ...")
 : crawl.enable_more(false)
 
+##### Crawl Init file ###############################################
+# For descriptions of all options, as well as some more in-depth information
+# on setting them, consult the file
+#    options_guide.txt
+# in your /docs directory. If you can't find it, the file is also available
+# online at:
+# https://github.com/crawl/crawl/blob/master/crawl-ref/docs/options_guide.txt
+#
+# Crawl uses the first file of the following list as its option file:
+#  * init.txt in the -rcdir directory (if specified)
+#  * .crawlrc in the -rcdir directory (if specified)
+#  * init.txt (in the Crawl directory)
+#  * ~/.crawl/init.txt (Unix only)
+#  * ~/.crawlrc (Unix only)
+#  * ~/init.txt (Unix only)
+#  * settings/init.txt (in the Crawl directory)
+
+##### Some basic explanation of option syntax #######################
+# Lines beginning with '#' are comments. The basic syntax is:
+#
+# field = value         or      field.subfield = value
+#
+# Only one specification is allowed per line.
+#
+# The terms are typically case-insensitive except in the fairly obvious
+# cases (the character's name and specifying files or directories when
+# on a system that has case-sensitive filenames).
+#
+# White space is stripped from the beginning and end of the line, as
+# well as immediately before and after the '='. If the option allows
+# multiple comma/semicolon-separated terms (such as
+# autopickup_exceptions), all whitespace around the separator is also
+# trimmed. All other whitespace is left intact.
+#
+# There are three broad types of Crawl options: true/false values (booleans),
+# arbitrary values, and lists of values. The first two types use only the
+# simple =, with later options - which includes your options that are different
+# from the defaults - overriding earlier ones. List options allow using +=, ^=,
+# -=, and = to append, prepend, remove, and reset, respectively. Usually you will
+# want to use += to add to a list option. Lastly, there is := which you can use
+# to create an alias, like so:
+#   ae := autopickup_exceptions
+# From there on, 'ae' will be treated as if it you typed autopickup_exceptions,
+# so you can save time typing it.
+#
+
+##### Other files ###################################################
+# You can include other files from your options file using the 'include'
+# option. Crawl will treat it as if you copied the whole text of that file
+# into your options file in that spot. You can uncomment some of the following
+# lines by removing the beginning '#' to include some of the other files in
+# this folder.
+
+# Some useful, more advanced options, implemented in LUA.
+# include = advanced_optioneering.txt
+
+
 ##
 ## Globals.rc
 ################################################################################################
@@ -301,7 +358,9 @@ end
 ################################################################################################
 {
 -- Open skills menu at start of runs
-local need_skills_opened = true
+local is_gnoll = table_has({"Gnoll"}, you.race())
+local need_skills_opened = not is_gnoll
+
 local function start_open_skills()
   if you.turns() == 0 and need_skills_opened then
     need_skills_opened = false
@@ -456,7 +515,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.10.3]"
+  local version = "magus.rc [v1.11.1]"
   crawl.take_note(version)
   didRun = true
 end
@@ -529,11 +588,12 @@ explore_wall_bias = 3
 explore_stop  = stairs,shops,altars,portals,branches,runed_doors,runes
 explore_stop += artefacts,glowing_items,greedy_pickup_smart,greedy_visited_item_stack
 
-# do not stop exploring for hungry
+
 # activity_interrupt_names
 # https://github.com/crawl/crawl/blob/9bf6f1401de0176e0e695ad85b3e9fc7e42da3ab/crawl-ref/source/delay.cc#L1306
-interrupt_travel -= hungry
-runrest_stop_message += starving
+# runrest_stop_message += starving
+# # do not stop exploring for hungry
+# interrupt_travel -= hungry
 
 ##
 ## Interface.rc
@@ -544,21 +604,12 @@ hp_colour = 100:lightgreen, 99:lightgray, 75:yellow, 50:lightred, 25:red
 mp_colour = 100:cyan, 99:lightgray, 75:yellow, 50:lightred, 25:red
 hp_warning = 50
 
-# monster colors
-monster_list_colour =
-monster_list_colour += friendly:green,neutral:brown
-monster_list_colour += good_neutral:brown,strict_neutral:brown
-monster_list_colour += trivial:darkgrey,easy:lightgrey
-monster_list_colour += tough:yellow,nasty:lightred
-
 # new characters start with manual skill (instead of automatic)
 default_manual_training = true
 # Unequip already equipped items by selecting in equip menus (i.e. w, W, P)
 equip_unequip = true
 # Cannot target self with risky magic
 allow_self_target = no
-# mini map size, [X] pixels per tile
-tile_map_pixels = 8
 
 # Zot count status
 # If you spend the indicated number of turns in this branch without descending to
@@ -566,6 +617,154 @@ tile_map_pixels = 8
 # always_show_zot determines whether to show the "Zot" status light at all times
 # even when you've got plenty of time left. defaults to `false`
 always_show_zot = true
+
+
+# Monster colors
+###########################
+monster_list_colour =
+monster_list_colour += friendly:green,neutral:brown
+monster_list_colour += good_neutral:brown,strict_neutral:brown
+monster_list_colour += trivial:darkgrey,easy:lightgrey
+monster_list_colour += tough:yellow,nasty:lightred
+
+
+
+# Tiles
+###########################
+
+# mini map size, [X] pixels per tile
+tile_map_pixels = 16
+# scale factor when map mode (X)
+tile_map_scale = 0.25
+# size of tiles (default is 32)
+tile_cell_pixels = 32
+
+# These options allow configuring the colours used for the minimap of the dungeon
+# level. Using RGB hex codes is also allowed, such as #00ff00 for green.
+#    tile_player_col              - colour of player position, as well as of
+#                                   map centre during level map mode ('X')
+#    tile_monster_col             - colour of hostile monsters
+#    tile_neutral_col             - colour of neutral monsters
+#    tile_peaceful_col            - colour of peaceful monsters
+#    tile_friendly_col            - colour of friendly monsters
+#    tile_plant_col               - colour of zero xp monsters (plant and fungus)
+#    tile_item_col                - colour of known or detected items
+#    tile_unseen_col              - colour of unseen areas (usually stone)
+#    tile_floor_col               - colour of floor
+#    tile_wall_col                - colour of any wall type
+#    tile_mapped_floor_col        - colour of floor detected via magic mapping
+#    tile_mapped_wall_col         - colour of walls detected via magic mapping
+#    tile_explore_horizon_col     - colour of the edge of explored territory
+#    tile_door_col                - colour of known doors, open or closed
+#    tile_downstairs_col          - colour of downstairs
+#    tile_upstairs_col            - colour of upstairs, including branch exits
+#    tile_branchstairs_col        - colour of branch entrances
+#    tile_portal_col              - colour of any portal
+#    tile_transporter_col         - colour of transporters
+#    tile_transporter_landing_col - colour of transporter destinations
+#    tile_feature_col             - colour of any non-stair, non-portal feature
+#                                   (altar, shop, fountain, ...)
+#    tile_trap_col                - colour of known traps of any type
+#    tile_water_col               - colour of shallow water
+#    tile_deep_water_col          - colour of deep water
+#    tile_lava_col                - colour of lava
+#    tile_excluded_col            - colour of squares excluded for autotravel
+#                                   (will only override tile_floor_col colour)
+#    tile_excl_centre_col         - colour of exclusion centre (overrides
+#                                   tile_floor_col and tile_item_col, only)
+#    tile_window_col              - colour of the rectangular view window
+
+tile_plant_col               = #5C8745
+tile_item_col                = #262626
+tile_floor_col               = #262626
+tile_explore_horizon_col     = #78350F
+tile_lava_col                = #EF4444
+
+tile_water_col               = #0086B3
+tile_deep_water_col          = #1F1FED
+
+# default comparison
+# tile_player_col              = white
+# tile_monster_col             = #660000
+# tile_neutral_col             = #660000
+# tile_peaceful_col            = #664400
+# tile_friendly_col            = #664400
+# tile_plant_col               = #446633 #5C8745
+# tile_item_col                = #005544 #262626
+# tile_unseen_col              = black
+# tile_floor_col               = #333333 #262626
+# tile_wall_col                = #666666 #595959
+# tile_mapped_floor_col        = #222266
+# tile_mapped_wall_col         = #444499
+# tile_explore_horizon_col     = #6B301B #78350F
+# tile_door_col                = #775544 #D97706
+# tile_downstairs_col          = #FF00FF #DC2626
+# tile_upstairs_col            = cyan    #99FF33
+# tile_branchstairs_col        = #FF7788 #DC2626
+# tile_portal_col              = #FFDD00 #EC4899
+# tile_transporter_col         = #0000FF #F9A8D4
+# tile_transporter_landing_col = #5200AA #34D399
+# tile_feature_col             = #997700 #FCD34D
+# tile_trap_col                = #AA6644 #D24DFF
+# tile_water_col               = #114455 #0086B3
+# tile_deep_water_col          = #001122 #1F1FED
+# tile_lava_col                = #552211 #EF4444
+# tile_excluded_col            = #552266
+# tile_excl_centre_col         = #552266 #4C1D95
+# tile_window_col              = #558855
+
+
+
+# tile color defaults, see http://crawl.akrasiac.org/docs/options_guide.txt
+# tile_player_col              = white
+# tile_monster_col             = #660000
+# tile_neutral_col             = #660000
+# tile_peaceful_col            = #664400
+# tile_friendly_col            = #664400
+# tile_plant_col               = #446633
+# tile_item_col                = #005544
+# tile_unseen_col              = black
+# tile_floor_col               = #333333
+# tile_wall_col                = #666666
+# tile_mapped_floor_col        = #222266
+# tile_mapped_wall_col         = #444499
+# tile_explore_horizon_col     = #6b301b
+# tile_door_col                = #775544
+# tile_downstairs_col          = #ff00ff
+# tile_upstairs_col            = cyan
+# tile_branchstairs_col        = #ff7788
+# tile_portal_col              = #ffdd00
+# tile_transporter_col         = #0000ff
+# tile_transporter_landing_col = #5200aa
+# tile_feature_col             = #997700
+# tile_trap_col                = #aa6644
+# tile_water_col               = #114455
+# tile_deep_water_col          = #001122
+# tile_lava_col                = #552211
+# tile_excluded_col            = #552266
+# tile_excl_centre_col         = #552266
+# tile_window_col              = #558855
+
+
+# Glyphs
+###########################
+
+##### Ancient versions ##############################################
+# If you're used to the interface of ancient versions of Crawl, you may
+# get back parts of it by uncommenting the following options:
+
+# include                 = 034_command_keys.txt
+
+# And to revert monster glyph and colouring changes:
+
+# include                 = 052_monster_glyphs.txt
+# include                 = 060_monster_glyphs.txt
+# include                 = 071_monster_glyphs.txt
+# include                 = 080_monster_glyphs.txt
+# include                 = 0.9_monster_glyphs.txt
+# include                 = 0.12_monster_glyphs.txt
+# include                 = 0.13_monster_glyphs.txt
+# include                 = 0.14_monster_glyphs.txt
 
 ##
 ## Bindkey.rc
@@ -575,6 +774,21 @@ always_show_zot = true
 
 # CTRL+N will autofight without moving
 bindkey = [^N] CMD_AUTOFIGHT_NOMOVE
+
+# Alternative vi bindings for Dvorak users.
+# include = dvorak_command_keys.txt
+
+# Alternative vi bindings for Colemak users.
+# include = colemak_command_keys.txt
+
+# Alternative vi bindings for Neo users.
+# include = neo_command_keys.txt
+
+# Override the vi movement keys with a non-command.
+# include = no_vi_command_keys.txt
+
+# Turn the shift-vi keys into safe move, instead of run.
+# include = safe_move_shift.txt
 
 ##
 ## Slots.rc
@@ -4613,5 +4827,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.10.3]")
+: rc_scs("Successfully initialized magus.rc [v1.11.1]")
 : crawl.enable_more(true)
