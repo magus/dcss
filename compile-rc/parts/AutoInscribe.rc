@@ -31,16 +31,19 @@ ai += (throwing net|of dispersal):!f
 
 ### Convenient shortcuts
 ###########################
+
 # Potions
 ai += curing:@q1
 ai += potions? of heal wounds:@q2
 ai += potions? of haste:@q3
+
 # Scrolls
 ai += identify:@r1
-ai += remove curse:@r2
 ai += scrolls? of teleportation:@r4
-
 
 # Rare items
 ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare
 ai += (storm dragon scales|quicksilver dragon scales|shadow dragon scales|pearl dragon scales|gold dragon scales|crystal plate):rare
+
+# 0.26 holdback
+ai += remove curse:@r2

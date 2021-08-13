@@ -43,8 +43,6 @@ ae += >large rock
 : end
 
 # Jewellery
-ae += >amulets? of (inaccuracy)
-ae += >rings? of (teleportation|attention)
 : if table_has({"Gargoyle", "Vampire", "Mummy", "Ghoul"}, you.race()) then
 ae += >rings? of (poison resistance)
 : end
@@ -66,7 +64,7 @@ ae += <scrolls? of (teleportation)
 :end
 
 ae += <scrolls? of (vulnerability|immolation|torment)
-ae += >scrolls? of (amnesia|noise|random uselessness)
+ae += >scrolls? of (amnesia|noise)
 
 # Potions
 ae += <potions? of (mutation|lignification)
@@ -85,3 +83,9 @@ ae += <rune(s)?[^d]
 
 # IMPORTANT: Do not auto pickup the Orb of Zot
 ae += >orb of Zot
+
+
+# 0.26 holdback
+ae += >amulets? of (inaccuracy)
+ae += >rings? of (teleportation|attention)
+ae += >scrolls? of (random uselessness)

@@ -271,7 +271,7 @@ spell_slot += Vampiric draining:vdVDcgCGarARmMpiPInN
 spell_slot += Wereblood:wWdDeErRbBlLoO
 spell_slot += Yara's violent unravelling:yvuYVUstgSTGainAINroROlLeE
 
-# 0.26 spell slots
+# 0.26 holdback
 spell_slot += Absolute zero:azAZeoEObBsrSRlLuUtT
 spell_slot += Hydra form:hfHFamAMyoYOdrDR
 spell_slot += Summon demon:sdSDnNueUEmMoO
@@ -300,13 +300,15 @@ item_slot += ring of protection from magic : Mm
 item_slot += ring of positive energy : Nn
 item_slot += \+[0-9]+ ring of protection : Oo
 item_slot += ring of poison resistance : P
-item_slot += ring of stealth : Qq
 item_slot += ring of resist corrosion : R
 item_slot += amulet of mana regeneration : r
 item_slot += \+[0-9]+ ring of strength : Ss
-item_slot += ring of teleportation : t
 item_slot += ring of see invisible : v
 item_slot += ring of magical power : Ww
 item_slot += \+[0-9]+ ring of dexterity : Dd
 item_slot += \+[0-9]+ ring of slaying : Yy
 item_slot += ring of wizardry : Zz
+
+# 0.26 holdback
+item_slot += ring of stealth : Qq
+item_slot += ring of teleportation : t

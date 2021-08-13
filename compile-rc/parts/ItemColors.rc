@@ -104,8 +104,6 @@ menu += lightcyan:scroll.*magic mapping
 item += scroll.*magic mapping:lightcyan
 menu += blue:scroll.*(noise|silence|vulnerability|immolation)
 item += scroll.*(noise|silence|vulnerability|immolation):blue
-menu += lightgrey:scroll.*remove curse
-item += scroll.*remove curse:lightgrey
 menu += green:scroll.*(fog|teleport)
 item += scroll.*(fog|teleport):green
 menu += lightgreen:scroll.*(fear|blink)
@@ -116,8 +114,8 @@ item += scroll.*(enchant|brand weapon):lightmagenta
 ### Wands ###
 
 # Sometimes can be dangerous or harmful
-menu += blue:wand of.*random effects
-item += wand of.*random effects:blue
+menu += blue:pieces from Xom's chessboard
+item += pieces from Xom's chessboard:blue
 
 # Single target piercing
 menu += brown:wand of.*lightning
@@ -142,8 +140,8 @@ item += wand of.*scattershot:lightcyan
 # MR-checking
 menu += magenta:wand of.*(disintegration|confusion|polymorph)
 item += wand of.*(disintegration|confusion|polymorph):magenta
-menu += lightmagenta:wand of.*(paralysis|enslavement)
-item += wand of.*(paralysis|enslavement):lightmagenta
+menu += lightmagenta:wand of.*(paralysis|charming)
+item += wand of.*(paralysis|charming):lightmagenta
 
 ### General identification ###
 
@@ -176,3 +174,12 @@ item += (a )?stones?$:lightgray
 item += useless:darkgrey
 # Only mark these types when forbidden; for other types it looks odd.
 item += forbidden.*(potion|scroll|food):red
+
+
+# 0.26 holdback
+menu += lightgrey:scroll.*remove curse
+item += scroll.*remove curse:lightgrey
+menu += blue:wand of.*random effects
+item += wand of.*random effects:blue
+menu += lightmagenta:wand of.*(enslavement)
+item += wand of.*(enslavement):lightmagenta
