@@ -515,7 +515,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.11.1]"
+  local version = "magus.rc [v1.11.2]"
   crawl.take_note(version)
   didRun = true
 end
@@ -955,10 +955,10 @@ ability_slot += Enter the Abyss:E
 # See this dynamic web app for oganizing spell slots in real-time
 # https://codesandbox.io/s/dcss-spell-slots-zt5px
 
-spell_slot += Absolute zero:azAZeoEObBsrSRlLuUtT
 spell_slot += Agony:aAyYgGoOnN
 spell_slot += Airstrike:aAeEiIrRsStTkK
 spell_slot += Alistair's intoxication:aiAIsnSNlLtToOxXcCrR
+spell_slot += Animate armour:aAerERnNimIMoOuUtT
 spell_slot += Animate dead:adADeEnNiImMtT
 spell_slot += Animate skeleton:asASenENkKiImlMLtToO
 spell_slot += Apportation:aAnNpPoOrRtTiI
@@ -999,7 +999,6 @@ spell_slot += Fulminant prism:fpFPtmTMurURliLIsSnNaA
 spell_slot += Gell's gravitas:gGsSerERlaLAvViItT
 spell_slot += Hailstorm:hHmMaAiIlLsStToOrR
 spell_slot += Haunt:hHtTaAuUnN
-spell_slot += Hydra form:hfHFamAMyoYOdrDR
 spell_slot += Ice form:ifIFemEMcoCOrR
 spell_slot += Ignite poison:ipIPenENgoGOsStT
 spell_slot += Ignition:iInNgGtToO
@@ -1017,6 +1016,8 @@ spell_slot += Lesser beckoning:lbLBrgRGeEscSCkKoOnNiI
 spell_slot += Lightning bolt:lbLBgtGTioIOhHnN
 spell_slot += Magic dart:mdMDctCTaAgrGRiI
 spell_slot += Malign gateway:mgMGnyNYaAltLTieIEwW
+spell_slot += Manifold assault:maMAdtDTsSnNiIfuFUolOL
+spell_slot += Maxwell's capacitive coupling:mcMCsegSEGaoAOxpuXPUwWlLiItnTNvV
 spell_slot += Mephitic cloud:mcMCdDelELpoPOhuHUiItT
 spell_slot += Metabolic englaciation:meMEcnCNtgTGalALbBoOiI
 spell_slot += Monstrous menagerie:mMseSEoOnNaAtgTGrRuiUI
@@ -1030,6 +1031,7 @@ spell_slot += Passage of golubria:pgPGeaEAoOslSLuUbBrRiI
 spell_slot += Passwall:pPlLaAsSwW
 spell_slot += Petrify:pPyYeEtTrRiIfF
 spell_slot += Poisonous vapours:pvPVsSoaOAiIuUnrNR
+spell_slot += Polar vortex:pvPVrxRXoOlLatATeE
 spell_slot += Portal projectile:pPleLEorORtjTJaAcCiI
 spell_slot += Sandblast:sStTaAnNdDbBlL
 spell_slot += Searing ray:srSRgyGYeaEAiInN
@@ -1047,10 +1049,9 @@ spell_slot += Statue form:sfSFemEMtoTOarARuU
 spell_slot += Sticky flame:sfSFyeYEtlTLiaIAcmCMkK
 spell_slot += Sting:sSgGtTiInN
 spell_slot += Stone arrow:saSAewEWtrTRoOnN
+spell_slot += Storm form:sfSFmMtoTOrR
 spell_slot += Sublimation of blood:sbSBndNDulULoOiImMaAtT
-spell_slot += Summon demon:sdSDnNueUEmMoO
 spell_slot += Summon forest:sfSFntNTuoUOmrMReE
-spell_slot += Summon greater demon:sgdSGDnrNRueUEmMaoAOtT
 spell_slot += Summon guardian golem:sgSGnmNMuoUOalALreREdDiI
 spell_slot += Summon horrible things:shtSHTneNEuoUOmriMRIgGbBlL
 spell_slot += Summon hydra:shSHnaNAuyUYmdMDrRoO
@@ -1060,11 +1061,17 @@ spell_slot += Summon mana viper:smvSMVnarNARuiUIpPeEoO
 spell_slot += Summon small mammal:smSMnlNLuaUAoO
 spell_slot += Swiftness:sSwWiIfFtTnNeE
 spell_slot += Teleport other:toTOrReElhLHpP
-spell_slot += Tornado:tToOrRnNaAdD
 spell_slot += Tukima's dance:tdTDseSEuaUAknKNicICmM
 spell_slot += Vampiric draining:vdVDcgCGarARmMpiPInN
 spell_slot += Wereblood:wWdDeErRbBlLoO
 spell_slot += Yara's violent unravelling:yvuYVUstgSTGainAINroROlLeE
+
+# 0.26 holdback
+spell_slot += Absolute zero:azAZeoEObBsrSRlLuUtT
+spell_slot += Hydra form:hfHFamAMyoYOdrDR
+spell_slot += Summon demon:sdSDnNueUEmMoO
+spell_slot += Summon greater demon:sgdSGDnrNRueUEmMaoAOtT
+spell_slot += Tornado:tToOrRnNaAdD
 
 # Default letters
 spell_slot += .*:XYZ
@@ -1088,16 +1095,18 @@ item_slot += ring of protection from magic : Mm
 item_slot += ring of positive energy : Nn
 item_slot += \+[0-9]+ ring of protection : Oo
 item_slot += ring of poison resistance : P
-item_slot += ring of stealth : Qq
 item_slot += ring of resist corrosion : R
 item_slot += amulet of mana regeneration : r
 item_slot += \+[0-9]+ ring of strength : Ss
-item_slot += ring of teleportation : t
 item_slot += ring of see invisible : v
 item_slot += ring of magical power : Ww
 item_slot += \+[0-9]+ ring of dexterity : Dd
 item_slot += \+[0-9]+ ring of slaying : Yy
 item_slot += ring of wizardry : Zz
+
+# 0.26 holdback
+item_slot += ring of stealth : Qq
+item_slot += ring of teleportation : t
 
 ##
 ## AutoInscribe.rc
@@ -1135,19 +1144,22 @@ ai += (throwing net|of dispersal):!f
 
 ### Convenient shortcuts
 ###########################
+
 # Potions
 ai += curing:@q1
 ai += potions? of heal wounds:@q2
 ai += potions? of haste:@q3
+
 # Scrolls
 ai += identify:@r1
-ai += remove curse:@r2
 ai += scrolls? of teleportation:@r4
-
 
 # Rare items
 ai += (executioner's axe|double sword|triple sword|eveningstar|quick blade):rare
 ai += (storm dragon scales|quicksilver dragon scales|shadow dragon scales|pearl dragon scales|gold dragon scales|crystal plate):rare
+
+# 0.26 holdback
+ai += remove curse:@r2
 
 ##
 ## AutoPickup.rc
@@ -1197,8 +1209,6 @@ ae += >large rock
 : end
 
 # Jewellery
-ae += >amulets? of (inaccuracy)
-ae += >rings? of (teleportation|attention)
 : if table_has({"Gargoyle", "Vampire", "Mummy", "Ghoul"}, you.race()) then
 ae += >rings? of (poison resistance)
 : end
@@ -1220,7 +1230,7 @@ ae += <scrolls? of (teleportation)
 :end
 
 ae += <scrolls? of (vulnerability|immolation|torment)
-ae += >scrolls? of (amnesia|noise|random uselessness)
+ae += >scrolls? of (amnesia|noise)
 
 # Potions
 ae += <potions? of (mutation|lignification)
@@ -1239,6 +1249,12 @@ ae += <rune(s)?[^d]
 
 # IMPORTANT: Do not auto pickup the Orb of Zot
 ae += >orb of Zot
+
+
+# 0.26 holdback
+ae += >amulets? of (inaccuracy)
+ae += >rings? of (teleportation|attention)
+ae += >scrolls? of (random uselessness)
 
 ##
 ## ItemColors.rc
@@ -1349,8 +1365,6 @@ menu += lightcyan:scroll.*magic mapping
 item += scroll.*magic mapping:lightcyan
 menu += blue:scroll.*(noise|silence|vulnerability|immolation)
 item += scroll.*(noise|silence|vulnerability|immolation):blue
-menu += lightgrey:scroll.*remove curse
-item += scroll.*remove curse:lightgrey
 menu += green:scroll.*(fog|teleport)
 item += scroll.*(fog|teleport):green
 menu += lightgreen:scroll.*(fear|blink)
@@ -1361,8 +1375,8 @@ item += scroll.*(enchant|brand weapon):lightmagenta
 ### Wands ###
 
 # Sometimes can be dangerous or harmful
-menu += blue:wand of.*random effects
-item += wand of.*random effects:blue
+menu += blue:pieces from Xom's chessboard
+item += pieces from Xom's chessboard:blue
 
 # Single target piercing
 menu += brown:wand of.*lightning
@@ -1387,8 +1401,8 @@ item += wand of.*scattershot:lightcyan
 # MR-checking
 menu += magenta:wand of.*(disintegration|confusion|polymorph)
 item += wand of.*(disintegration|confusion|polymorph):magenta
-menu += lightmagenta:wand of.*(paralysis|enslavement)
-item += wand of.*(paralysis|enslavement):lightmagenta
+menu += lightmagenta:wand of.*(paralysis|charming)
+item += wand of.*(paralysis|charming):lightmagenta
 
 ### General identification ###
 
@@ -1421,6 +1435,15 @@ item += (a )?stones?$:lightgray
 item += useless:darkgrey
 # Only mark these types when forbidden; for other types it looks odd.
 item += forbidden.*(potion|scroll|food):red
+
+
+# 0.26 holdback
+menu += lightgrey:scroll.*remove curse
+item += scroll.*remove curse:lightgrey
+menu += blue:wand of.*random effects
+item += wand of.*random effects:blue
+menu += lightmagenta:wand of.*(enslavement)
+item += wand of.*(enslavement):lightmagenta
 
 ##
 ## ForceMorePrompts.rc
@@ -4827,5 +4850,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.11.1]")
+: rc_scs("Successfully initialized magus.rc [v1.11.2]")
 : crawl.enable_more(true)
