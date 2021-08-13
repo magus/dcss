@@ -160,10 +160,10 @@ ability_slot += Enter the Abyss:E
 # See this dynamic web app for oganizing spell slots in real-time
 # https://codesandbox.io/s/dcss-spell-slots-zt5px
 
-spell_slot += Absolute zero:azAZeoEObBsrSRlLuUtT
 spell_slot += Agony:aAyYgGoOnN
 spell_slot += Airstrike:aAeEiIrRsStTkK
 spell_slot += Alistair's intoxication:aiAIsnSNlLtToOxXcCrR
+spell_slot += Animate armour:aAerERnNimIMoOuUtT
 spell_slot += Animate dead:adADeEnNiImMtT
 spell_slot += Animate skeleton:asASenENkKiImlMLtToO
 spell_slot += Apportation:aAnNpPoOrRtTiI
@@ -204,7 +204,6 @@ spell_slot += Fulminant prism:fpFPtmTMurURliLIsSnNaA
 spell_slot += Gell's gravitas:gGsSerERlaLAvViItT
 spell_slot += Hailstorm:hHmMaAiIlLsStToOrR
 spell_slot += Haunt:hHtTaAuUnN
-spell_slot += Hydra form:hfHFamAMyoYOdrDR
 spell_slot += Ice form:ifIFemEMcoCOrR
 spell_slot += Ignite poison:ipIPenENgoGOsStT
 spell_slot += Ignition:iInNgGtToO
@@ -222,6 +221,8 @@ spell_slot += Lesser beckoning:lbLBrgRGeEscSCkKoOnNiI
 spell_slot += Lightning bolt:lbLBgtGTioIOhHnN
 spell_slot += Magic dart:mdMDctCTaAgrGRiI
 spell_slot += Malign gateway:mgMGnyNYaAltLTieIEwW
+spell_slot += Manifold assault:maMAdtDTsSnNiIfuFUolOL
+spell_slot += Maxwell's capacitive coupling:mcMCsegSEGaoAOxpuXPUwWlLiItnTNvV
 spell_slot += Mephitic cloud:mcMCdDelELpoPOhuHUiItT
 spell_slot += Metabolic englaciation:meMEcnCNtgTGalALbBoOiI
 spell_slot += Monstrous menagerie:mMseSEoOnNaAtgTGrRuiUI
@@ -235,6 +236,7 @@ spell_slot += Passage of golubria:pgPGeaEAoOslSLuUbBrRiI
 spell_slot += Passwall:pPlLaAsSwW
 spell_slot += Petrify:pPyYeEtTrRiIfF
 spell_slot += Poisonous vapours:pvPVsSoaOAiIuUnrNR
+spell_slot += Polar vortex:pvPVrxRXoOlLatATeE
 spell_slot += Portal projectile:pPleLEorORtjTJaAcCiI
 spell_slot += Sandblast:sStTaAnNdDbBlL
 spell_slot += Searing ray:srSRgyGYeaEAiInN
@@ -252,10 +254,9 @@ spell_slot += Statue form:sfSFemEMtoTOarARuU
 spell_slot += Sticky flame:sfSFyeYEtlTLiaIAcmCMkK
 spell_slot += Sting:sSgGtTiInN
 spell_slot += Stone arrow:saSAewEWtrTRoOnN
+spell_slot += Storm form:sfSFmMtoTOrR
 spell_slot += Sublimation of blood:sbSBndNDulULoOiImMaAtT
-spell_slot += Summon demon:sdSDnNueUEmMoO
 spell_slot += Summon forest:sfSFntNTuoUOmrMReE
-spell_slot += Summon greater demon:sgdSGDnrNRueUEmMaoAOtT
 spell_slot += Summon guardian golem:sgSGnmNMuoUOalALreREdDiI
 spell_slot += Summon horrible things:shtSHTneNEuoUOmriMRIgGbBlL
 spell_slot += Summon hydra:shSHnaNAuyUYmdMDrRoO
@@ -265,11 +266,17 @@ spell_slot += Summon mana viper:smvSMVnarNARuiUIpPeEoO
 spell_slot += Summon small mammal:smSMnlNLuaUAoO
 spell_slot += Swiftness:sSwWiIfFtTnNeE
 spell_slot += Teleport other:toTOrReElhLHpP
-spell_slot += Tornado:tToOrRnNaAdD
 spell_slot += Tukima's dance:tdTDseSEuaUAknKNicICmM
 spell_slot += Vampiric draining:vdVDcgCGarARmMpiPInN
 spell_slot += Wereblood:wWdDeErRbBlLoO
 spell_slot += Yara's violent unravelling:yvuYVUstgSTGainAINroROlLeE
+
+# 0.26 spell slots
+spell_slot += Absolute zero:azAZeoEObBsrSRlLuUtT
+spell_slot += Hydra form:hfHFamAMyoYOdrDR
+spell_slot += Summon demon:sdSDnNueUEmMoO
+spell_slot += Summon greater demon:sgdSGDnrNRueUEmMaoAOtT
+spell_slot += Tornado:tToOrRnNaAdD
 
 # Default letters
 spell_slot += .*:XYZ
