@@ -35,7 +35,7 @@ monster_list_colour += tough:yellow,nasty:lightred
 # mini map size, [X] pixels per tile
 tile_map_pixels = 16
 # scale factor when map mode (X)
-tile_map_scale = 0.25
+tile_map_scale = 0.50
 # size of tiles (default is 32)
 tile_cell_pixels = 32
 
