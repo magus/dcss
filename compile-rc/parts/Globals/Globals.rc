@@ -1,0 +1,2 @@
+# PAUSE variable for ForceMorePrompts.rc
+$PAUSE_MORE := PAUSE

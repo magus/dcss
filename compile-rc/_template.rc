@@ -63,7 +63,8 @@
 # include = advanced_optioneering.txt
 
 
-{{Globals.rc}}
+{{Globals/Globals.rc}}
+{{Globals/Globals.lua}}
 
 {{Utils.lua}}
 
