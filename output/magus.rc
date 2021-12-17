@@ -1,6 +1,18 @@
 ##
 ## magus.rc
 ################################################################################################
+
+##
+## CONFIG.lua
+################################################################################################
+{
+-- Global CONFIG for customizing RC behaviors
+CONFIG = { }
+
+CONFIG.emojis = true
+}
+
+
 ##
 ## BEGIN
 ################################################################################################
@@ -65,32 +77,35 @@
 
 
 ##
-## Globals.rc
+## Globals/Globals.rc
 ################################################################################################
 # PAUSE variable for ForceMorePrompts.rc
 $PAUSE_MORE := PAUSE
-
+##
+## Globals/Globals.lua
+################################################################################################
 {
-  -- Pause for AnnounceDamage.lua
-  PAUSE_MORE = "PAUSE"
+-- Pause for AnnounceDamage.lua
+PAUSE_MORE = "PAUSE"
 
-  -- Standard Colors (ignoring black, not visible)
-  COLORS = {
-    ["darkgrey"] = "darkgrey",
-    ["lightgrey"] = "lightgrey",
-    ["white"] = "white",
-    ["blue"] = "blue",
-    ["lightblue"] = "lightblue",
-    ["green"] = "green",
-    ["lightgreen"] = "lightgreen",
-    ["cyan"] = "cyan",
-    ["lightcyan"] = "lightcyan",
-    ["red"] = "red",
-    ["lightred"] = "lightred",
-    ["magenta"] = "magenta",
-    ["lightmagenta"] = "lightmagenta",
-    ["yellow"] = "yellow",
-    ["brown"] = "brown"}
+-- Standard Colors (ignoring black, not visible)
+COLORS = { }
+
+COLORS.darkgrey = "darkgrey"
+COLORS.lightgrey = "lightgrey"
+COLORS.white = "white"
+COLORS.blue = "blue"
+COLORS.lightblue = "lightblue"
+COLORS.green = "green"
+COLORS.lightgreen = "lightgreen"
+COLORS.cyan = "cyan"
+COLORS.lightcyan = "lightcyan"
+COLORS.red = "red"
+COLORS.lightred = "lightred"
+COLORS.magenta = "magenta"
+COLORS.lightmagenta = "lightmagenta"
+COLORS.yellow = "yellow"
+COLORS.brown = "brown"
 }
 
 ##
@@ -250,7 +265,12 @@ function simple_announce_damage(curr_hp, max_hp, hp_diff, mp_diff)
       emoji = "😎"
     end
 
-    crawl.mpr(string.format("\n%s %s", emoji, message))
+    if CONFIG.emojis then
+      crawl.mpr(string.format("\n%s %s", emoji, message))
+    else
+      crawl.mpr(string.format("\n%s", message))
+    end
+
   end
 end
 
@@ -515,7 +535,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.11.2]"
+  local version = "magus.rc [v1.11.3]"
   crawl.take_note(version)
   didRun = true
 end
@@ -635,7 +655,7 @@ monster_list_colour += tough:yellow,nasty:lightred
 # mini map size, [X] pixels per tile
 tile_map_pixels = 16
 # scale factor when map mode (X)
-tile_map_scale = 0.25
+tile_map_scale = 0.50
 # size of tiles (default is 32)
 tile_cell_pixels = 32
 
@@ -4850,5 +4870,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.11.2]")
+: rc_scs("Successfully initialized magus.rc [v1.11.3]")
 : crawl.enable_more(true)
