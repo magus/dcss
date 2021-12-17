@@ -61,7 +61,7 @@ OUTPUT_RC = PartsUtils.RunRegex(/\#--([^\s]+)(.*)/g, OUTPUT_RC, (headerType, arg
 
 // Replace `{{Filename.ext}}` with the file content using PartsUtil.ContentFormatter
 OUTPUT_RC = PartsUtils.RunRegex(/{{(.*?\..*)}}/g, OUTPUT_RC, (filename) => {
-  return PartsUtils.ContentFormatter(filename, FSUtils.read(path.join(__dirname, `parts/${filename}`)));
+  return PartsUtils.ContentFormatter(filename, FSUtils.read(path.join(__dirname, 'parts', filename)));
 });
 
 // Replace {{VERSION}} with package.json version
