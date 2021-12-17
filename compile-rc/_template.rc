@@ -1,4 +1,8 @@
 #--Header magus.rc
+
+{{CONFIG.lua}}
+
+
 #--Begin
 : crawl.enable_more(false)
 

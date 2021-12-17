@@ -113,7 +113,12 @@ function simple_announce_damage(curr_hp, max_hp, hp_diff, mp_diff)
       emoji = "😎"
     end
 
-    crawl.mpr(string.format("\n%s %s", emoji, message))
+    if CONFIG.emojis then
+      crawl.mpr(string.format("\n%s %s", emoji, message))
+    else
+      crawl.mpr(string.format("\n%s", message))
+    end
+
   end
 end
 
