@@ -23,7 +23,8 @@ always_show_zot = true
 ###########################
 monster_list_colour =
 monster_list_colour += friendly:green,neutral:brown
-monster_list_colour += good_neutral:brown,strict_neutral:brown
+# https://github.com/crawl/crawl/blob/d371e1541e496270d8ada14439a52bda5da2811b/crawl-ref/source/webserver/game_data/static/monster_list.js#L114
+monster_list_colour += good_neutral:brown,good_neutral:brown
 monster_list_colour += trivial:darkgrey,easy:lightgrey
 monster_list_colour += tough:yellow,nasty:lightred
 

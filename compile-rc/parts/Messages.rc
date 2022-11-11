@@ -59,7 +59,6 @@ ignore += your breath back
 ignore += feeling hungry
 ignore += near starving
 
-ignore += pray:
 ignore += talk:
 ignore += talk_visual:
 ignore += friend_spell:
