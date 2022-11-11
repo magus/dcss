@@ -407,6 +407,10 @@ local function is_magical(item)
 end
 
 local function debug_item(item)
+  if item == nil then
+    return string.format("item: nil")
+  end
+
   return string.format("name: %s; subtype: %s, magical: %s, plus: %s", item.name("qual"), item.subtype(), tostring(is_magical(item)), tostring(item.plus))
 end
 
@@ -450,7 +454,7 @@ end
 
 -- Equipment autopickup (by Medar and various others)
 -- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
-local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Armour", shield="Shield"}
+local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Body Armour", shield="Shield"}
 local two_handed_always = {
   "great sword", "triple sword",
   "battleaxe", "executioner's axe",
@@ -510,6 +514,11 @@ local function pickup_equipment(it, name)
 
     local armor_slot = armour_slots[sub_type];
 
+
+    -- -- debugging equipped items
+    -- rc_msg(string.format("[should_pickup] (cur): %s", debug_item(items.equipped_at("Body Armour"))))
+    -- rc_msg(string.format("[should_pickup] (cur): %s", debug_item(items.equipped_at("Boots"))))
+
     if armor_slot ~= nil then
       -- get currently equipped item in slot
       local equipped_item = items.equipped_at(armor_slot)
@@ -535,7 +544,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.11.3]"
+  local version = "magus.rc [v1.11.4]"
   crawl.take_note(version)
   didRun = true
 end
@@ -643,7 +652,8 @@ always_show_zot = true
 ###########################
 monster_list_colour =
 monster_list_colour += friendly:green,neutral:brown
-monster_list_colour += good_neutral:brown,strict_neutral:brown
+# https://github.com/crawl/crawl/blob/d371e1541e496270d8ada14439a52bda5da2811b/crawl-ref/source/webserver/game_data/static/monster_list.js#L114
+monster_list_colour += good_neutral:brown,good_neutral:brown
 monster_list_colour += trivial:darkgrey,easy:lightgrey
 monster_list_colour += tough:yellow,nasty:lightred
 
@@ -1244,9 +1254,10 @@ ae += <scrolls? of (holy word)
 :end
 
 : if table_has({"Formicid"}, you.race()) then
-ae += >scrolls? of (teleportation)
+ae += >scrolls? of (teleportation|blinking)
+ae += >potions? of (haste|berserk rage)
 : else
-ae += <scrolls? of (teleportation)
+ae += <scrolls? of (teleportation|blinking)
 :end
 
 ae += <scrolls? of (vulnerability|immolation|torment)
@@ -2161,7 +2172,6 @@ ignore += your breath back
 ignore += feeling hungry
 ignore += near starving
 
-ignore += pray:
 ignore += talk:
 ignore += talk_visual:
 ignore += friend_spell:
@@ -4870,5 +4880,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.11.3]")
+: rc_scs("Successfully initialized magus.rc [v1.11.4]")
 : crawl.enable_more(true)
