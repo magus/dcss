@@ -52,7 +52,7 @@ end
 
 -- Equipment autopickup (by Medar and various others)
 -- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
-local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Armour", shield="Shield"}
+local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Body Armour", shield="Shield"}
 local two_handed_always = {
   "great sword", "triple sword",
   "battleaxe", "executioner's axe",
