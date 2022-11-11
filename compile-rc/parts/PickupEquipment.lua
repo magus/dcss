@@ -9,6 +9,10 @@ local function is_magical(item)
 end
 
 local function debug_item(item)
+  if item == nil then
+    return string.format("item: nil")
+  end
+
   return string.format("name: %s; subtype: %s, magical: %s, plus: %s", item.name("qual"), item.subtype(), tostring(is_magical(item)), tostring(item.plus))
 end
 
@@ -111,6 +115,11 @@ local function pickup_equipment(it, name)
     end
 
     local armor_slot = armour_slots[sub_type];
+
+
+    -- -- debugging equipped items
+    -- rc_msg(string.format("[should_pickup] (cur): %s", debug_item(items.equipped_at("Body Armour"))))
+    -- rc_msg(string.format("[should_pickup] (cur): %s", debug_item(items.equipped_at("Boots"))))
 
     if armor_slot ~= nil then
       -- get currently equipped item in slot
