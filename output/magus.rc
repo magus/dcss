@@ -544,7 +544,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.11.4]"
+  local version = "magus.rc [v1.11.5]"
   crawl.take_note(version)
   didRun = true
 end
@@ -2094,9 +2094,8 @@ note_messages += wearing.*?amulet of Vitality
 note_messages += This trove
 note_messages += This portal proclaims the superiority
 
-# record spellbook and spell locations
-note_messages += You pick up a book
-note_messages += You add the spells
+# record spell locations
+note_messages += You add the spell
 
 # Noteable monsters
 # Undead
@@ -4880,5 +4879,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.11.4]")
+: rc_scs("Successfully initialized magus.rc [v1.11.5]")
 : crawl.enable_more(true)
