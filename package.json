@@ -6,7 +6,6 @@
   "author": "magus <noah@iamnoah.com>",
   "license": "MIT",
   "scripts": {
-    "find-version": "./scripts/find-version.sh",
     "compile:debug": "node --inspect-brk compile-rc/compile.js",
     "compile": "node compile-rc/compile.js",
     "start": "yarn compile"
