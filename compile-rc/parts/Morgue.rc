@@ -147,9 +147,8 @@ note_messages += wearing.*?amulet of Vitality
 note_messages += This trove
 note_messages += This portal proclaims the superiority
 
-# record spellbook and spell locations
-note_messages += You pick up a book
-note_messages += You add the spells
+# record spell locations
+note_messages += You add the spell
 
 # Noteable monsters
 # Undead
