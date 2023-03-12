@@ -27,7 +27,7 @@ note_messages += You fall through a shaft
 # note when things come into view with unrands
 # unrands are not identified properly in notes
 # see https://github.com/crawl/crawl/issues/1580
-
+# fixed as of 0.27.0, can remove when we drop support for versions less than 0.27.0
 # hardcode note_messages for unrands as a temporary work around
 # http://crawl.chaosforge.org/List_of_unrands
 #short blades
@@ -148,7 +148,12 @@ note_messages += This trove
 note_messages += This portal proclaims the superiority
 
 # record spell locations
+# https://sourcegraph.com/github.com/crawl/crawl@a8ba66830452fff8a85bb735c9ba5bc5ec7c9bfa/-/blob/crawl-ref/source/spl-book.cc?L424:15
 note_messages += You add the spell
+
+# record gozag shop creation
+# https://sourcegraph.com/github.com/crawl/crawl@a8ba66830452fff8a85bb735c9ba5bc5ec7c9bfa/-/blob/crawl-ref/source/god-abil.cc?L2911
+note_messages += invites you to visit
 
 # Noteable monsters
 # Undead
