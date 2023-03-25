@@ -8,12 +8,24 @@ local function is_magical(item)
   return is_branded_ego(item) or item.artefact
 end
 
+local nil_item = "item: nil";
+
 local function debug_item(item)
   if item == nil then
-    return string.format("item: nil")
+    return nil_item
   end
 
-  return string.format("name: %s; subtype: %s, magical: %s, plus: %s", item.name("qual"), item.subtype(), tostring(is_magical(item)), tostring(item.plus))
+  local qual = item.name("qual");
+  local subtype = item.subtype();
+
+  if qual == nil or subtype == nil then
+    return nil_item
+  end
+
+  local magical = tostring(is_magical(item));
+  local plus = tostring(item.plus);
+
+  return string.format("name: %s; subtype: %s, magical: %s, plus: %s", qual, subtype, magical, plus)
 end
 
 
@@ -56,7 +68,43 @@ end
 
 -- Equipment autopickup (by Medar and various others)
 -- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
-local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Body Armour", shield="Shield"}
+
+-- https://sourcegraph.com/search?q=context:global+repo:%5Egithub%5C.com/crawl/crawl%24+file:%5Ecrawl-ref/source/output%5C.cc+s_equip_slot_names%5B%5D&patternType=standard&sm=1&groupBy=path
+-- static const char *s_equip_slot_names[] =
+-- {
+--     "Weapon", "Cloak",  "Helmet", "Gloves", "Boots",
+--     "Shield", "Armour", "Left Ring", "Right Ring", "Amulet",
+--     "First Ring", "Second Ring", "Third Ring", "Fourth Ring",
+--     "Fifth Ring", "Sixth Ring", "Seventh Ring", "Eighth Ring",
+--     "Amulet Ring"
+-- };
+local item_subtype_equip_slot = {
+  cloak="Cloak",
+  helmet="Helmet",
+  gloves="Gloves",
+  boots="Boots",
+  shield="Shield"}
+
+local function equip_slot(item_sub_type)
+  if item_sub_type == "body" then
+    -- ok this is weird but the equip slot required by `items.equipped_at`
+    -- seems to depend on whether we are running in webtiles or locally
+    -- webtiles expects `items.equipped_at("Body Armour")`
+    -- local expects    `items.equipped_at("Armour")`
+    -- try both and return whichever isn't `nil`
+    local body_armour = items.equipped_at("Body Armour");
+    local armour = items.equipped_at("Armour");
+    local result = body_armour or armour;
+    return result;
+  end
+
+  -- we can handle non-body armor with lua table (map)
+  local equip_slot = item_subtype_equip_slot[item_sub_type];
+  return items.equipped_at(equip_slot);
+end
+
+
+
 local two_handed_always = {
   "great sword", "triple sword",
   "battleaxe", "executioner's axe",
@@ -68,12 +116,21 @@ local two_handed_always = {
 
 local function pickup_equipment(it, name)
   local class = it.class(true)
-  -- get currently equipped item in slot
-  local currentWeapon = items.equipped_at("weapon")
 
-  -- DEBUG
-  -- rc_msg(string.format("[pickup_equipment] name: %s", name))
-  -- rc_msg(string.format("[pickup_equipment] currentWeapon.subtype: %s", currentWeapon.subtype()))
+  -- -- DEBUG
+  -- rc_warn(string.format("[pickup_equipment] it:   [%s]", name))
+  -- rc_warn(string.format("[pickup_equipment] name: [%s]", debug_item(it)))
+
+  -- -- debugging equipped items
+  -- rc_msg(string.format("[pickup_equipment] -------- START EQUIPPED --------"))
+  -- rc_msg(string.format("[pickup_equipment]   weapon  [%s]", debug_item(equip_slot("weapon"))))
+  -- rc_msg(string.format("[pickup_equipment]   shield  [%s]", debug_item(equip_slot("shield"))))
+  -- rc_msg(string.format("[pickup_equipment]   helmet  [%s]", debug_item(equip_slot("helmet"))))
+  -- rc_msg(string.format("[pickup_equipment]   body    [%s]", debug_item(equip_slot("body"))))
+  -- rc_msg(string.format("[pickup_equipment]   cloak   [%s]", debug_item(equip_slot("cloak"))))
+  -- rc_msg(string.format("[pickup_equipment]   gloves  [%s]", debug_item(equip_slot("gloves"))))
+  -- rc_msg(string.format("[pickup_equipment]   boots   [%s]", debug_item(equip_slot("boots"))))
+  -- rc_msg(string.format("[pickup_equipment] -------- END EQUIPPED --------"))
 
 
   -- do not pickup forbidden items
@@ -86,8 +143,11 @@ local function pickup_equipment(it, name)
   if it.artefact then return true end
 
 
-
   if class == "weapon" then
+    -- get currently equipped item in slot
+    local currentWeapon = items.equipped_at("weapon");
+    -- rc_msg(string.format("[pickup_equipment] currentWeapon.subtype: %s", currentWeapon.subtype()))
+
     -- when using unarmed combat, we want to skip the should_pickup for weapons
     if currentWeapon == nil then
       -- always pickup god gift equipment
@@ -99,7 +159,7 @@ local function pickup_equipment(it, name)
     if should_pickup(currentWeapon, it) then return true end
 
   elseif class == "armour" then
-    local sub_type = it.subtype()
+    local sub_type = it.subtype();
 
     if sub_type == "gloves" and you.has_claws() > 0 then return end
 
@@ -114,19 +174,9 @@ local function pickup_equipment(it, name)
       if you.skill("Shields") <= 3 then return end
     end
 
-    local armor_slot = armour_slots[sub_type];
+    local equipped_item = equip_slot(sub_type)
 
-
-    -- -- debugging equipped items
-    -- rc_msg(string.format("[should_pickup] (cur): %s", debug_item(items.equipped_at("Body Armour"))))
-    -- rc_msg(string.format("[should_pickup] (cur): %s", debug_item(items.equipped_at("Boots"))))
-
-    if armor_slot ~= nil then
-      -- get currently equipped item in slot
-      local equipped_item = items.equipped_at(armor_slot)
-
-      if should_pickup(equipped_item, it) then return true end
-    end
+    if should_pickup(equipped_item, it) then return true end
   end
 
   return
