@@ -47,4 +47,4 @@
 
 -- colortest()
 
--- rc_out("COLORS", COLORS.brown, COLORS.brown)
+-- rc_out("COLORS", COLORS.brown, COLORS.brown, "plain")
