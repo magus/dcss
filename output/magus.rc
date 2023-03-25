@@ -116,17 +116,38 @@ function withColor(color, str)
   return string.format("<%s>%s</%s>", color, str, color)
 end
 
-function rc_out(symbol, color, msg)
-  crawl.mpr(string.format("%s <%s>%s</%s>", symbol, color, msg, color))
+function rc_out(symbol, color, msg, channel)
+  -- crawl_mpr source
+  -- https://sourcegraph.com/search?q=context%3Aglobal+repo%3A%5Egithub%5C.com%2Fcrawl%2Fcrawl%24+file%3A%5Ecrawl-ref%2Fsource%2Fl-crawl%5C.cc+crawl_mpr&patternType=standard&sm=1&groupBy=path
+  --
+  -- static const string message_channel_names[] =
+  -- {
+  --     "plain", "friend_action", "prompt", "god", "duration", "danger", "warning",
+  --     "recovery", "sound", "talk", "talk_visual", "intrinsic_gain",
+  --     "mutation", "monster_spell", "monster_enchant", "friend_spell",
+  --     "friend_enchant", "monster_damage", "monster_target", "banishment",
+  --     "equipment", "floor", "multiturn", "examine", "examine_filter", "diagnostic",
+  --     "error", "tutorial", "orb", "timed_portal", "hell_effect", "monster_warning",
+  --     "dgl_message",
+  -- };
+
+  crawl.mpr(string.format("%s %s", symbol, withColor(color, msg)), channel)
 end
+
 function rc_msg(msg)
-  rc_out("🤖", "blue", msg)
+  rc_out("🤖", "blue", msg, "diagnostic")
 end
+
 function rc_scs(msg)
-  rc_out("✅", "green", msg)
+  rc_out("✅", "green", msg, "diagnostic")
 end
+
 function rc_err(msg)
-  rc_out("❌", "lightred", msg)
+  rc_out("❌", "lightred", msg, "danger")
+end
+
+function rc_warn(msg)
+  rc_out("⚠️", "yellow", msg, "warning")
 end
 
 
@@ -406,12 +427,24 @@ local function is_magical(item)
   return is_branded_ego(item) or item.artefact
 end
 
+local nil_item = "item: nil";
+
 local function debug_item(item)
   if item == nil then
-    return string.format("item: nil")
+    return nil_item
   end
 
-  return string.format("name: %s; subtype: %s, magical: %s, plus: %s", item.name("qual"), item.subtype(), tostring(is_magical(item)), tostring(item.plus))
+  local qual = item.name("qual");
+  local subtype = item.subtype();
+
+  if qual == nil or subtype == nil then
+    return nil_item
+  end
+
+  local magical = tostring(is_magical(item));
+  local plus = tostring(item.plus);
+
+  return string.format("name: %s; subtype: %s, magical: %s, plus: %s", qual, subtype, magical, plus)
 end
 
 
@@ -454,7 +487,43 @@ end
 
 -- Equipment autopickup (by Medar and various others)
 -- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
-local armour_slots = {cloak="Cloak", helmet="Helmet", gloves="Gloves", boots="Boots", body="Body Armour", shield="Shield"}
+
+-- https://sourcegraph.com/search?q=context:global+repo:%5Egithub%5C.com/crawl/crawl%24+file:%5Ecrawl-ref/source/output%5C.cc+s_equip_slot_names%5B%5D&patternType=standard&sm=1&groupBy=path
+-- static const char *s_equip_slot_names[] =
+-- {
+--     "Weapon", "Cloak",  "Helmet", "Gloves", "Boots",
+--     "Shield", "Armour", "Left Ring", "Right Ring", "Amulet",
+--     "First Ring", "Second Ring", "Third Ring", "Fourth Ring",
+--     "Fifth Ring", "Sixth Ring", "Seventh Ring", "Eighth Ring",
+--     "Amulet Ring"
+-- };
+local item_subtype_equip_slot = {
+  cloak="Cloak",
+  helmet="Helmet",
+  gloves="Gloves",
+  boots="Boots",
+  shield="Shield"}
+
+local function equip_slot(item_sub_type)
+  if item_sub_type == "body" then
+    -- ok this is weird but the equip slot required by `items.equipped_at`
+    -- seems to depend on whether we are running in webtiles or locally
+    -- webtiles expects `items.equipped_at("Body Armour")`
+    -- local expects    `items.equipped_at("Armour")`
+    -- try both and return whichever isn't `nil`
+    local body_armour = items.equipped_at("Body Armour");
+    local armour = items.equipped_at("Armour");
+    local result = body_armour or armour;
+    return result;
+  end
+
+  -- we can handle non-body armor with lua table (map)
+  local equip_slot = item_subtype_equip_slot[item_sub_type];
+  return items.equipped_at(equip_slot);
+end
+
+
+
 local two_handed_always = {
   "great sword", "triple sword",
   "battleaxe", "executioner's axe",
@@ -466,12 +535,21 @@ local two_handed_always = {
 
 local function pickup_equipment(it, name)
   local class = it.class(true)
-  -- get currently equipped item in slot
-  local currentWeapon = items.equipped_at("weapon")
 
-  -- DEBUG
-  -- rc_msg(string.format("[pickup_equipment] name: %s", name))
-  -- rc_msg(string.format("[pickup_equipment] currentWeapon.subtype: %s", currentWeapon.subtype()))
+  -- -- DEBUG
+  -- rc_warn(string.format("[pickup_equipment] it:   [%s]", name))
+  -- rc_warn(string.format("[pickup_equipment] name: [%s]", debug_item(it)))
+
+  -- -- debugging equipped items
+  -- rc_msg(string.format("[pickup_equipment] -------- START EQUIPPED --------"))
+  -- rc_msg(string.format("[pickup_equipment]   weapon  [%s]", debug_item(equip_slot("weapon"))))
+  -- rc_msg(string.format("[pickup_equipment]   shield  [%s]", debug_item(equip_slot("shield"))))
+  -- rc_msg(string.format("[pickup_equipment]   helmet  [%s]", debug_item(equip_slot("helmet"))))
+  -- rc_msg(string.format("[pickup_equipment]   body    [%s]", debug_item(equip_slot("body"))))
+  -- rc_msg(string.format("[pickup_equipment]   cloak   [%s]", debug_item(equip_slot("cloak"))))
+  -- rc_msg(string.format("[pickup_equipment]   gloves  [%s]", debug_item(equip_slot("gloves"))))
+  -- rc_msg(string.format("[pickup_equipment]   boots   [%s]", debug_item(equip_slot("boots"))))
+  -- rc_msg(string.format("[pickup_equipment] -------- END EQUIPPED --------"))
 
 
   -- do not pickup forbidden items
@@ -484,8 +562,11 @@ local function pickup_equipment(it, name)
   if it.artefact then return true end
 
 
-
   if class == "weapon" then
+    -- get currently equipped item in slot
+    local currentWeapon = items.equipped_at("weapon");
+    -- rc_msg(string.format("[pickup_equipment] currentWeapon.subtype: %s", currentWeapon.subtype()))
+
     -- when using unarmed combat, we want to skip the should_pickup for weapons
     if currentWeapon == nil then
       -- always pickup god gift equipment
@@ -497,7 +578,7 @@ local function pickup_equipment(it, name)
     if should_pickup(currentWeapon, it) then return true end
 
   elseif class == "armour" then
-    local sub_type = it.subtype()
+    local sub_type = it.subtype();
 
     if sub_type == "gloves" and you.has_claws() > 0 then return end
 
@@ -512,19 +593,9 @@ local function pickup_equipment(it, name)
       if you.skill("Shields") <= 3 then return end
     end
 
-    local armor_slot = armour_slots[sub_type];
+    local equipped_item = equip_slot(sub_type)
 
-
-    -- -- debugging equipped items
-    -- rc_msg(string.format("[should_pickup] (cur): %s", debug_item(items.equipped_at("Body Armour"))))
-    -- rc_msg(string.format("[should_pickup] (cur): %s", debug_item(items.equipped_at("Boots"))))
-
-    if armor_slot ~= nil then
-      -- get currently equipped item in slot
-      local equipped_item = items.equipped_at(armor_slot)
-
-      if should_pickup(equipped_item, it) then return true end
-    end
+    if should_pickup(equipped_item, it) then return true end
   end
 
   return
@@ -544,7 +615,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.11.5]"
+  local version = "magus.rc [v1.11.6]"
   crawl.take_note(version)
   didRun = true
 end
@@ -1974,7 +2045,7 @@ note_messages += You fall through a shaft
 # note when things come into view with unrands
 # unrands are not identified properly in notes
 # see https://github.com/crawl/crawl/issues/1580
-
+# fixed as of 0.27.0, can remove when we drop support for versions less than 0.27.0
 # hardcode note_messages for unrands as a temporary work around
 # http://crawl.chaosforge.org/List_of_unrands
 #short blades
@@ -2095,7 +2166,12 @@ note_messages += This trove
 note_messages += This portal proclaims the superiority
 
 # record spell locations
+# https://sourcegraph.com/github.com/crawl/crawl@a8ba66830452fff8a85bb735c9ba5bc5ec7c9bfa/-/blob/crawl-ref/source/spl-book.cc?L424:15
 note_messages += You add the spell
+
+# record gozag shop creation
+# https://sourcegraph.com/github.com/crawl/crawl@a8ba66830452fff8a85bb735c9ba5bc5ec7c9bfa/-/blob/crawl-ref/source/god-abil.cc?L2911
+note_messages += invites you to visit
 
 # Noteable monsters
 # Undead
@@ -4871,7 +4947,7 @@ msc ^= mute:is almost (dead|destroyed)
 
 -- colortest()
 
--- rc_out("COLORS", COLORS.brown, COLORS.brown)
+-- rc_out("COLORS", COLORS.brown, COLORS.brown, "plain")
 }
 
 
@@ -4879,5 +4955,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.11.5]")
+: rc_scs("Successfully initialized magus.rc [v1.11.6]")
 : crawl.enable_more(true)
