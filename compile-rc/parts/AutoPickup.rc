@@ -49,6 +49,9 @@ ae += >rings? of (poison resistance)
 : if table_has({"Deep Dwarf"}, you.race()) then
 ae += >amulets? of (regeneration)
 : end
+: if table_has({"Djinni"}, you.race()) then
+ae += >amulets? of ((magic|mana) regeneration)
+: end
 
 # Scrolls
 : if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
