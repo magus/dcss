@@ -1,18 +1,18 @@
 : if you.race() == "Mummy" then
-autopickup = (/?"+|}$
+autopickup = (/?"+|}%♦$
 : elseif you.race() == "Vampire" then
-autopickup = (/?"!+|}$
+autopickup = (/?"!+|}%♦$
 # Felids are hard.
 : elseif you.race() == "Felid" then
-autopickup = /?"!+}$
+autopickup = /?"!+}%♦$
 : else
-autopickup = (/?"!+|}$
+autopickup = (/?"!+|}%♦$
 : end
 # )       Weapons
 # (       Missiles
 # [       Armour
 # /       Wands
-# %       Food
+# %       Talismans
 # ?       Scrolls
 # " or =  Jewellery
 # !       Potions
@@ -20,6 +20,7 @@ autopickup = (/?"!+|}$
 # |       Staves
 # 0       Orbs
 # }       Miscellaneous
+# G or ♦  Gems
 # $       Gold
 # Note that _whether_ items are picked up automatically or not, is
 # controlled by the in-game toggle Ctrl-A. Also note that picking
@@ -82,8 +83,18 @@ ae += >potions? of (flight)
 # Miscellaneous
 ae += <(tins of tremorstones)
 
+# Talismans
+: if you.skill("Shapeshifting") > 0 then
+ae += <talisman
+: else
+ae += >talisman
+: end
+
 # Pickup runes but not 'runed' anything
 ae += <rune(s)?[^d]
+
+# Gem
+ae += <gem
 
 # IMPORTANT: Do not auto pickup the Orb of Zot
 ae += >orb of Zot
