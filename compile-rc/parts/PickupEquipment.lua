@@ -114,6 +114,60 @@ local two_handed_always = {
   "shortbow", "longbow",
   "arbalest", "triple crossbow"}
 
+local talisman_skill_min = {
+  inkwell=0,
+  quill=0,
+  scarab=8,
+  medusa=8,
+  rimehorn=8,
+  spore=8,
+  aqua=12,
+  eel=12,
+  fortress=12,
+  maw=12,
+  serpent=12,
+  spider=12,
+  werewolf=12,
+  ["bat swarm"]=17,
+  blade=17,
+  dragon=17,
+  hive=17,
+  sphinx=17,
+  statue=17,
+  vampire=17,
+  storm=23,
+  death=26}
+
+local function talisman_rank(item)
+  if item == nil or item.class(true) ~= "talisman" then return nil end
+  return talisman_skill_min[item.subtype()]
+end
+
+local function should_pickup_talisman(item)
+  if you.skill("Shapeshifting") < 3 then return false end
+
+  local rank = talisman_rank(item)
+  if rank == nil then return false end
+
+  local best_inv_rank = nil
+  for _, inv_item in ipairs(items.inventory()) do
+    local inv_rank = talisman_rank(inv_item)
+    if inv_rank ~= nil and (best_inv_rank == nil or inv_rank > best_inv_rank) then
+      best_inv_rank = inv_rank
+    end
+  end
+
+  if best_inv_rank == nil then
+    return true
+  end
+
+  if rank > best_inv_rank then
+    return true
+  end
+
+  return false
+end
+
 local function pickup_equipment(it, name)
   local class = it.class(true)
 
@@ -157,6 +211,9 @@ local function pickup_equipment(it, name)
     end
 
     if should_pickup(currentWeapon, it) then return true end
+
+  elseif class == "talisman" then
+    return should_pickup_talisman(it)
 
   elseif class == "armour" then
     local sub_type = it.subtype();
