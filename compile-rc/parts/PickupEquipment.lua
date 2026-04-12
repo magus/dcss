@@ -356,7 +356,7 @@ local talisman_skill_min = {
 
 local function talisman_rank(item)
   if item == nil or item.class(true) ~= "talisman" then return nil end
-  return talisman_skill_min[item.subtype()]
+  return talisman_skill_min[item.subtype()] or talisman_skill_min[item.name("qual")]
 end
 
 local function should_pickup_talisman(item)
@@ -406,6 +406,10 @@ local function pickup_equipment(item, name)
   -- do not pickup forbidden items
   if string.match(name, "forbidden") then return false end
 
+  if class == "talisman" then
+    return should_pickup_talisman(item)
+  end
+
   -- permanent species/mutation slot blockers should win over temporary form
   if permanent_armour_slot_blocked(item) then return false end
 
@@ -447,10 +451,6 @@ local function pickup_equipment(item, name)
 
   -- always pickup god gift equipment
   if item.god_gift then return true end
-
-  if class == "talisman" then
-    return should_pickup_talisman(item)
-  end
 
   if class == "weapon" then
     if is_ranged_weapon(item) then
