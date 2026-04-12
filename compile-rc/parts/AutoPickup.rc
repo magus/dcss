@@ -73,7 +73,7 @@ ae += >scrolls? of (amnesia|noise)
 
 # Potions
 ae += <potions? of (mutation|lignification)
-ae += >potions? of (degeneration)
+ae += >potions? of (degeneration|moonshine)
 
 # Tengu do not need flying
 : if table_has({"Tengu"}, you.race()) then
