@@ -36,6 +36,30 @@ function rc_warn(msg)
   rc_out("⚠️", "yellow", msg, "warning")
 end
 
+function rc_pause_text()
+  return string.format("%s%s%s",
+    withColor(COLORS.darkgrey, "("),
+    withColor(COLORS.yellow, PAUSE_MORE),
+    withColor(COLORS.darkgrey, ")")
+  )
+end
+
+function rc_pause()
+  rc_warn(rc_pause_text())
+end
+
+function rc_pause_message(args)
+  local color = args.color or COLORS.white
+  local channel = args.channel or "plain"
+
+  crawl.mpr(
+    string.format("%s %s",
+      withColor(color, args.message),
+      rc_pause_text()
+    ),
+    channel
+  )
+end
 
 function table_has(table, match)
   for index, value in ipairs(table) do

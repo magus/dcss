@@ -35,11 +35,10 @@ local Messages = {
     )
   end,
   ["HPMassivePause"] = function ()
-    crawl.mpr(
-      withColor(COLORS.lightred,
-        string.format("MASSIVE DAMAGE!! (%s)", PAUSE_MORE)
-      )
-    )
+    rc_pause_message({
+      message = "MASSIVE DAMAGE!!",
+      color = COLORS.lightred
+    })
   end,
   ["MPSimple"] = function(delta)
     return withColor(COLORS.white,
