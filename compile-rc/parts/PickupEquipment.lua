@@ -1,6 +1,3 @@
-local favor_egos = false
-local favor_plus = false
-
 local function is_branded_ego(item)
   return item.branded or item.ego()
 end
@@ -28,41 +25,60 @@ local function debug_item(item)
   return string.format("name: %s; subtype: %s, magical: %s, plus: %s", qual, subtype, magical, plus)
 end
 
+-- `SK_RANGED_WEAPONS` source for ranged weapon names and base damage values
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L783-L819
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L1815-L1823
+local ranged_weapon_base_damage = {
+  ["sling"] =            7,
+  ["shortbow"] =         8,
+  ["old fustibalus"] =   10,
+  ["orcbow"] =           11,
+  ["longbow"] =          14,
+  ["arbalest"] =         16,
+  ["hand cannon"] =      16,
+  ["triple crossbow"] =  23
+} -- end ranged_weapon_base_damage (comment prevents crawl rc parser ending outer lua block)
 
-local function should_pickup(cur, i2)
-  -- always pickup god gift equipment
-  if i2.god_gift then return true end
 
-  --  not wearing any item in the slot? pickup!
+local function should_pickup_upgrade(args)
+  local cur = args.current
+  local item = args.item
+
+  -- no comparable item? pickup!
   if cur == nil then return true end
 
-  local higher_plus = i2.plus ~= nil and i2.plus > (cur.plus or 0)
-  local more_magical = not is_magical(cur) and is_magical(i2)
+  local cur_subtype = cur.subtype()
+  local item_subtype = item.subtype()
+  local higher_plus = item.plus ~= nil and item.plus > (cur.plus or 0)
+  local more_magical = not is_magical(cur) and is_magical(item)
 
   -- DEBUG
-  -- rc_msg(string.format("[should_pickup] (cur): %s", debug_item(cur)))
-  -- rc_msg(string.format("[should_pickup] (i2): %s", debug_item(i2)))
-  -- rc_msg(string.format("[should_pickup] higher_plus: %s, more_magical: %s", tostring(higher_plus), tostring(more_magical)))
+  -- rc_msg(string.format("[should_pickup_upgrade] (cur): %s", debug_item(cur)))
+  -- rc_msg(string.format("[should_pickup_upgrade] (item): %s", debug_item(item)))
+  -- rc_msg(string.format("[should_pickup_upgrade] higher_plus: %s, more_magical: %s", tostring(higher_plus), tostring(more_magical)))
 
-  -- items names are the same, pickup higher plus or more magical
-  if cur.name("qual") == i2.name("qual") then
-    if  higher_plus or more_magical then
+  -- ranged weapons have a clear base-damage progression across subtypes
+  local cur_damage = ranged_weapon_base_damage[cur_subtype]
+  local item_damage = ranged_weapon_base_damage[item_subtype]
+
+  if cur_damage ~= nil and item_damage ~= nil and item_damage > cur_damage then
+    return true
+  end
+
+  -- do not replace magical gear with plain gear just for enchantment
+  if is_magical(cur) and not is_magical(item) then return false end
+
+  -- dragon scales are rare enough that we do not auto-replace them
+  if string.find(cur.name("qual"), "dragon scale") then return false end
+
+  -- same item? pickup higher plus or more magical
+  if cur_subtype == item_subtype then
+    if higher_plus or more_magical then
       return true
     end
   end
 
-  local is_dragon_scales = string.find(cur.name("qual"), "dragon scale")
-  -- wearing magical item (artefact/ego/branded) or dragon scales? skip pickup
-  if is_magical(cur) or is_dragon_scales then return false end
-
-  -- if we got to this point we are not wearing dragon scales/artefact/ego/branded
-
-  -- if favoring egos and item is ego/branded, pickup
-  if favor_egos and is_magical(i2) then return true end
-  -- if favoring plus and plus is higher, pickup
-  if favor_plus and higher_plus then return true end
-
-  -- no not pickup by default
+  -- do not pickup by default
   return false
 end
 
@@ -187,7 +203,7 @@ local function is_melded_by_current_form(item)
   if item == nil or item.class(true) ~= "armour" then return false end
 
   local form = you.transform()
-  
+
   -- player not transformed
   if form == "" then return false end
 
@@ -282,6 +298,34 @@ local function should_skip_shield_pickup(sub_type)
   return you.skill("Shields") <= 3
 end
 
+local function is_ranged_weapon(item)
+  return item ~= nil
+    and item.class(true) == "weapon"
+    and ranged_weapon_base_damage[item.subtype()] ~= nil
+end
+
+local function best_inventory_ranged_weapon()
+  local best = nil
+
+  for _, inv_item in ipairs(items.inventory()) do
+    if is_ranged_weapon(inv_item) then
+      if best == nil then
+        best = inv_item
+      else
+        local inv_damage = ranged_weapon_base_damage[inv_item.subtype()]
+        local best_damage = ranged_weapon_base_damage[best.subtype()]
+
+        if inv_damage > best_damage
+          or (inv_damage == best_damage and (inv_item.plus or 0) > (best.plus or 0)) then
+          best = inv_item
+        end
+      end
+    end
+  end
+
+  return best
+end
+
 -- `talisman_type_name` source for item.subtype() talisman names
 -- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L3163-L3192
 -- `_talisman_tiers` source for internal talisman tiers
@@ -340,12 +384,12 @@ local function should_pickup_talisman(item)
   return false
 end
 
-local function pickup_equipment(it, name)
-  local class = it.class(true)
+local function pickup_equipment(item, name)
+  local class = item.class(true)
 
   -- -- DEBUG
-  -- rc_warn(string.format("[pickup_equipment] it:   [%s]", name))
-  -- rc_warn(string.format("[pickup_equipment] name: [%s]", debug_item(it)))
+  -- rc_warn(string.format("[pickup_equipment] item_arg:   [%s]", name))
+  -- rc_warn(string.format("[pickup_equipment] item: [%s]", debug_item(item)))
 
   -- -- debugging equipped items
   -- rc_msg(string.format("[pickup_equipment] -------- START EQUIPPED --------"))
@@ -363,12 +407,12 @@ local function pickup_equipment(it, name)
   if string.match(name, "forbidden") then return false end
 
   -- permanent species/mutation slot blockers should win over temporary form
-  if permanent_armour_slot_blocked(it) then return false end
+  if permanent_armour_slot_blocked(item) then return false end
 
   -- do not pickup useless items
-  if it.is_useless then
+  if item.is_useless then
     -- except armour that is only useless because the current form temporarily melds that slot
-    if is_melded_by_current_form(it) then
+    if is_melded_by_current_form(item) then
       -- evaluate normal pickup rules below
     else
       return false
@@ -376,7 +420,7 @@ local function pickup_equipment(it, name)
   end
 
   if class == "armour" then
-    local sub_type = it.subtype()
+    local sub_type = item.subtype()
 
     if should_skip_shield_pickup(sub_type) then return false end
 
@@ -388,34 +432,47 @@ local function pickup_equipment(it, name)
     end
 
     -- always pickup artefacts
-    if it.artefact then return true end
+    if item.artefact then return true end
 
-    if should_pickup(equipped_item, it) then return true end
+    if should_pickup_upgrade({
+      current = equipped_item,
+      item = item
+    }) then return true end
 
     return false
   end
 
   -- always pickup artefacts
-  if it.artefact then return true end
+  if item.artefact then return true end
+
+  -- always pickup god gift equipment
+  if item.god_gift then return true end
 
   if class == "talisman" then
-    return should_pickup_talisman(it)
+    return should_pickup_talisman(item)
   end
 
   if class == "weapon" then
+    if is_ranged_weapon(item) then
+      return should_pickup_upgrade({
+        current = best_inventory_ranged_weapon(),
+        item = item
+      })
+    end
+
     -- get currently equipped item in slot
-    local currentWeapon = items.equipped_at("weapon");
-    -- rc_msg(string.format("[pickup_equipment] currentWeapon.subtype: %s", currentWeapon.subtype()))
+    local curr_weapon = items.equipped_at("weapon");
+    -- rc_msg(string.format("[pickup_equipment] curr_weapon.subtype: %s", curr_weapon.subtype()))
 
-    -- when using unarmed combat, we want to skip the should_pickup for weapons
-    if currentWeapon == nil then
-      -- always pickup god gift equipment
-      if it.god_gift then return true end
-
+    -- when using unarmed combat, we want to skip weapon upgrade pickup
+    if curr_weapon == nil then
       return false
     end
 
-    if should_pickup(currentWeapon, it) then return true end
+    if should_pickup_upgrade({
+      current = curr_weapon,
+      item = item
+    }) then return true end
 
     return false
   end
