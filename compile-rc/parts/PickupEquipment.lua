@@ -308,17 +308,20 @@ local function best_inventory_ranged_weapon()
   local best = nil
 
   for _, inv_item in ipairs(items.inventory()) do
-    if is_ranged_weapon(inv_item) then
-      if best == nil then
-        best = inv_item
-      else
-        local inv_damage = ranged_weapon_base_damage[inv_item.subtype()]
-        local best_damage = ranged_weapon_base_damage[best.subtype()]
+    if not is_ranged_weapon(inv_item) then
+      -- skip
+    elseif best == nil then
+      best = inv_item
+    else
+      local inv_damage = ranged_weapon_base_damage[inv_item.subtype()]
+      local best_damage = ranged_weapon_base_damage[best.subtype()]
 
-        if inv_damage > best_damage
-          or (inv_damage == best_damage and (inv_item.plus or 0) > (best.plus or 0)) then
-          best = inv_item
-        end
+      if inv_damage > best_damage then
+        best = inv_item
+      elseif inv_damage < best_damage then
+        -- skip
+      elseif (inv_item.plus or 0) > (best.plus or 0) then
+        best = inv_item
       end
     end
   end
