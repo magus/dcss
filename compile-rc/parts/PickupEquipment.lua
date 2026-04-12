@@ -423,6 +423,12 @@ local function pickup_equipment(item, name)
     end
   end
 
+  -- always pickup artefacts
+  if item.artefact then return true end
+
+  -- always pickup god gift equipment
+  if item.god_gift then return true end
+
   if class == "armour" then
     local sub_type = item.subtype()
 
@@ -435,9 +441,6 @@ local function pickup_equipment(item, name)
       return true
     end
 
-    -- always pickup artefacts
-    if item.artefact then return true end
-
     if should_pickup_upgrade({
       current = equipped_item,
       item = item
@@ -445,12 +448,6 @@ local function pickup_equipment(item, name)
 
     return false
   end
-
-  -- always pickup artefacts
-  if item.artefact then return true end
-
-  -- always pickup god gift equipment
-  if item.god_gift then return true end
 
   if class == "weapon" then
     if is_ranged_weapon(item) then
