@@ -104,38 +104,102 @@ local function equip_slot(item_sub_type)
   return items.equipped_at(equip_slot);
 end
 
-local armour_slots_melded_by_form = {
-  [""] = {},
-  ["aqua"] = {body=true},
-  ["blade"] = {},
-  ["dragon"] = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
-  ["death"] = {},
-  ["eel hands"] = {shield=true, gloves=true},
-  ["fortress crab"] = {shield=true, gloves=true, boots=true, barding=true, cloak=true, helmet=true},
-  ["hive"] = {body=true, helmet=true},
-  ["walking scroll"] = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
-  ["maw"] = {},
-  ["medusa"] = {helmet=true, cloak=true},
-  ["quill"] = {cloak=true, helmet=true, gloves=true, boots=true, barding=true},
-  ["rime yak"] = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
-  ["serpent"] = {shield=true, body=true, boots=true, barding=true, gloves=true, cloak=true},
-  ["sphinx"] = {shield=true, body=true, boots=true, helmet=true, gloves=true},
-  ["spider"] = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
-  ["spore"] = {shield=true, boots=true},
-  ["statue"] = {gloves=true, boots=true, barding=true, body=true},
-  ["storm"] = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
-  ["sun scarab"] = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
-  ["vampire"] = {},
-  ["werewolf"] = {gloves=true, boots=true, barding=true}
-} -- end armour_slots_melded_by_form (comment prevents crawl rc parser ending outer lua block)
+-- source for form wiz_name, talisman, and melds values
+-- https://github.com/crawl/crawl/tree/0.34.0/crawl-ref/source/dat/forms
+-- you.transform() returns transform_name(), which returns the form wiz_name
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/l-you.cc#L399-L404
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/transform.cc#L1449-L1457
+local form_meld_key = {
+  ["appendages"] =     "appendages",
+  ["aqua"] =           "aqua",
+  ["bat"] =            "bat",
+  ["bat swarm"] =      "bat swarm",
+  ["blade"] =          "blade",
+  ["death"] =          "death",
+  ["dragon"] =         "dragon",
+  ["eel hands"] =      "eel",
+  ["fortress crab"] =  "fortress",
+  ["flux"] =           "flux",
+  ["fungus"] =         "fungus",
+  ["hive"] =           "hive",
+  ["hydra"] =          "hydra",
+  ["jelly"] =          "jelly",
+  ["maw"] =            "maw",
+  ["medusa"] =         "medusa",
+  ["pig"] =            "pig",
+  ["porcupine"] =      "porcupine",
+  ["quill"] =          "quill",
+  ["rime yak"] =       "rimehorn",
+  ["amphisbaena"] =    "serpent",
+  ["shadow"] =         "shadow",
+  ["slaughter"] =      "slaughter",
+  ["sphinx"] =         "sphinx",
+  ["spider"] =         "spider",
+  ["spore"] =          "spore",
+  ["statue"] =         "statue",
+  ["storm"] =          "storm",
+  ["sun scarab"] =     "scarab",
+  ["tree"] =           "tree",
+  ["vampire"] =        "vampire",
+  ["walking scroll"] = "inkwell",
+  ["werewolf"] =       "werewolf",
+  ["wisp"] =           "wisp"
+} -- end form_meld_key (comment prevents crawl rc parser ending outer lua block)
+
+local armour_slots_melded_by_form_key = {
+  ["appendages"] = {shield = false, body = false, cloak = false, helmet = true,  gloves = false, boots = true,  barding = false},
+  ["aqua"] =       {shield = false, body = true,  cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["bat"] =        {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["bat swarm"] =  {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["blade"] =      {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["dragon"] =     {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["death"] =      {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["eel"] =        {shield = true,  body = false, cloak = false, helmet = false, gloves = true,  boots = false, barding = false},
+  ["fortress"] =   {shield = true,  body = false, cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["flux"] =       {shield = true,  body = true,  cloak = false, helmet = false, gloves = true,  boots = false, barding = false},
+  ["fungus"] =     {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["hive"] =       {shield = false, body = true,  cloak = false, helmet = true,  gloves = false, boots = false, barding = false},
+  ["hydra"] =      {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["inkwell"] =    {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["jelly"] =      {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["maw"] =        {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["medusa"] =     {shield = false, body = false, cloak = true,  helmet = true,  gloves = false, boots = false, barding = false},
+  ["pig"] =        {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["porcupine"] =  {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["quill"] =      {shield = false, body = false, cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["rimehorn"] =   {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["serpent"] =    {shield = true,  body = true,  cloak = true,  helmet = false, gloves = true,  boots = true,  barding = true },
+  ["scarab"] =     {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["shadow"] =     {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["slaughter"] =  {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["sphinx"] =     {shield = true,  body = true,  cloak = false, helmet = true,  gloves = true,  boots = true,  barding = false},
+  ["spider"] =     {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["spore"] =      {shield = true,  body = false, cloak = false, helmet = false, gloves = false, boots = true,  barding = false},
+  ["statue"] =     {shield = false, body = true,  cloak = false, helmet = false, gloves = true,  boots = true,  barding = true },
+  ["storm"] =      {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["tree"] =       {shield = false, body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["vampire"] =    {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["werewolf"] =   {shield = false, body = false, cloak = false, helmet = false, gloves = true,  boots = true,  barding = true },
+  ["wisp"] =       {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true }
+} -- end armour_slots_melded_by_form_key (comment prevents crawl rc parser ending outer lua block)
 
 local function is_melded_by_current_form(item)
   if item == nil or item.class(true) ~= "armour" then return false end
 
   local form = you.transform()
-  local melded_slots = armour_slots_melded_by_form[form]
-  if melded_slots == nil then
+  
+  -- player not transformed
+  if form == "" then return false end
+
+  local meld_key = form_meld_key[form]
+  if meld_key == nil then
     rc_warn(string.format("[PickupEquipment] is_melded_by_current_form unhandled form=%s", form))
+    return false
+  end
+
+  local melded_slots = armour_slots_melded_by_form_key[meld_key]
+  if melded_slots == nil then
+    rc_warn(string.format("[PickupEquipment] is_melded_by_current_form unhandled meld_key=%s", meld_key))
     return false
   end
 
@@ -205,28 +269,28 @@ local two_handed_always = {
 } -- end two_handed_always (comment prevents crawl rc parser ending outer lua block)
 
 local talisman_skill_min = {
-  ["inkwell"] = 0,
-  ["quill"] = 0,
-  ["scarab"] = 8,
-  ["medusa"] = 8,
-  ["rimehorn"] = 8,
-  ["spore"] = 8,
-  ["aqua"] = 12,
-  ["eel"] = 12,
-  ["fortress"] = 12,
-  ["maw"] = 12,
-  ["serpent"] = 12,
-  ["spider"] = 12,
-  ["werewolf"] = 12,
+  ["inkwell"] =   0,
+  ["quill"] =     0,
+  ["scarab"] =    8,
+  ["medusa"] =    8,
+  ["rimehorn"] =  8,
+  ["spore"] =     8,
+  ["aqua"] =      12,
+  ["eel"] =       12,
+  ["fortress"] =  12,
+  ["maw"] =       12,
+  ["serpent"] =   12,
+  ["spider"] =    12,
+  ["werewolf"] =  12,
   ["bat swarm"] = 17,
-  ["blade"] = 17,
-  ["dragon"] = 17,
-  ["hive"] = 17,
-  ["sphinx"] = 17,
-  ["statue"] = 17,
-  ["vampire"] = 17,
-  ["storm"] = 23,
-  ["death"] = 26
+  ["blade"] =     17,
+  ["dragon"] =    17,
+  ["hive"] =      17,
+  ["sphinx"] =    17,
+  ["statue"] =    17,
+  ["vampire"] =   17,
+  ["storm"] =     23,
+  ["death"] =     26
 } -- end talisman_skill_min (comment prevents crawl rc parser ending outer lua block)
 
 local function talisman_rank(item)
