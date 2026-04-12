@@ -70,3 +70,18 @@ function table_has(table, match)
 
   return false
 end
+
+function table_compare(lookup, key_a, key_b)
+    local val_a = lookup[key_a]
+    local val_b = lookup[key_b]
+
+    if val_a == nil or val_b == nil then
+      return false
+    end
+
+    if val_b > val_a then
+      return true
+    end
+
+    return false
+end

@@ -1,11 +1,8 @@
-local function is_branded_ego(item)
-  return item.branded or item.ego()
-end
-local function is_magical(item)
-  return is_branded_ego(item) or item.artefact
-end
+local nil_item = "item=nil";
 
-local nil_item = "item: nil";
+local function is_magical(item)
+  return item.branded or item.ego() or item.artefact
+end
 
 local function debug_item(item)
   if item == nil then
@@ -15,14 +12,14 @@ local function debug_item(item)
   local qual = item.name("qual");
   local subtype = item.subtype();
 
-  if qual == nil or subtype == nil then
+  if qual == nil and subtype == nil then
     return nil_item
   end
 
   local magical = tostring(is_magical(item));
   local plus = tostring(item.plus);
 
-  return string.format("name: %s; subtype: %s, magical: %s, plus: %s", qual, subtype, magical, plus)
+  return string.format("qual=%s; subtype=%s, magical=%s, plus=%s", qual, subtype, magical, plus)
 end
 
 -- `SK_RANGED_WEAPONS` source for ranged weapon names and base damage values
@@ -39,6 +36,36 @@ local ranged_weapon_base_damage = {
   ["triple crossbow"] =  23
 } -- end ranged_weapon_base_damage (comment prevents crawl rc parser ending outer lua block)
 
+local function is_ranged_weapon(item)
+  return item ~= nil
+    and item.class(true) == "weapon"
+    and ranged_weapon_base_damage[item.subtype()] ~= nil
+end
+
+local function best_inventory_ranged_weapon()
+  local best = nil
+
+  for _, inv_item in ipairs(items.inventory()) do
+    if not is_ranged_weapon(inv_item) then
+      -- skip
+    elseif best == nil then
+      best = inv_item
+    else
+      local inv_damage = ranged_weapon_base_damage[inv_item.subtype()]
+      local best_damage = ranged_weapon_base_damage[best.subtype()]
+
+      if inv_damage > best_damage then
+        best = inv_item
+      elseif inv_damage < best_damage then
+        -- skip
+      elseif (inv_item.plus or 0) > (best.plus or 0) then
+        best = inv_item
+      end
+    end
+  end
+
+  return best
+end
 
 local function should_pickup_upgrade(args)
   local cur = args.current
@@ -58,10 +85,7 @@ local function should_pickup_upgrade(args)
   -- rc_msg(string.format("[should_pickup_upgrade] higher_plus: %s, more_magical: %s", tostring(higher_plus), tostring(more_magical)))
 
   -- ranged weapons have a clear base-damage progression across subtypes
-  local cur_damage = ranged_weapon_base_damage[cur_subtype]
-  local item_damage = ranged_weapon_base_damage[item_subtype]
-
-  if cur_damage ~= nil and item_damage ~= nil and item_damage > cur_damage then
+  if table_compare(ranged_weapon_base_damage, cur_subtype, item_subtype) then
     return true
   end
 
@@ -272,8 +296,6 @@ local function permanent_armour_slot_blocked(item)
   return false
 end
 
-
-
 local two_handed_always = {
   "great sword", "triple sword",
   "battleaxe", "executioner's axe",
@@ -296,37 +318,6 @@ local function should_skip_shield_pickup(sub_type)
 
   -- shield skill less than 3
   return you.skill("Shields") <= 3
-end
-
-local function is_ranged_weapon(item)
-  return item ~= nil
-    and item.class(true) == "weapon"
-    and ranged_weapon_base_damage[item.subtype()] ~= nil
-end
-
-local function best_inventory_ranged_weapon()
-  local best = nil
-
-  for _, inv_item in ipairs(items.inventory()) do
-    if not is_ranged_weapon(inv_item) then
-      -- skip
-    elseif best == nil then
-      best = inv_item
-    else
-      local inv_damage = ranged_weapon_base_damage[inv_item.subtype()]
-      local best_damage = ranged_weapon_base_damage[best.subtype()]
-
-      if inv_damage > best_damage then
-        best = inv_item
-      elseif inv_damage < best_damage then
-        -- skip
-      elseif (inv_item.plus or 0) > (best.plus or 0) then
-        best = inv_item
-      end
-    end
-  end
-
-  return best
 end
 
 -- `talisman_type_name` source for item.subtype() talisman names
