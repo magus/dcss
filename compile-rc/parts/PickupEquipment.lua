@@ -417,7 +417,9 @@ local function pickup_equipment(it, name)
     return false
   end
 
-  return false
+  -- add_autopickup_func treats false as "never pick this up"
+  -- nil means "no opinion" and allows other pickup rules to apply
+  return nil
 end
 
 -- Runs once when parsed during rc init
