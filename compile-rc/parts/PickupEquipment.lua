@@ -103,6 +103,93 @@ local function equip_slot(item_sub_type)
   return items.equipped_at(equip_slot);
 end
 
+local armour_slots_melded_by_form = {
+  [""] = {},
+  aqua = {body=true},
+  blade = {},
+  dragon = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
+  death = {},
+  ["eel hands"] = {shield=true, gloves=true},
+  ["fortress crab"] = {shield=true, gloves=true, boots=true, barding=true, cloak=true, helmet=true},
+  hive = {body=true, helmet=true},
+  ["walking scroll"] = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
+  maw = {},
+  medusa = {helmet=true, cloak=true},
+  quill = {cloak=true, helmet=true, gloves=true, boots=true, barding=true},
+  ["rime yak"] = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
+  serpent = {shield=true, body=true, boots=true, barding=true, gloves=true, cloak=true},
+  sphinx = {shield=true, body=true, boots=true, helmet=true, gloves=true},
+  spider = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
+  spore = {shield=true, boots=true},
+  statue = {gloves=true, boots=true, barding=true, body=true},
+  storm = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
+  ["sun scarab"] = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
+  vampire = {},
+  werewolf = {gloves=true, boots=true, barding=true}}
+
+local function is_melded_by_current_form(item)
+  if item == nil or item.class(true) ~= "armour" then return false end
+
+  local form = you.transform()
+  local melded_slots = armour_slots_melded_by_form[form]
+  if melded_slots == nil then
+    rc_warn(string.format("[PickupEquipment] is_melded_by_current_form unhandled form=%s", form))
+    return false
+  end
+
+  return melded_slots[item.subtype()] == true
+end
+
+local function permanent_mutation_level(name)
+  return you.get_base_mutation_level(name, true, false, true)
+end
+
+local function permanent_armour_slot_blocked(item)
+  if item == nil or item.class(true) ~= "armour" then return false end
+
+  local race = you.race()
+  local subtype = item.subtype()
+  local name = item.name("qual")
+  local no_armour = permanent_mutation_level("no armour") > 0
+  local formless = permanent_mutation_level("formless") > 0
+  local little = race == "Felid" or race == "Spriggan"
+  local large = race == "Ogre" or race == "Troll"
+
+  if subtype == "body" then
+    return formless or no_armour or race == "Octopode"
+      or race == "Draconian" or string.find(race, "Draconian")
+  elseif subtype == "helmet" then
+    if formless or no_armour or permanent_mutation_level("horns") >= 3
+      or permanent_mutation_level("antennae") >= 3 then
+      return true
+    end
+
+    local hard_helmet = string.find(name, "helmet")
+    return hard_helmet and (little or large or race == "Octopode"
+      or race == "Draconian" or string.find(race, "Draconian")
+      or permanent_mutation_level("horns") > 0
+      or permanent_mutation_level("antennae") > 0
+      or permanent_mutation_level("beak") > 0)
+  elseif subtype == "gloves" then
+    return formless or no_armour or race == "Octopode" or little or large
+      or permanent_mutation_level("claws") >= 3
+      or permanent_mutation_level("demonic touch") >= 3
+  elseif subtype == "boots" then
+    return formless or no_armour or race == "Octopode" or little or large
+      or race == "Naga" or race == "Armataur"
+      or permanent_mutation_level("hooves") >= 3
+      or permanent_mutation_level("talons") >= 3
+      or permanent_mutation_level("float") > 0
+  elseif subtype == "barding" then
+    return not (race == "Naga" or race == "Armataur")
+  elseif subtype == "cloak" then
+    return formless or no_armour or race == "Octopode"
+      or permanent_mutation_level("weakness stinger") >= 3
+  end
+
+  return false
+end
+
 
 
 local two_handed_always = {
@@ -190,8 +277,18 @@ local function pickup_equipment(it, name)
   -- do not pickup forbidden items
   if string.match(name, "forbidden") then return false end
 
+  -- permanent species/mutation slot blockers should win over temporary form
+  if permanent_armour_slot_blocked(it) then return false end
+
   -- do not pickup useless items
-  if it.is_useless then return false end
+  if it.is_useless then
+    -- except armour that is only useless because the current form temporarily melds that slot
+    if is_melded_by_current_form(it) then
+      -- evaluate normal pickup rules below
+    else
+      return false
+    end
+  end
 
   -- always pickup artefacts
   if it.artefact then return true end
