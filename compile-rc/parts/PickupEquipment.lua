@@ -282,29 +282,32 @@ local function should_skip_shield_pickup(sub_type)
   return you.skill("Shields") <= 3
 end
 
+-- `talisman_type_name` source for item.subtype() talisman names
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L3163-L3192
+-- `_talisman_tiers` source for internal talisman tiers
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L3194-L3221
 local talisman_skill_min = {
-  ["inkwell"] =   0,
-  ["quill"] =     0,
-  ["scarab"] =    8,
-  ["medusa"] =    8,
-  ["rimehorn"] =  8,
-  ["spore"] =     8,
-  ["aqua"] =      12,
-  ["eel"] =       12,
-  ["fortress"] =  12,
-  ["maw"] =       12,
-  ["serpent"] =   12,
-  ["spider"] =    12,
-  ["werewolf"] =  12,
-  ["bat swarm"] = 17,
-  ["blade"] =     17,
-  ["dragon"] =    17,
-  ["hive"] =      17,
-  ["sphinx"] =    17,
-  ["statue"] =    17,
-  ["vampire"] =   17,
-  ["storm"] =     23,
-  ["death"] =     26
+  ["inkwell talisman"] =     0,
+  ["quill talisman"] =       0,
+  ["scarab talisman"] =      8,
+  ["medusa talisman"] =      8,
+  ["rimehorn talisman"] =    8,
+  ["spore talisman"] =       8,
+  ["maw talisman"] =         8,
+  ["eel talisman"] =         12,
+  ["fortress talisman"] =    12,
+  ["lupine talisman"] =      12,
+  ["serpent talisman"] =     12,
+  ["spider talisman"] =      12,
+  ["wellspring talisman"] =  12,
+  ["blade talisman"] =       17,
+  ["dragon-coil talisman"] = 17,
+  ["granite talisman"] =     17,
+  ["hive talisman"] =        17,
+  ["riddle talisman"] =      17,
+  ["sanguine talisman"] =    17,
+  ["storm talisman"] =       23,
+  ["talisman of death"] =    26
 } -- end talisman_skill_min (comment prevents crawl rc parser ending outer lua block)
 
 local function talisman_rank(item)
