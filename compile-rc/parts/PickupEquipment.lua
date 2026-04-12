@@ -268,6 +268,20 @@ local two_handed_always = {
   "arbalest", "triple crossbow"
 } -- end two_handed_always (comment prevents crawl rc parser ending outer lua block)
 
+local function should_skip_shield_pickup(sub_type)
+  if sub_type ~= "shield" then return false end
+
+  local curr_weapon = items.equipped_at("weapon")
+
+  -- using 2 handed weapons
+  if curr_weapon then
+    if table_has(two_handed_always, curr_weapon.subtype()) then return true end
+  end
+
+  -- shield skill less than 3
+  return you.skill("Shields") <= 3
+end
+
 local talisman_skill_min = {
   ["inkwell"] =   0,
   ["quill"] =     0,
@@ -358,9 +372,32 @@ local function pickup_equipment(it, name)
     end
   end
 
+  if class == "armour" then
+    local sub_type = it.subtype()
+
+    if should_skip_shield_pickup(sub_type) then return false end
+
+    local equipped_item = equip_slot(sub_type)
+
+    -- always pickup empty slots
+    if equipped_item == nil then
+      return true
+    end
+
+    -- always pickup artefacts
+    if it.artefact then return true end
+
+    if should_pickup(equipped_item, it) then return true end
+
+    return false
+  end
+
   -- always pickup artefacts
   if it.artefact then return true end
 
+  if class == "talisman" then
+    return should_pickup_talisman(it)
+  end
 
   if class == "weapon" then
     -- get currently equipped item in slot
@@ -377,31 +414,10 @@ local function pickup_equipment(it, name)
 
     if should_pickup(currentWeapon, it) then return true end
 
-  elseif class == "talisman" then
-    return should_pickup_talisman(it)
-
-  elseif class == "armour" then
-    local sub_type = it.subtype();
-
-    if sub_type == "gloves" and you.has_claws() > 0 then return false end
-
-    -- skip picking up shields, when
-    if sub_type == "shield" then
-      -- using 2 handed weapons
-      if currentWeapon then
-        if table_has(two_handed_always, currentWeapon.subtype()) then return false end
-      end
-
-      -- shield skill less than 3
-      if you.skill("Shields") <= 3 then return false end
-    end
-
-    local equipped_item = equip_slot(sub_type)
-
-    if should_pickup(equipped_item, it) then return true end
+    return false
   end
 
-  return
+  return false
 end
 
 -- Runs once when parsed during rc init
