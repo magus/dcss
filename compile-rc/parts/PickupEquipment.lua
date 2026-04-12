@@ -53,7 +53,7 @@ local function should_pickup(cur, i2)
 
   local is_dragon_scales = string.find(cur.name("qual"), "dragon scale")
   -- wearing magical item (artefact/ego/branded) or dragon scales? skip pickup
-  if is_magical(cur) or is_dragon_scales then return end
+  if is_magical(cur) or is_dragon_scales then return false end
 
   -- if we got to this point we are not wearing dragon scales/artefact/ego/branded
 
@@ -188,10 +188,10 @@ local function pickup_equipment(it, name)
 
 
   -- do not pickup forbidden items
-  if string.match(name, "forbidden") then return end
+  if string.match(name, "forbidden") then return false end
 
   -- do not pickup useless items
-  if it.is_useless then return end
+  if it.is_useless then return false end
 
   -- always pickup artefacts
   if it.artefact then return true end
@@ -218,17 +218,17 @@ local function pickup_equipment(it, name)
   elseif class == "armour" then
     local sub_type = it.subtype();
 
-    if sub_type == "gloves" and you.has_claws() > 0 then return end
+    if sub_type == "gloves" and you.has_claws() > 0 then return false end
 
     -- skip picking up shields, when
     if sub_type == "shield" then
       -- using 2 handed weapons
       if currentWeapon then
-        if table_has(two_handed_always, currentWeapon.subtype()) then return end
+        if table_has(two_handed_always, currentWeapon.subtype()) then return false end
       end
 
       -- shield skill less than 3
-      if you.skill("Shields") <= 3 then return end
+      if you.skill("Shields") <= 3 then return false end
     end
 
     local equipped_item = equip_slot(sub_type)
