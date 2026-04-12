@@ -83,7 +83,8 @@ local item_subtype_equip_slot = {
   helmet="Helmet",
   gloves="Gloves",
   boots="Boots",
-  shield="Shield"}
+  shield="Shield"
+} -- end item_subtype_equip_slot (comment prevents crawl rc parser ending outer lua block)
 
 local function equip_slot(item_sub_type)
   if item_sub_type == "body" then
@@ -125,7 +126,8 @@ local armour_slots_melded_by_form = {
   storm = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
   ["sun scarab"] = {shield=true, body=true, cloak=true, helmet=true, gloves=true, boots=true, barding=true},
   vampire = {},
-  werewolf = {gloves=true, boots=true, barding=true}}
+  werewolf = {gloves=true, boots=true, barding=true}
+} -- end armour_slots_melded_by_form (comment prevents crawl rc parser ending outer lua block)
 
 local function is_melded_by_current_form(item)
   if item == nil or item.class(true) ~= "armour" then return false end
@@ -199,7 +201,8 @@ local two_handed_always = {
   "halberd", "scythe", "glaive", "bardiche",
   "quarterstaff", "lajatang",
   "shortbow", "longbow",
-  "arbalest", "triple crossbow"}
+  "arbalest", "triple crossbow"
+} -- end two_handed_always (comment prevents crawl rc parser ending outer lua block)
 
 local talisman_skill_min = {
   inkwell=0,
@@ -223,7 +226,8 @@ local talisman_skill_min = {
   statue=17,
   vampire=17,
   storm=23,
-  death=26}
+  death=26
+} -- end talisman_skill_min (comment prevents crawl rc parser ending outer lua block)
 
 local function talisman_rank(item)
   if item == nil or item.class(true) ~= "talisman" then return nil end
