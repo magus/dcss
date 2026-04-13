@@ -362,3 +362,32 @@ item_slot += ring of wizardry : Zz
 # 0.26 holdback
 item_slot += ring of stealth : Qq
 item_slot += ring of teleportation : t
+
+##################
+### Gear slots ###
+##################
+
+# Talismans
+# Use letters in the form name first: (1) beginning, (2) end, (3) anywhere.
+# Shared letters from "talisman" come later as fallbacks.
+item_slot += inkwell talisman:itITlnLNkwelKWELasmASM
+item_slot += quill talisman:qtQTlnLNuiUIasmASM
+item_slot += scarab talisman:stSTbmBCarcARCliLI
+item_slot += medusa talisman:mtMTanANedsuEDSUliLI
+item_slot += rimehorn talisman:rtRTnnNNimehoIMEHOlasLAS
+item_slot += spore talisman:stSTeeEEporPORlimLIM
+item_slot += maw talisman:mtMTwwWWalALisISnN
+item_slot += eel talisman:etETllLLeanEANismISM
+item_slot += fortress talisman:ftFTssSSoreOREliLIM
+item_slot += lupine talisman:ltLTenENupiUPIasmASM
+item_slot += serpent talisman:stSTntNTerpeERPEaliALI
+item_slot += spider talisman:stSTrrRRpidePIDEalmALM
+item_slot += wellspring talisman:wtWTgnGNelspriELSPRIamAM
+item_slot += blade talisman:btBTeeEEladLADismISM
+item_slot += dragon-coil talisman:dctDCTnlnNLNragoiRAGOIasmASM
+item_slot += granite talisman:gtGTenENraniRANIlsmLSM
+item_slot += hive talisman:htHTeeEEivIValsALS
+item_slot += riddle talisman:rtRTeeEEdidlDIDLasmASM
+item_slot += sanguine talisman:stSTenENaguiAGUIlmLM
+item_slot += storm talisman:stSTmmMMtorTORaliALI
+item_slot += talisman of death:todTODnfhNFHeaEAlismLISM
