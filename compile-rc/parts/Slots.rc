@@ -335,57 +335,71 @@ spell_slot += .*:XYZ
 ### Item slots ###
 ##################
 
-## In order of letter used.
-item_slot += amulet of rage : B
-gear_slot += amulet of rage : B
-item_slot += ring of (ice|protection from cold) : Cc
-gear_slot += ring of (ice|protection from cold) : Cc
-item_slot += amulet of the acrobat : A
-gear_slot += amulet of the acrobat : A
-item_slot += \+[0-9]+ ring of evasion : Ee
-gear_slot += \+[0-9]+ ring of evasion : Ee
-item_slot += ring of .*fire : Ff
-gear_slot += ring of .*fire : Ff
-item_slot += amulet of regeneration : g
-gear_slot += amulet of regeneration : g
-item_slot += amulet of guardian spirit : G
-gear_slot += amulet of guardian spirit : G
-item_slot += amulet of faith : T
-gear_slot += amulet of faith : T
-item_slot += \+[0-9]+ ring of intelligence : Ii
-gear_slot += \+[0-9]+ ring of intelligence : Ii
-item_slot += ring of flight : L
-gear_slot += ring of flight : L
-item_slot += ring of protection from magic : Mm
-gear_slot += ring of protection from magic : Mm
-item_slot += ring of positive energy : Nn
-gear_slot += ring of positive energy : Nn
-item_slot += \+[0-9]+ ring of protection : Oo
-gear_slot += \+[0-9]+ ring of protection : Oo
-item_slot += ring of poison resistance : P
-gear_slot += ring of poison resistance : P
-item_slot += ring of resist corrosion : R
-gear_slot += ring of resist corrosion : R
-item_slot += amulet of mana regeneration : r
-gear_slot += amulet of mana regeneration : r
-item_slot += \+[0-9]+ ring of strength : Ss
-gear_slot += \+[0-9]+ ring of strength : Ss
-item_slot += ring of see invisible : v
-gear_slot += ring of see invisible : v
-item_slot += ring of magical power : Ww
-gear_slot += ring of magical power : Ww
-item_slot += \+[0-9]+ ring of dexterity : Dd
-gear_slot += \+[0-9]+ ring of dexterity : Dd
-item_slot += \+[0-9]+ ring of slaying : Yy
-gear_slot += \+[0-9]+ ring of slaying : Yy
-item_slot += ring of wizardry : Zz
-gear_slot += ring of wizardry : Zz
+# 0.34 jewellery names:
+# https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-name.cc
+# https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/dat/descript/items.txt
 
-# 0.26 holdback
-item_slot += ring of stealth : Qq
-gear_slot += ring of stealth : Qq
-item_slot += ring of teleportation : t
-gear_slot += ring of teleportation : t
+# Use letters in the jewellery property name first: 
+# (1) beginning, (2) end, (3) anywhere. 
+# Keep old names in regexes where they are useful for older games.
+item_slot += amulet of the acrobat : acACroRObBtT
+gear_slot += amulet of the acrobat : acACroRObBtT
+item_slot += amulet of chemistry : chCHemEMisIStryTRY
+gear_slot += amulet of chemistry : chCHemEMisIStryTRY
+item_slot += amulet of dissipation : dsDSipIPatATonON
+gear_slot += amulet of dissipation : dsDSipIPatATonON
+item_slot += amulet of faith : faFAitIThH
+gear_slot += amulet of faith : faFAitIThH
+item_slot += amulet of guardian spirit : gsGSuaUAriRIptPT
+gear_slot += amulet of guardian spirit : gsGSuaUAriRIptPT
+item_slot += amulet of (mana|magic) regeneration : mrMRagAGenEN
+gear_slot += amulet of (mana|magic) regeneration : mrMRagAGenEN
+item_slot += amulet of reflection : rfRFleLEctCT
+gear_slot += amulet of reflection : rfRFleLEctCT
+item_slot += amulet of regeneration : rgRGenENhH
+gear_slot += amulet of regeneration : rgRGenENhH
+item_slot += amulet of wildshape : wsWSildILDhapeHAPE
+gear_slot += amulet of wildshape : wsWSildILDhapeHAPE
+item_slot += ring of (ice|protection from cold) : ciCIoldOLDfrFR
+gear_slot += ring of (ice|protection from cold) : ciCIoldOLDfrFR
+item_slot += \+[0-9]+ ring of dexterity : dxDXetETriRI
+gear_slot += \+[0-9]+ ring of dexterity : dxDXetETriRI
+item_slot += \+[0-9]+ ring of evasion : evEVasASioIOnN
+gear_slot += \+[0-9]+ ring of evasion : evEVasASioIOnN
+item_slot += ring of (fire|protection from fire) : fiFIreRE
+gear_slot += ring of (fire|protection from fire) : fiFIreRE
+item_slot += ring of flight : flFLigIGhtHT
+gear_slot += ring of flight : flFLigIGhtHT
+item_slot += \+[0-9]+ ring of intelligence : inINteTEllLLgG
+gear_slot += \+[0-9]+ ring of intelligence : inINteTEllLLgG
+item_slot += ring of magical power : mpMPagAGowOW
+gear_slot += ring of magical power : mpMPagAGowOW
+item_slot += ring of poison resistance : prPRoiOIsnSN
+gear_slot += ring of poison resistance : prPRoiOIsnSN
+item_slot += ring of positive energy : neNEpoPOsiSI
+gear_slot += ring of positive energy : neNEpoPOsiSI
+item_slot += \+[0-9]+ ring of protection : prPRotOTecEC
+gear_slot += \+[0-9]+ ring of protection : prPRotOTecEC
+item_slot += ring of resist corrosion : rcRCcoCOrsRS
+gear_slot += ring of resist corrosion : rcRCcoCOrsRS
+item_slot += ring of see invisible : siSIevEVnN
+gear_slot += ring of see invisible : siSIevEVnN
+item_slot += \+[0-9]+ ring of slaying : slSLayAY
+gear_slot += \+[0-9]+ ring of slaying : slSLayAY
+item_slot += \+[0-9]+ ring of strength : stSTreREngNG
+gear_slot += \+[0-9]+ ring of strength : stSTreREngNG
+item_slot += ring of (protection from magic|willpower) : wiWIllLLmrMR
+gear_slot += ring of (protection from magic|willpower) : wiWIllLLmrMR
+item_slot += ring of wizardry : wzWZizIZarAR
+gear_slot += ring of wizardry : wzWZizIZarAR
+
+# older-version holdbacks
+item_slot += amulet of rage : arARbgBGeE
+gear_slot += amulet of rage : arARbgBGeE
+item_slot += ring of stealth : stSTeaEAlhLH
+gear_slot += ring of stealth : stSTeaEAlhLH
+item_slot += ring of teleportation : teTEleLEpoPO
+gear_slot += ring of teleportation : teTEleLEpoPO
 
 # Talismans
 # Use letters in the form name first: (1) beginning, (2) end, (3) anywhere.
