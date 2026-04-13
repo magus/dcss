@@ -337,57 +337,98 @@ spell_slot += .*:XYZ
 
 ## In order of letter used.
 item_slot += amulet of rage : B
+gear_slot += amulet of rage : B
 item_slot += ring of (ice|protection from cold) : Cc
+gear_slot += ring of (ice|protection from cold) : Cc
 item_slot += amulet of the acrobat : A
+gear_slot += amulet of the acrobat : A
 item_slot += \+[0-9]+ ring of evasion : Ee
+gear_slot += \+[0-9]+ ring of evasion : Ee
 item_slot += ring of .*fire : Ff
+gear_slot += ring of .*fire : Ff
 item_slot += amulet of regeneration : g
+gear_slot += amulet of regeneration : g
 item_slot += amulet of guardian spirit : G
+gear_slot += amulet of guardian spirit : G
 item_slot += amulet of faith : T
+gear_slot += amulet of faith : T
 item_slot += \+[0-9]+ ring of intelligence : Ii
+gear_slot += \+[0-9]+ ring of intelligence : Ii
 item_slot += ring of flight : L
+gear_slot += ring of flight : L
 item_slot += ring of protection from magic : Mm
+gear_slot += ring of protection from magic : Mm
 item_slot += ring of positive energy : Nn
+gear_slot += ring of positive energy : Nn
 item_slot += \+[0-9]+ ring of protection : Oo
+gear_slot += \+[0-9]+ ring of protection : Oo
 item_slot += ring of poison resistance : P
+gear_slot += ring of poison resistance : P
 item_slot += ring of resist corrosion : R
+gear_slot += ring of resist corrosion : R
 item_slot += amulet of mana regeneration : r
+gear_slot += amulet of mana regeneration : r
 item_slot += \+[0-9]+ ring of strength : Ss
+gear_slot += \+[0-9]+ ring of strength : Ss
 item_slot += ring of see invisible : v
+gear_slot += ring of see invisible : v
 item_slot += ring of magical power : Ww
+gear_slot += ring of magical power : Ww
 item_slot += \+[0-9]+ ring of dexterity : Dd
+gear_slot += \+[0-9]+ ring of dexterity : Dd
 item_slot += \+[0-9]+ ring of slaying : Yy
+gear_slot += \+[0-9]+ ring of slaying : Yy
 item_slot += ring of wizardry : Zz
+gear_slot += ring of wizardry : Zz
 
 # 0.26 holdback
 item_slot += ring of stealth : Qq
+gear_slot += ring of stealth : Qq
 item_slot += ring of teleportation : t
-
-##################
-### Gear slots ###
-##################
+gear_slot += ring of teleportation : t
 
 # Talismans
 # Use letters in the form name first: (1) beginning, (2) end, (3) anywhere.
 # Shared letters from "talisman" come later as fallbacks.
-item_slot += inkwell talisman:itITlnLNkwelKWELasmASM
-item_slot += quill talisman:qtQTlnLNuiUIasmASM
-item_slot += scarab talisman:stSTbmBCarcARCliLI
-item_slot += medusa talisman:mtMTanANedsuEDSUliLI
-item_slot += rimehorn talisman:rtRTnnNNimehoIMEHOlasLAS
-item_slot += spore talisman:stSTeeEEporPORlimLIM
-item_slot += maw talisman:mtMTwwWWalALisISnN
-item_slot += eel talisman:etETllLLeanEANismISM
-item_slot += fortress talisman:ftFTssSSoreOREliLIM
-item_slot += lupine talisman:ltLTenENupiUPIasmASM
-item_slot += serpent talisman:stSTntNTerpeERPEaliALI
-item_slot += spider talisman:stSTrrRRpidePIDEalmALM
-item_slot += wellspring talisman:wtWTgnGNelspriELSPRIamAM
-item_slot += blade talisman:btBTeeEEladLADismISM
-item_slot += dragon-coil talisman:dctDCTnlnNLNragoiRAGOIasmASM
-item_slot += granite talisman:gtGTenENraniRANIlsmLSM
-item_slot += hive talisman:htHTeeEEivIValsALS
-item_slot += riddle talisman:rtRTeeEEdidlDIDLasmASM
-item_slot += sanguine talisman:stSTenENaguiAGUIlmLM
-item_slot += storm talisman:stSTmmMMtorTORaliALI
-item_slot += talisman of death:todTODnfhNFHeaEAlismLISM
+item_slot += inkwell talisman : itITlnLNkwelKWELasmASM
+gear_slot += inkwell talisman : itITlnLNkwelKWELasmASM
+item_slot += quill talisman : qtQTlnLNuiUIasmASM
+gear_slot += quill talisman : qtQTlnLNuiUIasmASM
+item_slot += scarab talisman : stSTbmBCarcARCliLI
+gear_slot += scarab talisman : stSTbmBCarcARCliLI
+item_slot += medusa talisman : mtMTanANedsuEDSUliLI
+gear_slot += medusa talisman : mtMTanANedsuEDSUliLI
+item_slot += rimehorn talisman : rtRTnnNNimehoIMEHOlasLAS
+gear_slot += rimehorn talisman : rtRTnnNNimehoIMEHOlasLAS
+item_slot += spore talisman : stSTeeEEporPORlimLIM
+gear_slot += spore talisman : stSTeeEEporPORlimLIM
+item_slot += maw talisman : mtMTwwWWalALisISnN
+gear_slot += maw talisman : mtMTwwWWalALisISnN
+item_slot += eel talisman : etETllLLeanEANismISM
+gear_slot += eel talisman : etETllLLeanEANismISM
+item_slot += fortress talisman : ftFTssSSoreOREliLIM
+gear_slot += fortress talisman : ftFTssSSoreOREliLIM
+item_slot += lupine talisman : ltLTenENupiUPIasmASM
+gear_slot += lupine talisman : ltLTenENupiUPIasmASM
+item_slot += serpent talisman : stSTntNTerpeERPEaliALI
+gear_slot += serpent talisman : stSTntNTerpeERPEaliALI
+item_slot += spider talisman : stSTrrRRpidePIDEalmALM
+gear_slot += spider talisman : stSTrrRRpidePIDEalmALM
+item_slot += wellspring talisman : wtWTgnGNelspriELSPRIamAM
+gear_slot += wellspring talisman : wtWTgnGNelspriELSPRIamAM
+item_slot += blade talisman : btBTeeEEladLADismISM
+gear_slot += blade talisman : btBTeeEEladLADismISM
+item_slot += dragon-coil talisman : dctDCTnlnNLNragoiRAGOIasmASM
+gear_slot += dragon-coil talisman : dctDCTnlnNLNragoiRAGOIasmASM
+item_slot += granite talisman : gtGTenENraniRANIlsmLSM
+gear_slot += granite talisman : gtGTenENraniRANIlsmLSM
+item_slot += hive talisman : htHTeeEEivIValsALS
+gear_slot += hive talisman : htHTeeEEivIValsALS
+item_slot += riddle talisman : rtRTeeEEdidlDIDLasmASM
+gear_slot += riddle talisman : rtRTeeEEdidlDIDLasmASM
+item_slot += sanguine talisman : stSTenENaguiAGUIlmLM
+gear_slot += sanguine talisman : stSTenENaguiAGUIlmLM
+item_slot += storm talisman : stSTmmMMtorTORaliALI
+gear_slot += storm talisman : stSTmmMMtorTORaliALI
+item_slot += talisman of death : todTODnfhNFHeaEAlismLISM
+gear_slot += talisman of death : todTODnfhNFHeaEAlismLISM
