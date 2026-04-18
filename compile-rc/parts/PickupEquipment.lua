@@ -320,62 +320,33 @@ local function should_skip_shield_pickup(sub_type)
   return you.skill("Shields") <= 3
 end
 
--- `talisman_type_name` source for item.subtype() talisman names
--- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L3163-L3192
--- `_talisman_tiers` source for internal talisman tiers
--- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L3194-L3221
-local talisman_skill_min = {
-  ["inkwell talisman"] =     0,
-  ["quill talisman"] =       0,
-  ["scarab talisman"] =      8,
-  ["medusa talisman"] =      8,
-  ["rimehorn talisman"] =    8,
-  ["spore talisman"] =       8,
-  ["maw talisman"] =         8,
-  ["eel talisman"] =         12,
-  ["fortress talisman"] =    12,
-  ["lupine talisman"] =      12,
-  ["serpent talisman"] =     12,
-  ["spider talisman"] =      12,
-  ["wellspring talisman"] =  12,
-  ["blade talisman"] =       17,
-  ["dragon-coil talisman"] = 17,
-  ["granite talisman"] =     17,
-  ["hive talisman"] =        17,
-  ["riddle talisman"] =      17,
-  ["sanguine talisman"] =    17,
-  ["storm talisman"] =       23,
-  ["talisman of death"] =    26
-} -- end talisman_skill_min (comment prevents crawl rc parser ending outer lua block)
-
-local function talisman_rank(item)
-  if item == nil or item.class(true) ~= "talisman" then return nil end
-  return talisman_skill_min[item.subtype()] or talisman_skill_min[item.name("qual")]
+local function talisman_key(item)
+  return item.subtype() or item.name("qual")
 end
 
-local function should_pickup_talisman(item)
-  if you.skill("Shapeshifting") < 3 then return false end
-
-  local rank = talisman_rank(item)
-  if rank == nil then return false end
-
-  local best_inv_rank = nil
+local function has_inventory_talisman(key)
   for _, inv_item in ipairs(items.inventory()) do
-    local inv_rank = talisman_rank(inv_item)
-    if inv_rank ~= nil and (best_inv_rank == nil or inv_rank > best_inv_rank) then
-      best_inv_rank = inv_rank
+    if talisman_key(inv_item) == key then
+      return inv_item
     end
   end
 
-  if best_inv_rank == nil then
-    return true
-  end
+  return nil
+end
 
-  if rank > best_inv_rank then
-    return true
-  end
+local function should_pickup_talisman(item)
+  if you.skill("Shapeshifting") < 2 then return false end
 
-  return false
+  local key = talisman_key(item)
+  if key == nil then return false end
+
+  local current = has_inventory_talisman(key)
+  if current == nil then return true end
+
+  return should_pickup_upgrade({
+    current = current,
+    item = item
+  })
 end
 
 local function pickup_equipment(item, name)

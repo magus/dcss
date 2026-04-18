@@ -92,7 +92,7 @@ ae += <flux baubles?
 ae += >(staff|staves) of (air|alchemy|channelling|cold|conjuration|earth|enchantment|energy|fire|necromancy|power|summoning|wizardry)
 
 # Talismans
-: if you.skill("Shapeshifting") > 0 then
+: if you.skill("Shapeshifting") >= 2 then
 ae += <talisman
 : else
 ae += >talisman
