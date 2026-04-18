@@ -83,6 +83,10 @@ ae += >potions? of (flight)
 # Miscellaneous
 ae += <(tins of tremorstones)
 
+# Baubles
+# https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-name.cc#L1943-L1944
+ae += <flux baubles?
+
 # Staves
 # https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L835-L864
 ae += >(staff|staves) of (air|alchemy|channelling|cold|conjuration|earth|enchantment|energy|fire|necromancy|power|summoning|wizardry)
