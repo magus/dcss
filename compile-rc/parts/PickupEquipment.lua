@@ -400,6 +400,12 @@ local function pickup_equipment(item, name)
   -- do not pickup forbidden items
   if string.match(name, "forbidden") then return false end
 
+  -- always pickup artefacts
+  if item.artefact then return true end
+
+  -- always pickup god gift equipment
+  if item.god_gift then return true end
+
   if class == "talisman" then
     return should_pickup_talisman(item)
   end
@@ -416,12 +422,6 @@ local function pickup_equipment(item, name)
       return false
     end
   end
-
-  -- always pickup artefacts
-  if item.artefact then return true end
-
-  -- always pickup god gift equipment
-  if item.god_gift then return true end
 
   if class == "armour" then
     local sub_type = item.subtype()
