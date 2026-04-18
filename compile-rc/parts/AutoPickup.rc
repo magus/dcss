@@ -83,6 +83,10 @@ ae += >potions? of (flight)
 # Miscellaneous
 ae += <(tins of tremorstones)
 
+# Staves
+# https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L835-L864
+ae += >(staff|staves) of (air|alchemy|channelling|cold|conjuration|earth|enchantment|energy|fire|necromancy|power|summoning|wizardry)
+
 # Talismans
 : if you.skill("Shapeshifting") > 0 then
 ae += <talisman
