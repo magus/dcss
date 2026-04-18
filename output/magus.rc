@@ -150,6 +150,30 @@ function rc_warn(msg)
   rc_out("⚠️", "yellow", msg, "warning")
 end
 
+function rc_pause_text()
+  return string.format("%s%s%s",
+    withColor(COLORS.darkgrey, "("),
+    withColor(COLORS.yellow, PAUSE_MORE),
+    withColor(COLORS.darkgrey, ")")
+  )
+end
+
+function rc_pause()
+  rc_warn(rc_pause_text())
+end
+
+function rc_pause_message(args)
+  local color = args.color or COLORS.white
+  local channel = args.channel or "plain"
+
+  crawl.mpr(
+    string.format("%s %s",
+      withColor(color, args.message),
+      rc_pause_text()
+    ),
+    channel
+  )
+end
 
 function table_has(table, match)
   for index, value in ipairs(table) do
@@ -159,6 +183,21 @@ function table_has(table, match)
   end
 
   return false
+end
+
+function table_compare(lookup, key_a, key_b)
+    local val_a = lookup[key_a]
+    local val_b = lookup[key_b]
+
+    if val_a == nil or val_b == nil then
+      return false
+    end
+
+    if val_b > val_a then
+      return true
+    end
+
+    return false
 end
 }
 
@@ -208,11 +247,10 @@ local Messages = {
     )
   end,
   ["HPMassivePause"] = function ()
-    crawl.mpr(
-      withColor(COLORS.lightred,
-        string.format("MASSIVE DAMAGE!! (%s)", PAUSE_MORE)
-      )
-    )
+    rc_pause_message({
+      message = "MASSIVE DAMAGE!!",
+      color = COLORS.lightred
+    })
   end,
   ["MPSimple"] = function(delta)
     return withColor(COLORS.white,
@@ -417,17 +455,11 @@ start_open_skills()
 ## PickupEquipment.lua
 ################################################################################################
 {
-local favor_egos = false
-local favor_plus = false
+local nil_item = "item=nil";
 
-local function is_branded_ego(item)
-  return item.branded or item.ego()
-end
 local function is_magical(item)
-  return is_branded_ego(item) or item.artefact
+  return item.branded or item.ego() or item.artefact
 end
-
-local nil_item = "item: nil";
 
 local function debug_item(item)
   if item == nil then
@@ -437,51 +469,97 @@ local function debug_item(item)
   local qual = item.name("qual");
   local subtype = item.subtype();
 
-  if qual == nil or subtype == nil then
+  if qual == nil and subtype == nil then
     return nil_item
   end
 
   local magical = tostring(is_magical(item));
   local plus = tostring(item.plus);
 
-  return string.format("name: %s; subtype: %s, magical: %s, plus: %s", qual, subtype, magical, plus)
+  return string.format("qual=%s; subtype=%s, magical=%s, plus=%s", qual, subtype, magical, plus)
 end
 
+-- `SK_RANGED_WEAPONS` source for ranged weapon names and base damage values
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L783-L819
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L1815-L1823
+local ranged_weapon_base_damage = {
+  ["sling"] =            7,
+  ["shortbow"] =         8,
+  ["old fustibalus"] =   10,
+  ["orcbow"] =           11,
+  ["longbow"] =          14,
+  ["arbalest"] =         16,
+  ["hand cannon"] =      16,
+  ["triple crossbow"] =  23
+} -- end ranged_weapon_base_damage (comment prevents crawl rc parser ending outer lua block)
 
-local function should_pickup(cur, i2)
-  -- always pickup god gift equipment
-  if i2.god_gift then return true end
+local function is_ranged_weapon(item)
+  return item ~= nil
+    and item.class(true) == "weapon"
+    and ranged_weapon_base_damage[item.subtype()] ~= nil
+end
 
-  --  not wearing any item in the slot? pickup!
+local function best_inventory_ranged_weapon()
+  local best = nil
+
+  for _, inv_item in ipairs(items.inventory()) do
+    if not is_ranged_weapon(inv_item) then
+      -- skip
+    elseif best == nil then
+      best = inv_item
+    else
+      local inv_damage = ranged_weapon_base_damage[inv_item.subtype()]
+      local best_damage = ranged_weapon_base_damage[best.subtype()]
+
+      if inv_damage > best_damage then
+        best = inv_item
+      elseif inv_damage < best_damage then
+        -- skip
+      elseif (inv_item.plus or 0) > (best.plus or 0) then
+        best = inv_item
+      end
+    end
+  end
+
+  return best
+end
+
+local function should_pickup_upgrade(args)
+  local cur = args.current
+  local item = args.item
+
+  -- no comparable item? pickup!
   if cur == nil then return true end
 
-  local higher_plus = i2.plus ~= nil and i2.plus > (cur.plus or 0)
-  local more_magical = not is_magical(cur) and is_magical(i2)
+  local cur_subtype = cur.subtype()
+  local item_subtype = item.subtype()
+  local higher_plus = item.plus ~= nil and item.plus > (cur.plus or 0)
+  local more_magical = not is_magical(cur) and is_magical(item)
 
   -- DEBUG
-  -- rc_msg(string.format("[should_pickup] (cur): %s", debug_item(cur)))
-  -- rc_msg(string.format("[should_pickup] (i2): %s", debug_item(i2)))
-  -- rc_msg(string.format("[should_pickup] higher_plus: %s, more_magical: %s", tostring(higher_plus), tostring(more_magical)))
+  -- rc_msg(string.format("[should_pickup_upgrade] (cur): %s", debug_item(cur)))
+  -- rc_msg(string.format("[should_pickup_upgrade] (item): %s", debug_item(item)))
+  -- rc_msg(string.format("[should_pickup_upgrade] higher_plus: %s, more_magical: %s", tostring(higher_plus), tostring(more_magical)))
 
-  -- items names are the same, pickup higher plus or more magical
-  if cur.name("qual") == i2.name("qual") then
-    if  higher_plus or more_magical then
+  -- ranged weapons have a clear base-damage progression across subtypes
+  if table_compare(ranged_weapon_base_damage, cur_subtype, item_subtype) then
+    return true
+  end
+
+  -- do not replace magical gear with plain gear just for enchantment
+  if is_magical(cur) and not is_magical(item) then return false end
+
+  -- dragon scales are rare enough that we do not auto-replace them
+  if string.find(cur.name("qual"), "dragon scale") then return false end
+
+  -- same item? pickup higher plus or more magical
+  if cur_subtype == item_subtype then
+    if higher_plus or more_magical then
       return true
     end
   end
 
-  local is_dragon_scales = string.find(cur.name("qual"), "dragon scale")
-  -- wearing magical item (artefact/ego/branded) or dragon scales? skip pickup
-  if is_magical(cur) or is_dragon_scales then return end
-
-  -- if we got to this point we are not wearing dragon scales/artefact/ego/branded
-
-  -- if favoring egos and item is ego/branded, pickup
-  if favor_egos and is_magical(i2) then return true end
-  -- if favoring plus and plus is higher, pickup
-  if favor_plus and higher_plus then return true end
-
-  -- no not pickup by default
+  -- do not pickup by default
   return false
 end
 
@@ -502,7 +580,8 @@ local item_subtype_equip_slot = {
   helmet="Helmet",
   gloves="Gloves",
   boots="Boots",
-  shield="Shield"}
+  shield="Shield"
+} -- end item_subtype_equip_slot (comment prevents crawl rc parser ending outer lua block)
 
 local function equip_slot(item_sub_type)
   if item_sub_type == "body" then
@@ -522,7 +601,157 @@ local function equip_slot(item_sub_type)
   return items.equipped_at(equip_slot);
 end
 
+-- source for form wiz_name, talisman, and melds values
+-- https://github.com/crawl/crawl/tree/0.34.0/crawl-ref/source/dat/forms
+-- you.transform() returns transform_name(), which returns the form wiz_name
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/l-you.cc#L399-L404
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/transform.cc#L1449-L1457
+local form_meld_key = {
+  ["appendages"] =     "appendages",
+  ["aqua"] =           "aqua",
+  ["bat"] =            "bat",
+  ["bat swarm"] =      "bat swarm",
+  ["blade"] =          "blade",
+  ["death"] =          "death",
+  ["dragon"] =         "dragon",
+  ["eel hands"] =      "eel",
+  ["fortress crab"] =  "fortress",
+  ["flux"] =           "flux",
+  ["fungus"] =         "fungus",
+  ["hive"] =           "hive",
+  ["hydra"] =          "hydra",
+  ["jelly"] =          "jelly",
+  ["maw"] =            "maw",
+  ["medusa"] =         "medusa",
+  ["pig"] =            "pig",
+  ["porcupine"] =      "porcupine",
+  ["quill"] =          "quill",
+  ["rime yak"] =       "rimehorn",
+  ["amphisbaena"] =    "serpent",
+  ["shadow"] =         "shadow",
+  ["slaughter"] =      "slaughter",
+  ["sphinx"] =         "sphinx",
+  ["spider"] =         "spider",
+  ["spore"] =          "spore",
+  ["statue"] =         "statue",
+  ["storm"] =          "storm",
+  ["sun scarab"] =     "scarab",
+  ["tree"] =           "tree",
+  ["vampire"] =        "vampire",
+  ["walking scroll"] = "inkwell",
+  ["werewolf"] =       "werewolf",
+  ["wisp"] =           "wisp"
+} -- end form_meld_key (comment prevents crawl rc parser ending outer lua block)
 
+local armour_slots_melded_by_form_key = {
+  ["appendages"] = {shield = false, body = false, cloak = false, helmet = true,  gloves = false, boots = true,  barding = false},
+  ["aqua"] =       {shield = false, body = true,  cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["bat"] =        {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["bat swarm"] =  {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["blade"] =      {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["dragon"] =     {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["death"] =      {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["eel"] =        {shield = true,  body = false, cloak = false, helmet = false, gloves = true,  boots = false, barding = false},
+  ["fortress"] =   {shield = true,  body = false, cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["flux"] =       {shield = true,  body = true,  cloak = false, helmet = false, gloves = true,  boots = false, barding = false},
+  ["fungus"] =     {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["hive"] =       {shield = false, body = true,  cloak = false, helmet = true,  gloves = false, boots = false, barding = false},
+  ["hydra"] =      {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["inkwell"] =    {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["jelly"] =      {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["maw"] =        {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["medusa"] =     {shield = false, body = false, cloak = true,  helmet = true,  gloves = false, boots = false, barding = false},
+  ["pig"] =        {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["porcupine"] =  {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["quill"] =      {shield = false, body = false, cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["rimehorn"] =   {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["serpent"] =    {shield = true,  body = true,  cloak = true,  helmet = false, gloves = true,  boots = true,  barding = true },
+  ["scarab"] =     {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["shadow"] =     {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["slaughter"] =  {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["sphinx"] =     {shield = true,  body = true,  cloak = false, helmet = true,  gloves = true,  boots = true,  barding = false},
+  ["spider"] =     {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["spore"] =      {shield = true,  body = false, cloak = false, helmet = false, gloves = false, boots = true,  barding = false},
+  ["statue"] =     {shield = false, body = true,  cloak = false, helmet = false, gloves = true,  boots = true,  barding = true },
+  ["storm"] =      {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["tree"] =       {shield = false, body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true },
+  ["vampire"] =    {shield = false, body = false, cloak = false, helmet = false, gloves = false, boots = false, barding = false},
+  ["werewolf"] =   {shield = false, body = false, cloak = false, helmet = false, gloves = true,  boots = true,  barding = true },
+  ["wisp"] =       {shield = true,  body = true,  cloak = true,  helmet = true,  gloves = true,  boots = true,  barding = true }
+} -- end armour_slots_melded_by_form_key (comment prevents crawl rc parser ending outer lua block)
+
+local function is_melded_by_current_form(item)
+  if item == nil or item.class(true) ~= "armour" then return false end
+
+  local form = you.transform()
+
+  -- player not transformed
+  if form == "" then return false end
+
+  local meld_key = form_meld_key[form]
+  if meld_key == nil then
+    rc_warn(string.format("[PickupEquipment] is_melded_by_current_form unhandled form=%s", form))
+    return false
+  end
+
+  local melded_slots = armour_slots_melded_by_form_key[meld_key]
+  if melded_slots == nil then
+    rc_warn(string.format("[PickupEquipment] is_melded_by_current_form unhandled meld_key=%s", meld_key))
+    return false
+  end
+
+  return melded_slots[item.subtype()] == true
+end
+
+local function permanent_mutation_level(name)
+  return you.get_base_mutation_level(name, true, false, true)
+end
+
+local function permanent_armour_slot_blocked(item)
+  if item == nil or item.class(true) ~= "armour" then return false end
+
+  local race = you.race()
+  local subtype = item.subtype()
+  local name = item.name("qual")
+  local no_armour = permanent_mutation_level("no armour") > 0
+  local formless = permanent_mutation_level("formless") > 0
+  local little = race == "Felid" or race == "Spriggan"
+  local large = race == "Ogre" or race == "Troll"
+
+  if subtype == "body" then
+    return formless or no_armour or race == "Octopode"
+      or race == "Draconian" or string.find(race, "Draconian")
+  elseif subtype == "helmet" then
+    if formless or no_armour or permanent_mutation_level("horns") >= 3
+      or permanent_mutation_level("antennae") >= 3 then
+      return true
+    end
+
+    local hard_helmet = string.find(name, "helmet")
+    return hard_helmet and (little or large or race == "Octopode"
+      or race == "Draconian" or string.find(race, "Draconian")
+      or permanent_mutation_level("horns") > 0
+      or permanent_mutation_level("antennae") > 0
+      or permanent_mutation_level("beak") > 0)
+  elseif subtype == "gloves" then
+    return formless or no_armour or race == "Octopode" or little or large
+      or permanent_mutation_level("claws") >= 3
+      or permanent_mutation_level("demonic touch") >= 3
+  elseif subtype == "boots" then
+    return formless or no_armour or race == "Octopode" or little or large
+      or race == "Naga" or race == "Armataur"
+      or permanent_mutation_level("hooves") >= 3
+      or permanent_mutation_level("talons") >= 3
+      or permanent_mutation_level("float") > 0
+  elseif subtype == "barding" then
+    return not (race == "Naga" or race == "Armataur")
+  elseif subtype == "cloak" then
+    return formless or no_armour or race == "Octopode"
+      or permanent_mutation_level("weakness stinger") >= 3
+  end
+
+  return false
+end
 
 local two_handed_always = {
   "great sword", "triple sword",
@@ -531,14 +760,87 @@ local two_handed_always = {
   "halberd", "scythe", "glaive", "bardiche",
   "quarterstaff", "lajatang",
   "shortbow", "longbow",
-  "arbalest", "triple crossbow"}
+  "arbalest", "triple crossbow"
+} -- end two_handed_always (comment prevents crawl rc parser ending outer lua block)
 
-local function pickup_equipment(it, name)
-  local class = it.class(true)
+local function should_skip_shield_pickup(sub_type)
+  if sub_type ~= "shield" then return false end
+
+  local curr_weapon = items.equipped_at("weapon")
+
+  -- using 2 handed weapons
+  if curr_weapon then
+    if table_has(two_handed_always, curr_weapon.subtype()) then return true end
+  end
+
+  -- shield skill less than 3
+  return you.skill("Shields") <= 3
+end
+
+-- `talisman_type_name` source for item.subtype() talisman names
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L3163-L3192
+-- `_talisman_tiers` source for internal talisman tiers
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L3194-L3221
+local talisman_skill_min = {
+  ["inkwell talisman"] =     0,
+  ["quill talisman"] =       0,
+  ["scarab talisman"] =      8,
+  ["medusa talisman"] =      8,
+  ["rimehorn talisman"] =    8,
+  ["spore talisman"] =       8,
+  ["maw talisman"] =         8,
+  ["eel talisman"] =         12,
+  ["fortress talisman"] =    12,
+  ["lupine talisman"] =      12,
+  ["serpent talisman"] =     12,
+  ["spider talisman"] =      12,
+  ["wellspring talisman"] =  12,
+  ["blade talisman"] =       17,
+  ["dragon-coil talisman"] = 17,
+  ["granite talisman"] =     17,
+  ["hive talisman"] =        17,
+  ["riddle talisman"] =      17,
+  ["sanguine talisman"] =    17,
+  ["storm talisman"] =       23,
+  ["talisman of death"] =    26
+} -- end talisman_skill_min (comment prevents crawl rc parser ending outer lua block)
+
+local function talisman_rank(item)
+  if item == nil or item.class(true) ~= "talisman" then return nil end
+  return talisman_skill_min[item.subtype()] or talisman_skill_min[item.name("qual")]
+end
+
+local function should_pickup_talisman(item)
+  if you.skill("Shapeshifting") < 3 then return false end
+
+  local rank = talisman_rank(item)
+  if rank == nil then return false end
+
+  local best_inv_rank = nil
+  for _, inv_item in ipairs(items.inventory()) do
+    local inv_rank = talisman_rank(inv_item)
+    if inv_rank ~= nil and (best_inv_rank == nil or inv_rank > best_inv_rank) then
+      best_inv_rank = inv_rank
+    end
+  end
+
+  if best_inv_rank == nil then
+    return true
+  end
+
+  if rank > best_inv_rank then
+    return true
+  end
+
+  return false
+end
+
+local function pickup_equipment(item, name)
+  local class = item.class(true)
 
   -- -- DEBUG
-  -- rc_warn(string.format("[pickup_equipment] it:   [%s]", name))
-  -- rc_warn(string.format("[pickup_equipment] name: [%s]", debug_item(it)))
+  -- rc_warn(string.format("[pickup_equipment] item_arg:   [%s]", name))
+  -- rc_warn(string.format("[pickup_equipment] item: [%s]", debug_item(item)))
 
   -- -- debugging equipped items
   -- rc_msg(string.format("[pickup_equipment] -------- START EQUIPPED --------"))
@@ -553,52 +855,79 @@ local function pickup_equipment(it, name)
 
 
   -- do not pickup forbidden items
-  if string.match(name, "forbidden") then return end
+  if string.match(name, "forbidden") then return false end
+
+  if class == "talisman" then
+    return should_pickup_talisman(item)
+  end
+
+  -- permanent species/mutation slot blockers should win over temporary form
+  if permanent_armour_slot_blocked(item) then return false end
 
   -- do not pickup useless items
-  if it.is_useless then return end
-
-  -- always pickup artefacts
-  if it.artefact then return true end
-
-
-  if class == "weapon" then
-    -- get currently equipped item in slot
-    local currentWeapon = items.equipped_at("weapon");
-    -- rc_msg(string.format("[pickup_equipment] currentWeapon.subtype: %s", currentWeapon.subtype()))
-
-    -- when using unarmed combat, we want to skip the should_pickup for weapons
-    if currentWeapon == nil then
-      -- always pickup god gift equipment
-      if it.god_gift then return true end
-
+  if item.is_useless then
+    -- except armour that is only useless because the current form temporarily melds that slot
+    if is_melded_by_current_form(item) then
+      -- evaluate normal pickup rules below
+    else
       return false
     end
+  end
 
-    if should_pickup(currentWeapon, it) then return true end
+  -- always pickup artefacts
+  if item.artefact then return true end
 
-  elseif class == "armour" then
-    local sub_type = it.subtype();
+  -- always pickup god gift equipment
+  if item.god_gift then return true end
 
-    if sub_type == "gloves" and you.has_claws() > 0 then return end
+  if class == "armour" then
+    local sub_type = item.subtype()
 
-    -- skip picking up shields, when
-    if sub_type == "shield" then
-      -- using 2 handed weapons
-      if currentWeapon then
-        if table_has(two_handed_always, currentWeapon.subtype()) then return end
-      end
-
-      -- shield skill less than 3
-      if you.skill("Shields") <= 3 then return end
-    end
+    if should_skip_shield_pickup(sub_type) then return false end
 
     local equipped_item = equip_slot(sub_type)
 
-    if should_pickup(equipped_item, it) then return true end
+    -- always pickup empty slots
+    if equipped_item == nil then
+      return true
+    end
+
+    if should_pickup_upgrade({
+      current = equipped_item,
+      item = item
+    }) then return true end
+
+    return false
   end
 
-  return
+  if class == "weapon" then
+    if is_ranged_weapon(item) then
+      return should_pickup_upgrade({
+        current = best_inventory_ranged_weapon(),
+        item = item
+      })
+    end
+
+    -- get currently equipped item in slot
+    local curr_weapon = items.equipped_at("weapon");
+    -- rc_msg(string.format("[pickup_equipment] curr_weapon.subtype: %s", curr_weapon.subtype()))
+
+    -- when using unarmed combat, we want to skip weapon upgrade pickup
+    if curr_weapon == nil then
+      return false
+    end
+
+    if should_pickup_upgrade({
+      current = curr_weapon,
+      item = item
+    }) then return true end
+
+    return false
+  end
+
+  -- add_autopickup_func treats false as "never pick this up"
+  -- nil means "no opinion" and allows other pickup rules to apply
+  return nil
 end
 
 -- Runs once when parsed during rc init
@@ -615,7 +944,7 @@ function note_version()
     return
   end
 
-  local version = "magus.rc [v1.11.8]"
+  local version = "magus.rc [v1.12.1]"
   crawl.take_note(version)
   didRun = true
 end
@@ -1056,35 +1385,44 @@ ability_slot += Enter the Abyss:E
 # See this dynamic web app for oganizing spell slots in real-time
 # https://codesandbox.io/p/sandbox/dcss-spell-slots-6yxgmc
 
-spell_slot += Absolute Zero:azAZeoEObBsrSRlLuUtT
 spell_slot += Agony:aAyYgGoOnN
 spell_slot += Airstrike:aAeEiIrRsStTkK
 spell_slot += Alistair's Intoxication:aiAIsnSNlLtToOxXcCrR
+spell_slot += Alistair's Walking Alembic:aswASWrgcRGClitknembLITKNEMB
 spell_slot += Anguish:aAhHnNgGuUiIsS
 spell_slot += Animate Armour:aAerERnNimIMoOuUtT
 spell_slot += Animate Dead:adADeEnNiImMtT
 spell_slot += Animate Skeleton:asASenENkKiImlMLtToO
 spell_slot += Apportation:aAnNpPoOrRtTiI
 spell_slot += Arcjolt:aAtTrRcCjJoOlL
+spell_slot += Awaken Armour:aAnrNRwkemouWKEMOU
 spell_slot += Beastly Appendage:baBAyeYEpPsStnTNldLDgG
 spell_slot += Blade Hands:bhBHesESlaLAnNdD
 spell_slot += Blink:bBkKlLiInN
 spell_slot += Bolt of Magma:bmBMtaTAoOlgLG
+spell_slot += Bombard:bBdDomarOMAR
 spell_slot += Borgnjor's Revivification:brBRsnSNoeOEvVgiGIjJfFcCaAtT
 spell_slot += Borgnjor's Vile Clutch:bvcBVCsehSEHoilOILruRUgtGTnNjJ
+spell_slot += Brom's Barrelling Boulder:bsBSmgrMGRoaelinudOAELINUD
 spell_slot += Call Canine Familiar:cfCFlerLERaAnmNMiI
 spell_slot += Call Imp:ciCIlpLPamAM
 spell_slot += Cause Fear:cfCFerERaAuUsS
 spell_slot += Chain Lightning:clCLngNGhiHIaAtT
 spell_slot += Cigotuvi's Dreadful Rot:cdrCDRsltSLTioIOgeGEaAufUFvV
+spell_slot += Cigotuvi's Putrefaction:cspCSPinINgotuvrefaGOTUVREFA
 spell_slot += Confusing Touch:ctCTghGHoOnuNUfFsSiI
 spell_slot += Conjure Ball Lightning:cblCBLegEGoaiOAInNjhJHutUTrR
 spell_slot += Conjure Flame:cfCFeEolOLnaNAjmJMuUrR
+spell_slot += Construct Spike Launcher:cslCSLterTERonupikahONUPIKAH
 spell_slot += Corona:cCaAoOrRnN
 spell_slot += Corpse Rot:crCRetEToOpPsS
+spell_slot += Curse of Agony:coaCOAefyEFYursgnURSGN
 spell_slot += Dazzling Flash:dfDFghGHalALzZsSiInN
 spell_slot += Death Channel:dcDChlHLeEaAtnTN
 spell_slot += Death's Door:dDsrSReoEOaAtThH
+spell_slot += Detonation Catalyst:dcDCntNTeoailysEOAILYS
+spell_slot += Diamond Sawblades:dsDSiamonwbleIAMONWBLE
+spell_slot += Dimensional Bullseye:dbDBleLEimnsoauyIMNSOAUY
 spell_slot += Discord:dDiIsScCoOrR
 spell_slot += Disjunction:JdDnNiIsSjJuUcCtToO
 spell_slot += Dispel Undead:duDUlLinINsSpePEaA
@@ -1094,19 +1432,31 @@ spell_slot += Dragon's Call:dcDCslSLraRAgGoOnN
 spell_slot += Enfeeble:eEnNfFbBlL
 spell_slot += Ensorcelled Hibernation:ehEHdnDNiIsbSBoOrRcCaAltLT
 spell_slot += Eringya's Noxious Bog:enbENBsgSGroROixIXyuYUaA
+spell_slot += Eringya's Surprising Crocodile:escESCagAGrinyupodlRINYUPODL
 spell_slot += Excruciating Wounds:ewEWgsGSxoXOcuCUrnRNdDiIaAtT
 spell_slot += Fire Storm:fsFSemEMitITroRO
 spell_slot += Fireball:fFlLiIrReEbBaA
 spell_slot += Flame Wave:fwFWeElaLAvVmM
+spell_slot += Forge Blazeheart Golem:fbgFBGetmETMorlazhORLAZH
+spell_slot += Forge Lightning Spire:flsFLSegEGorihtnpORIHTNP
+spell_slot += Forge Monarch Bomb:fmbFMBehEHorgnacORGNAC
+spell_slot += Forge Phalanx Beetle:fpbFPBexEXorghalntORGHALNT
+spell_slot += Fortress Blast:fbFBstSTorelaORELA
 spell_slot += Foxfire:fFeEoOxXiIrR
 spell_slot += Freeze:fFeErRzZ
 spell_slot += Freezing Cloud:fcFCgdGDrlRLeoEOuUzZiInN
 spell_slot += Frozen Ramparts:frFRnsNSaAomOMzpZPeEtT
+spell_slot += Fugue of the Fallen:fotFOTenENughalUGHAL
 spell_slot += Fulminant Prism:fpFPtmTMurURliLIsSnNaA
+spell_slot += Fulsome Fusillade:fFeEulsomiadULSOMIAD
+spell_slot += Gell's Gavotte:gsGSleLEavotAVOT
 spell_slot += Gell's Gravitas:gGsSerERlaLAvViItT
+spell_slot += Gloom:gGmMloLO
+spell_slot += Grave Claw:gcGCewEWravlRAVL
 spell_slot += Hailstorm:hHmMaAiIlLsStToOrR
 spell_slot += Haunt:hHtTaAuUnN
-spell_slot += Hydra Form:hfHFamAMyoYOdrDR
+spell_slot += Hellfire Mortar:hmHMerERlfiotaLFIOTA
+spell_slot += Hoarfrost Cannonade:hcHCteTEoarfsndOARFSND
 spell_slot += Ice Form:ifIFemEMcoCOrR
 spell_slot += Ignite Poison:ipIPenENgoGOsStT
 spell_slot += Ignition:iInNgGtToO
@@ -1117,20 +1467,29 @@ spell_slot += Iron Shot:isISntNTrhRHoO
 spell_slot += Irradiate:iIeErRaAdDtT
 spell_slot += Iskenderun's Battlesphere:ibIBseSEaAktKTnlNLdDrpRPuhUH
 spell_slot += Iskenderun's Mystic Blast:imbIMBsctSCTylYLkaKAeEnNdDrRuU
+spell_slot += Jinxbite:jJeEinxbtINXBT
+spell_slot += Kinetic Grapnel:kgKGclCLinetrapINETRAP
 spell_slot += Kiss of Death:kdKDshSHieIEaAtT
+spell_slot += Launch Clockwork Bee:lcbLCBhkeHKEaunowrAUNOWR
 spell_slot += Leda's Liquefaction:lLsnSNeiEIdqDQauAUfFcCtToO
 spell_slot += Lee's Rapid Deconstruction:lrdLRDsnSNeaEApcPCioIOtTuU
 spell_slot += Lehudib's Crystal Spear:lcsLCSrRepEPhyHYuaUAdtDTiIbB
 spell_slot += Lesser Beckoning:lbLBrgRGeEscSCkKoOnNiI
 spell_slot += Lightning Bolt:lbLBgtGTioIOhHnN
 spell_slot += Magic Dart:mdMDctCTaAgrGRiI
+spell_slot += Magnavolt:mMtTagnvolAGNVOL
 spell_slot += Malign Gateway:mgMGnyNYaAltLTieIEwW
 spell_slot += Manifold Assault:maMAdtDTsSnNiIfuFUolOL
+spell_slot += Martyr's Knell:mskMSKrlRLatyneATYNE
 spell_slot += Maxwell's Capacitive Coupling:mcMCsegSEGaoAOxpuXPUwWlLiItnTNvV
+spell_slot += Maxwell's Portable Piledriver:mspMSPlerLERaxwotbidvAXWOTBIDV
 spell_slot += Mephitic Cloud:mcMCdDelELpoPOhuHUiItT
+spell_slot += Mercury Arrow:maMAywYWercuoERCUO
+spell_slot += Mercury Vapours:mvMVysYSercuapoERCUAPO
 spell_slot += Metabolic Englaciation:meMEcnCNtgTGalALbBoOiI
 spell_slot += Momentum Strike:msMSeEotOTrRiInkNKuU
 spell_slot += Monstrous Menagerie:mMseSEoOnNaAtgTGrRuiUI
+spell_slot += Nazja's Percussive Tempering:nsptNSPTaegAEGzjrcuivmZJRCUIVM
 spell_slot += Necromutation:nNeEcCrRoOmMuUtTaAiI
 spell_slot += Necrotise:nNeEcCrRoOtTiIsS
 spell_slot += Olgreb's Toxic Radiance:otrOTRsceSCElaLAgxdGXDiIbnBN
@@ -1140,22 +1499,32 @@ spell_slot += Ozocubu's Refrigeration:orORsnSNzeZEfFcCuiUIbgBGaAtT
 spell_slot += Pain:pPnNaAiI
 spell_slot += Passage of Golubria:pgPGeaEAoOslSLuUbBrRiI
 spell_slot += Passwall:pPlLaAsSwW
+spell_slot += Permafrost Eruption:pePEtnTNrmafosuiRMAFOSUI
 spell_slot += Petrify:pPyYeEtTrRiIfF
 spell_slot += Plasma Beam:pbPBamAMleLEsS
+spell_slot += Platinum Paragon:pPmnMNlatiurgoLATIURGO
 spell_slot += Poisonous Vapours:pvPVsSoaOAiIuUnrNR
 spell_slot += Polar Vortex:pvPVrxRXoOlLatATeE
 spell_slot += Portal Projectile:pPleLEorORtjTJaAcCiI
+spell_slot += Rending Blade:rbRBgeGEndilaNDILA
+spell_slot += Rimeblight:rRtTimeblghIMEBLGH
 spell_slot += Sandblast:sStTaAnNdDbBlL
 spell_slot += Scorch:sShHcCoOrR
+spell_slot += Sculpt Simulacrum:sStmTMculpiarCULPIAR
 spell_slot += Searing Ray:srSRgyGYeaEAiInN
 spell_slot += Shadow Creatures:scSCwWhrHRaeAEdDotOTuU
 spell_slot += Shatter:sSrRhHaAtTeE
 spell_slot += Shock:sSkKhHoOcC
+spell_slot += Sigil of Binding:sobSOBlfgLFGindIND
 spell_slot += Silence:sSeEiIlLnNcC
 spell_slot += Simulacrum:sSmMiIuUlLaAcCrR
 spell_slot += Slow:sSwWlLoO
+spell_slot += Soul Splinter:sSlrLRoupinteOUPINTE
 spell_slot += Spellforged Servitor:sSdrDRpePElvLViIftFToOgG
+spell_slot += Spellspark Servitor:sSkrKRpelavitoPELAVITO
+spell_slot += Sphinx Sisters:sSxXphinterPHINTER
 spell_slot += Spider Form:sfSFrmRMpoPOiIdDeE
+spell_slot += Splinterfrost Shell:sStlTLpinerfohPINERFOH
 spell_slot += Starburst:sStTaArRbBuU
 spell_slot += Static Discharge:sdSDceCEtiTIaAhHrRgG
 spell_slot += Statue Form:sfSFemEMtoTOarARuU
@@ -1164,20 +1533,19 @@ spell_slot += Sting:sSgGtTiInN
 spell_slot += Stone Arrow:saSAewEWtrTRoOnN
 spell_slot += Storm Form:sfSFmMtoTOrR
 spell_slot += Sublimation of Blood:sbSBndNDulULoOiImMaAtT
+spell_slot += Summon Blazeheart Golem:sbgSBGntmNTMuolazehrUOLAZEHR
 spell_slot += Summon Cactus Giant:scgSCGntNTuaiUAImMoO
-spell_slot += Summon Demon:sdSDnNueUEmMoO
 spell_slot += Summon Forest:sfSFntNTuoUOmrMReE
-spell_slot += Summon Greater Demon:sgdSGDnrNRueUEmMaoAOtT
 spell_slot += Summon Guardian Golem:sgSGnmNMuoUOalALreREdDiI
 spell_slot += Summon Horrible Things:shtSHTneNEuoUOmriMRIgGbBlL
 spell_slot += Summon Hydra:shSHnaNAuyUYmdMDrRoO
 spell_slot += Summon Ice Beast:sibSIBnetNETucUCmaMAoO
 spell_slot += Summon Lightning Spire:slSLngeNGEuipUIPmMhrHRotOT
 spell_slot += Summon Mana Viper:smvSMVnarNARuiUIpPeEoO
+spell_slot += Summon Seismosaurus Egg:seSEngNGumoiarUMOIAR
 spell_slot += Summon Small Mammal:smSMnlNLuaUAoO
 spell_slot += Swiftness:sSwWiIfFtTnNeE
 spell_slot += Teleport Other:toTOrReElhLHpP
-spell_slot += Tornado:tToOrRnNaAdD
 spell_slot += Tukima's Dance:tdTDseSEuaUAknKNicICmM
 spell_slot += Vampiric Draining:vdVDcgCGarARmMpiPInN
 spell_slot += Vhi's Electric Charge:vecVECsShlHLiaIArRtgTG
@@ -1192,33 +1560,175 @@ spell_slot += .*:XYZ
 ### Item slots ###
 ##################
 
-## In order of letter used.
-item_slot += amulet of rage : B
-item_slot += ring of (ice|protection from cold) : Cc
-item_slot += amulet of the acrobat : A
-item_slot += \+[0-9]+ ring of evasion : Ee
-item_slot += ring of .*fire : Ff
-item_slot += amulet of regeneration : g
-item_slot += amulet of guardian spirit : G
-item_slot += amulet of faith : T
-item_slot += \+[0-9]+ ring of intelligence : Ii
-item_slot += ring of flight : L
-item_slot += ring of protection from magic : Mm
-item_slot += ring of positive energy : Nn
-item_slot += \+[0-9]+ ring of protection : Oo
-item_slot += ring of poison resistance : P
-item_slot += ring of resist corrosion : R
-item_slot += amulet of mana regeneration : r
-item_slot += \+[0-9]+ ring of strength : Ss
-item_slot += ring of see invisible : v
-item_slot += ring of magical power : Ww
-item_slot += \+[0-9]+ ring of dexterity : Dd
-item_slot += \+[0-9]+ ring of slaying : Yy
-item_slot += ring of wizardry : Zz
+# 0.34 jewellery names:
+# https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-name.cc
+# https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/dat/descript/items.txt
 
-# 0.26 holdback
-item_slot += ring of stealth : Qq
-item_slot += ring of teleportation : t
+# Use letters in the jewellery property name first: 
+# (1) beginning, (2) end, (3) anywhere. 
+# Keep old names in regexes where they are useful for older games.
+item_slot += amulet of the acrobat : acACroRObBtT
+gear_slot += amulet of the acrobat : acACroRObBtT
+item_slot += amulet of chemistry : chCHemEMisIStryTRY
+gear_slot += amulet of chemistry : chCHemEMisIStryTRY
+item_slot += amulet of dissipation : dsDSipIPatATonON
+gear_slot += amulet of dissipation : dsDSipIPatATonON
+item_slot += amulet of faith : faFAitIThH
+gear_slot += amulet of faith : faFAitIThH
+item_slot += amulet of guardian spirit : gsGSuaUAriRIptPT
+gear_slot += amulet of guardian spirit : gsGSuaUAriRIptPT
+item_slot += amulet of (mana|magic) regeneration : mrMRagAGenEN
+gear_slot += amulet of (mana|magic) regeneration : mrMRagAGenEN
+item_slot += amulet of reflection : rfRFleLEctCT
+gear_slot += amulet of reflection : rfRFleLEctCT
+item_slot += amulet of regeneration : rgRGenENhH
+gear_slot += amulet of regeneration : rgRGenENhH
+item_slot += amulet of wildshape : wsWSildILDhapeHAPE
+gear_slot += amulet of wildshape : wsWSildILDhapeHAPE
+item_slot += ring of (ice|protection from cold) : ciCIoldOLDfrFR
+gear_slot += ring of (ice|protection from cold) : ciCIoldOLDfrFR
+item_slot += \+[0-9]+ ring of dexterity : dxDXetETriRI
+gear_slot += \+[0-9]+ ring of dexterity : dxDXetETriRI
+item_slot += \+[0-9]+ ring of evasion : evEVasASioIOnN
+gear_slot += \+[0-9]+ ring of evasion : evEVasASioIOnN
+item_slot += ring of (fire|protection from fire) : fiFIreRE
+gear_slot += ring of (fire|protection from fire) : fiFIreRE
+item_slot += ring of flight : flFLigIGhtHT
+gear_slot += ring of flight : flFLigIGhtHT
+item_slot += \+[0-9]+ ring of intelligence : inINteTEllLLgG
+gear_slot += \+[0-9]+ ring of intelligence : inINteTEllLLgG
+item_slot += ring of magical power : mpMPagAGowOW
+gear_slot += ring of magical power : mpMPagAGowOW
+item_slot += ring of poison resistance : prPRoiOIsnSN
+gear_slot += ring of poison resistance : prPRoiOIsnSN
+item_slot += ring of positive energy : neNEpoPOsiSI
+gear_slot += ring of positive energy : neNEpoPOsiSI
+item_slot += \+[0-9]+ ring of protection : prPRotOTecEC
+gear_slot += \+[0-9]+ ring of protection : prPRotOTecEC
+item_slot += ring of resist corrosion : rcRCcoCOrsRS
+gear_slot += ring of resist corrosion : rcRCcoCOrsRS
+item_slot += ring of see invisible : siSIevEVnN
+gear_slot += ring of see invisible : siSIevEVnN
+item_slot += \+[0-9]+ ring of slaying : slSLayAY
+gear_slot += \+[0-9]+ ring of slaying : slSLayAY
+item_slot += \+[0-9]+ ring of strength : stSTreREngNG
+gear_slot += \+[0-9]+ ring of strength : stSTreREngNG
+item_slot += ring of (protection from magic|willpower) : wiWIllLLmrMR
+gear_slot += ring of (protection from magic|willpower) : wiWIllLLmrMR
+item_slot += ring of wizardry : wzWZizIZarAR
+gear_slot += ring of wizardry : wzWZizIZarAR
+
+# older-version holdbacks
+item_slot += amulet of rage : arARbgBGeE
+gear_slot += amulet of rage : arARbgBGeE
+item_slot += ring of stealth : stSTeaEAlhLH
+gear_slot += ring of stealth : stSTeaEAlhLH
+item_slot += ring of teleportation : teTEleLEpoPO
+gear_slot += ring of teleportation : teTEleLEpoPO
+
+# Talismans
+# Use letters in the form name first: (1) beginning, (2) end, (3) anywhere.
+# Shared letters from "talisman" come later as fallbacks.
+item_slot += inkwell talisman : itITlnLNkwelKWELasmASM
+gear_slot += inkwell talisman : itITlnLNkwelKWELasmASM
+item_slot += quill talisman : qtQTlnLNuiUIasmASM
+gear_slot += quill talisman : qtQTlnLNuiUIasmASM
+item_slot += scarab talisman : stSTbmBCarcARCliLI
+gear_slot += scarab talisman : stSTbmBCarcARCliLI
+item_slot += medusa talisman : mtMTanANedsuEDSUliLI
+gear_slot += medusa talisman : mtMTanANedsuEDSUliLI
+item_slot += rimehorn talisman : rtRTnnNNimehoIMEHOlasLAS
+gear_slot += rimehorn talisman : rtRTnnNNimehoIMEHOlasLAS
+item_slot += spore talisman : stSTeeEEporPORlimLIM
+gear_slot += spore talisman : stSTeeEEporPORlimLIM
+item_slot += maw talisman : mtMTwwWWalALisISnN
+gear_slot += maw talisman : mtMTwwWWalALisISnN
+item_slot += eel talisman : etETllLLeanEANismISM
+gear_slot += eel talisman : etETllLLeanEANismISM
+item_slot += fortress talisman : ftFTssSSoreOREliLIM
+gear_slot += fortress talisman : ftFTssSSoreOREliLIM
+item_slot += lupine talisman : ltLTenENupiUPIasmASM
+gear_slot += lupine talisman : ltLTenENupiUPIasmASM
+item_slot += serpent talisman : stSTntNTerpeERPEaliALI
+gear_slot += serpent talisman : stSTntNTerpeERPEaliALI
+item_slot += spider talisman : stSTrrRRpidePIDEalmALM
+gear_slot += spider talisman : stSTrrRRpidePIDEalmALM
+item_slot += wellspring talisman : wtWTgnGNelspriELSPRIamAM
+gear_slot += wellspring talisman : wtWTgnGNelspriELSPRIamAM
+item_slot += blade talisman : btBTeeEEladLADismISM
+gear_slot += blade talisman : btBTeeEEladLADismISM
+item_slot += dragon-coil talisman : dctDCTnlnNLNragoiRAGOIasmASM
+gear_slot += dragon-coil talisman : dctDCTnlnNLNragoiRAGOIasmASM
+item_slot += granite talisman : gtGTenENraniRANIlsmLSM
+gear_slot += granite talisman : gtGTenENraniRANIlsmLSM
+item_slot += hive talisman : htHTeeEEivIValsALS
+gear_slot += hive talisman : htHTeeEEivIValsALS
+item_slot += riddle talisman : rtRTeeEEdidlDIDLasmASM
+gear_slot += riddle talisman : rtRTeeEEdidlDIDLasmASM
+item_slot += sanguine talisman : stSTenENaguiAGUIlmLM
+gear_slot += sanguine talisman : stSTenENaguiAGUIlmLM
+item_slot += storm talisman : stSTmmMMtorTORaliALI
+gear_slot += storm talisman : stSTmmMMtorTORaliALI
+item_slot += talisman of death : todTODnfhNFHeaEAlismLISM
+gear_slot += talisman of death : todTODnfhNFHeaEAlismLISM
+
+############################
+### Consumable shortcuts ###
+############################
+
+# 0.34 already defines consumable shortcut defaults
+# https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/dat/defaults/consumable_shortcuts.txt
+# leave these commented so the rc uses game defaults unless we intentionally override one
+#
+# consumable_shortcut ^= scroll of identify:i
+# consumable_shortcut ^= scroll of teleportation:t
+# consumable_shortcut ^= scroll of fear:f
+# consumable_shortcut ^= scroll of noise:N
+# consumable_shortcut ^= scroll of summoning:s
+# consumable_shortcut ^= scroll of enchant weapon:w
+# consumable_shortcut ^= scroll of enchant armour:a
+# consumable_shortcut ^= scroll of torment:T
+# consumable_shortcut ^= scroll of immolation:I
+# consumable_shortcut ^= scroll of blinking:b
+# consumable_shortcut ^= scroll of revelation:r
+# consumable_shortcut ^= scroll of fog:g
+# consumable_shortcut ^= scroll of acquirement:A
+# consumable_shortcut ^= scroll of brand weapon:W
+# consumable_shortcut ^= scroll of vulnerability:V
+# consumable_shortcut ^= scroll of silence:S
+# consumable_shortcut ^= scroll of amnesia:x
+# consumable_shortcut ^= scroll of poison:p
+# consumable_shortcut ^= scroll of butterflies:s
+#
+# consumable_shortcut ^= potion of curing:c
+# consumable_shortcut ^= potion of heal wounds:w
+# consumable_shortcut ^= potion of haste:h
+# consumable_shortcut ^= potion of might:m
+# consumable_shortcut ^= potion of brilliance:b
+# consumable_shortcut ^= potion of attraction:A
+# consumable_shortcut ^= potion of enlightenment:e
+# consumable_shortcut ^= potion of cancellation:C
+# consumable_shortcut ^= potion of ambrosia:a
+# consumable_shortcut ^= potion of invisibility:i
+# consumable_shortcut ^= potion of experience:E
+# consumable_shortcut ^= potion of magic:g
+# consumable_shortcut ^= potion of berserk rage:B
+# consumable_shortcut ^= potion of mutation:M
+# consumable_shortcut ^= potion of resistance:r
+# consumable_shortcut ^= potion of lignification:L
+#
+# consumable_shortcut ^= wand of flame:a
+# consumable_shortcut ^= wand of acid:b
+# consumable_shortcut ^= wand of quicksilver:b
+# consumable_shortcut ^= wand of light:b
+# consumable_shortcut ^= wand of roots:c
+# consumable_shortcut ^= wand of warping:c
+# consumable_shortcut ^= wand of iceblast:c
+# consumable_shortcut ^= wand of mindburst:f
+# consumable_shortcut ^= wand of digging:d
+# consumable_shortcut ^= wand of charming:e
+# consumable_shortcut ^= wand of paralysis:e
+# consumable_shortcut ^= wand of polymorph:p
 
 ##
 ## AutoInscribe.rc
@@ -1277,20 +1787,20 @@ ai += remove curse:@r2
 ## AutoPickup.rc
 ################################################################################################
 : if you.race() == "Mummy" then
-autopickup = (/?"+|}$
+autopickup = (/?"+|}%♦$
 : elseif you.race() == "Vampire" then
-autopickup = (/?"!+|}$
+autopickup = (/?"!+|}%♦$
 # Felids are hard.
 : elseif you.race() == "Felid" then
-autopickup = /?"!+}$
+autopickup = /?"!+}%♦$
 : else
-autopickup = (/?"!+|}$
+autopickup = (/?"!+|}%♦$
 : end
 # )       Weapons
 # (       Missiles
 # [       Armour
 # /       Wands
-# %       Food
+# %       Talismans
 # ?       Scrolls
 # " or =  Jewellery
 # !       Potions
@@ -1298,6 +1808,7 @@ autopickup = (/?"!+|}$
 # |       Staves
 # 0       Orbs
 # }       Miscellaneous
+# G or ♦  Gems
 # $       Gold
 # Note that _whether_ items are picked up automatically or not, is
 # controlled by the in-game toggle Ctrl-A. Also note that picking
@@ -1327,6 +1838,9 @@ ae += >rings? of (poison resistance)
 : if table_has({"Deep Dwarf"}, you.race()) then
 ae += >amulets? of (regeneration)
 : end
+: if table_has({"Djinni"}, you.race()) then
+ae += >amulets? of ((magic|mana) regeneration)
+: end
 
 # Scrolls
 : if table_has({"Vampire", "Mummy", "Ghoul"}, you.race()) then
@@ -1347,7 +1861,7 @@ ae += >scrolls? of (amnesia|noise)
 
 # Potions
 ae += <potions? of (mutation|lignification)
-ae += >potions? of (degeneration)
+ae += >potions? of (degeneration|moonshine)
 
 # Tengu do not need flying
 : if table_has({"Tengu"}, you.race()) then
@@ -1357,8 +1871,18 @@ ae += >potions? of (flight)
 # Miscellaneous
 ae += <(tins of tremorstones)
 
+# Talismans
+: if you.skill("Shapeshifting") > 0 then
+ae += <talisman
+: else
+ae += >talisman
+: end
+
 # Pickup runes but not 'runed' anything
 ae += <rune(s)?[^d]
+
+# Gem
+ae += <gem
 
 # IMPORTANT: Do not auto pickup the Orb of Zot
 ae += >orb of Zot
@@ -4966,5 +5490,5 @@ msc ^= mute:is almost (dead|destroyed)
 ##
 ## END
 ################################################################################################
-: rc_scs("Successfully initialized magus.rc [v1.11.8]")
+: rc_scs("Successfully initialized magus.rc [v1.12.1]")
 : crawl.enable_more(true)
