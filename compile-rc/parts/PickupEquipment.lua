@@ -109,30 +109,36 @@ end
 --     "Fifth Ring", "Sixth Ring", "Seventh Ring", "Eighth Ring",
 --     "Amulet Ring"
 -- };
+--
+-- list to try each name until one resolves to an equipped item
 local item_subtype_equip_slot = {
-  cloak="Cloak",
-  helmet="Helmet",
-  gloves="Gloves",
-  boots="Boots",
-  shield="Shield"
+  cloak={"Cloak"},
+  helmet={"Helmet"},
+  gloves={"Gloves"},
+  boots={"Boots"},
+
+  -- ok this is weird but the equip slot required by `items.equipped_at`
+  -- seems to depend on whether we are running in webtiles or locally
+  -- webtiles expects `items.equipped_at("Body Armour")`
+  -- local expects    `items.equipped_at("Armour")`
+  body={"Body Armour", "Armour"},
+
+  -- item.subtype() returns the armour slot name by default
+  -- < 0.34: `shield`; >=0.34: `ofhand`
+  offhand={"Offhand", "Shield"},
+  shield={"Offhand", "Shield"}
 } -- end item_subtype_equip_slot (comment prevents crawl rc parser ending outer lua block)
 
 local function equip_slot(item_sub_type)
-  if item_sub_type == "body" then
-    -- ok this is weird but the equip slot required by `items.equipped_at`
-    -- seems to depend on whether we are running in webtiles or locally
-    -- webtiles expects `items.equipped_at("Body Armour")`
-    -- local expects    `items.equipped_at("Armour")`
-    -- try both and return whichever isn't `nil`
-    local body_armour = items.equipped_at("Body Armour");
-    local armour = items.equipped_at("Armour");
-    local result = body_armour or armour;
-    return result;
+  local equip_slots = item_subtype_equip_slot[item_sub_type];
+  if equip_slots == nil then return nil end
+
+  for _, slot in ipairs(equip_slots) do
+    local item = items.equipped_at(slot);
+    if item ~= nil then return item end
   end
 
-  -- we can handle non-body armor with lua table (map)
-  local equip_slot = item_subtype_equip_slot[item_sub_type];
-  return items.equipped_at(equip_slot);
+  return nil;
 end
 
 -- source for form wiz_name, talisman, and melds values
