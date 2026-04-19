@@ -29,15 +29,9 @@ local function should_pickup_upgrade(args)
   -- no comparable item? pickup!
   if cur == nil then return true end
 
-  local cur_subtype = cur.subtype()
-  local item_subtype = item.subtype()
-  local higher_plus = item.plus ~= nil and item.plus > (cur.plus or 0)
-  local more_magical = not is_magical(cur) and is_magical(item)
-
   -- DEBUG
   -- rc_msg(string.format("[should_pickup_upgrade] (cur): %s", debug_item(cur)))
   -- rc_msg(string.format("[should_pickup_upgrade] (item): %s", debug_item(item)))
-  -- rc_msg(string.format("[should_pickup_upgrade] higher_plus: %s, more_magical: %s", tostring(higher_plus), tostring(more_magical)))
 
   -- do not replace magical gear with plain gear just for enchantment
   if is_magical(cur) and not is_magical(item) then return false end
@@ -46,7 +40,12 @@ local function should_pickup_upgrade(args)
   if string.find(cur.name("qual"), "dragon scale") then return false end
 
   -- same item? pickup higher plus or more magical
-  if cur_subtype == item_subtype then
+  if cur.subtype() == item.subtype() then
+    local higher_plus = item.plus ~= nil and item.plus > (cur.plus or 0)
+    local more_magical = not is_magical(cur) and is_magical(item)
+    -- DEBUG
+    -- rc_msg(string.format("[should_pickup_upgrade] higher_plus: %s, more_magical: %s", tostring(higher_plus), tostring(more_magical)))
+
     if higher_plus or more_magical then
       return true
     end
@@ -68,7 +67,9 @@ local function best_inventory_weapon(subtype)
       best = inv_item
     else
       local better_than_best = should_pickup_upgrade({ current = best, item = inv_item })
-      if better_than_best then best = inv_item end
+      if better_than_best then
+        best = inv_item
+      end
     end
   end
 
@@ -305,6 +306,7 @@ end
 
 local function pickup_equipment(item, name)
   local class = item.class(true)
+  local subtype = item.subtype()
 
   -- -- DEBUG
   -- rc_warn(string.format("[pickup_equipment] item_arg:   [%s]", name))
@@ -355,16 +357,14 @@ local function pickup_equipment(item, name)
   end
 
   if class == "armour" then
-    local sub_type = item.subtype()
+    if should_skip_shield_pickup(subtype) then return false end
 
-    if should_skip_shield_pickup(sub_type) then return false end
-
-    local equipped_item = equip_slot(sub_type)
+    local equipped_item = equip_slot(subtype)
     return should_pickup_upgrade({ current = equipped_item, item = item })
   end
 
   if class == "weapon" then
-    local inventory_weapon = best_inventory_weapon(item.subtype())
+    local inventory_weapon = best_inventory_weapon(subtype)
     return should_pickup_upgrade({ current = inventory_weapon, item = item })
   end
 
