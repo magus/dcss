@@ -76,6 +76,27 @@ local function best_inventory_weapon(subtype)
   return best
 end
 
+-- 0.34 ranged weapon names
+-- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L783-L819
+local ranged_weapon_subtypes = {
+  ["sling"] = true,
+  ["hand cannon"] = true,
+  ["shortbow"] = true,
+  ["orcbow"] = true,
+  ["arbalest"] = true,
+  ["longbow"] = true,
+  ["triple crossbow"] = true,
+
+  -- Compatibility holdbacks for older versions.
+  ["hunting sling"] = true,
+  ["fustibalus"] = true,
+  ["hand crossbow"] = true
+} -- end ranged_weapon_subtypes (comment prevents crawl rc parser ending outer lua block)
+
+local function is_ranged_weapon_subtype(subtype)
+  return ranged_weapon_subtypes[subtype] == true
+end
+
 -- Equipment autopickup (by Medar and various others)
 -- Source http://crawl.berotato.org/crawl/rcfiles/crawl-0.23/Freakazoid.rc
 
@@ -348,7 +369,22 @@ local function pickup_equipment(item, name)
   end
 
   if class == "weapon" then
+    -- ranged weapons only if we have none in inventory
+    if is_ranged_weapon_subtype(subtype) then
+      for _, inv_item in ipairs(items.inventory()) do
+        if inv_item.class(true) == "weapon" then
+          if is_ranged_weapon_subtype(inv_item.subtype()) then
+            return false
+          end
+        end
+      end
+
+      return true
+    end
+
+    -- melee weapons only if upgrades over best in inventory
     local inventory_weapon = best_inventory_weapon(subtype)
+    if inventory_weapon == nil then return false end
     return should_pickup_upgrade({ current = inventory_weapon, item = item })
   end
 
