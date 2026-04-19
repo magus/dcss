@@ -303,16 +303,6 @@ local function has_inventory_talisman(key)
   return nil
 end
 
-local function should_pickup_talisman(item)
-  if you.skill("Shapeshifting") < 2 then return false end
-
-  local key = talisman_key(item)
-  if key == nil then return false end
-
-  local current = has_inventory_talisman(key)
-  return should_pickup_upgrade({ current = current, item = item })
-end
-
 local function pickup_equipment(item, name)
   local class = item.class(true)
 
@@ -342,7 +332,13 @@ local function pickup_equipment(item, name)
   if item.god_gift then return true end
 
   if class == "talisman" then
-    return should_pickup_talisman(item)
+    if you.skill("Shapeshifting") < 2 then return false end
+
+    local key = talisman_key(item)
+    if key == nil then return false end
+
+    local current = has_inventory_talisman(key)
+    return should_pickup_upgrade({ current = current, item = item })
   end
 
   -- permanent species/mutation slot blockers should win over temporary form
