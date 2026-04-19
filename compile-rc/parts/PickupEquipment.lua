@@ -276,20 +276,6 @@ local two_handed_always = {
   "arbalest", "triple crossbow"
 } -- end two_handed_always (comment prevents crawl rc parser ending outer lua block)
 
-local function should_skip_shield_pickup(sub_type)
-  if sub_type ~= "shield" then return false end
-
-  local curr_weapon = items.equipped_at("weapon")
-
-  -- using 2 handed weapons
-  if curr_weapon then
-    if table_has(two_handed_always, curr_weapon.subtype()) then return true end
-  end
-
-  -- shield skill less than 3
-  return you.skill("Shields") <= 3
-end
-
 local function talisman_key(item)
   return item.subtype() or item.name("qual")
 end
@@ -357,8 +343,6 @@ local function pickup_equipment(item, name)
   end
 
   if class == "armour" then
-    if should_skip_shield_pickup(subtype) then return false end
-
     local equipped_item = equip_slot(subtype)
     return should_pickup_upgrade({ current = equipped_item, item = item })
   end
