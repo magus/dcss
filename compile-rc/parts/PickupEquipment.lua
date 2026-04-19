@@ -22,51 +22,6 @@ local function debug_item(item)
   return string.format("qual=%s; subtype=%s, magical=%s, plus=%s", qual, subtype, magical, plus)
 end
 
--- `SK_RANGED_WEAPONS` source for ranged weapon names and base damage values
--- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L783-L819
--- https://github.com/crawl/crawl/blob/0.34.0/crawl-ref/source/item-prop.cc#L1815-L1823
-local ranged_weapon_base_damage = {
-  ["sling"] =            7,
-  ["shortbow"] =         8,
-  ["old fustibalus"] =   10,
-  ["orcbow"] =           11,
-  ["longbow"] =          14,
-  ["arbalest"] =         16,
-  ["hand cannon"] =      16,
-  ["triple crossbow"] =  23
-} -- end ranged_weapon_base_damage (comment prevents crawl rc parser ending outer lua block)
-
-local function is_ranged_weapon(item)
-  return item ~= nil
-    and item.class(true) == "weapon"
-    and ranged_weapon_base_damage[item.subtype()] ~= nil
-end
-
-local function best_inventory_ranged_weapon()
-  local best = nil
-
-  for _, inv_item in ipairs(items.inventory()) do
-    if not is_ranged_weapon(inv_item) then
-      -- skip
-    elseif best == nil then
-      best = inv_item
-    else
-      local inv_damage = ranged_weapon_base_damage[inv_item.subtype()]
-      local best_damage = ranged_weapon_base_damage[best.subtype()]
-
-      if inv_damage > best_damage then
-        best = inv_item
-      elseif inv_damage < best_damage then
-        -- skip
-      elseif (inv_item.plus or 0) > (best.plus or 0) then
-        best = inv_item
-      end
-    end
-  end
-
-  return best
-end
-
 local function should_pickup_upgrade(args)
   local cur = args.current
   local item = args.item
@@ -84,11 +39,6 @@ local function should_pickup_upgrade(args)
   -- rc_msg(string.format("[should_pickup_upgrade] (item): %s", debug_item(item)))
   -- rc_msg(string.format("[should_pickup_upgrade] higher_plus: %s, more_magical: %s", tostring(higher_plus), tostring(more_magical)))
 
-  -- ranged weapons have a clear base-damage progression across subtypes
-  if table_compare(ranged_weapon_base_damage, cur_subtype, item_subtype) then
-    return true
-  end
-
   -- do not replace magical gear with plain gear just for enchantment
   if is_magical(cur) and not is_magical(item) then return false end
 
@@ -104,6 +54,25 @@ local function should_pickup_upgrade(args)
 
   -- do not pickup by default
   return false
+end
+
+local function best_inventory_weapon(subtype)
+  local best = nil
+
+  for _, inv_item in ipairs(items.inventory()) do
+    if inv_item.class(true) ~= "weapon" then
+      -- skip
+    elseif subtype ~= nil and inv_item.subtype() ~= subtype then
+      -- skip
+    elseif best == nil then
+      best = inv_item
+    else
+      local better_than_best = should_pickup_upgrade({ current = best, item = inv_item })
+      if better_than_best then best = inv_item end
+    end
+  end
+
+  return best
 end
 
 -- Equipment autopickup (by Medar and various others)
@@ -341,12 +310,7 @@ local function should_pickup_talisman(item)
   if key == nil then return false end
 
   local current = has_inventory_talisman(key)
-  if current == nil then return true end
-
-  return should_pickup_upgrade({
-    current = current,
-    item = item
-  })
+  return should_pickup_upgrade({ current = current, item = item })
 end
 
 local function pickup_equipment(item, name)
@@ -400,43 +364,12 @@ local function pickup_equipment(item, name)
     if should_skip_shield_pickup(sub_type) then return false end
 
     local equipped_item = equip_slot(sub_type)
-
-    -- always pickup empty slots
-    if equipped_item == nil then
-      return true
-    end
-
-    if should_pickup_upgrade({
-      current = equipped_item,
-      item = item
-    }) then return true end
-
-    return false
+    return should_pickup_upgrade({ current = equipped_item, item = item })
   end
 
   if class == "weapon" then
-    if is_ranged_weapon(item) then
-      return should_pickup_upgrade({
-        current = best_inventory_ranged_weapon(),
-        item = item
-      })
-    end
-
-    -- get currently equipped item in slot
-    local curr_weapon = items.equipped_at("weapon");
-    -- rc_msg(string.format("[pickup_equipment] curr_weapon.subtype: %s", curr_weapon.subtype()))
-
-    -- when using unarmed combat, we want to skip weapon upgrade pickup
-    if curr_weapon == nil then
-      return false
-    end
-
-    if should_pickup_upgrade({
-      current = curr_weapon,
-      item = item
-    }) then return true end
-
-    return false
+    local inventory_weapon = best_inventory_weapon(item.subtype())
+    return should_pickup_upgrade({ current = inventory_weapon, item = item })
   end
 
   -- add_autopickup_func treats false as "never pick this up"
